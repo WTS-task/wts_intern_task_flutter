@@ -1,8 +1,8 @@
 import 'package:go_router/go_router.dart';
 import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
-import 'package:wts_task/features/cart/presentation/view/cart_screen.dart';
-import 'package:wts_task/features/cart/presentation/view/checkout_screen.dart';
+import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
+import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_detail_screen.dart';
@@ -53,10 +53,11 @@ final GoRouter appRouter = GoRouter(
     // Корзина
     GoRoute(
       path: '/cart',
-      builder: (context, state) => const CartScreen(),
+      builder: (context, state) => CartScreen(),
       routes: [
         GoRoute(
           path: 'checkout',
+          name: 'checkout',
           builder: (context, state) => const CheckoutScreen(),
         ),
       ],

@@ -11,6 +11,13 @@ dependencies:
   flutter:
     sdk: flutter
   cupertino_icons: ^1.0.8
+  cached_network_image: ^3.4.1
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
+  provider: ^6.1.5
+  hive: ^2.2.3
+  hive_flutter: ^1.1.0
+  path_provider: ^2.1.5
   dio: ^5.8.0+1
   go_router: ^15.2.3
 
@@ -19,6 +26,11 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^5.0.0
+  build_runner: ^2.5.4
+  freezed: ^3.0.6
+  json_serializable: ^6.1.5
+
+
 
 flutter:
 
@@ -40,17 +52,11 @@ flutter:
   # "family" key with the font family name, and a "fonts" key with a
   # list giving the asset and other descriptors for the font. For
   # example:
-  # fonts:
-  #   - family: Schyler
-  #     fonts:
-  #       - asset: fonts/Schyler-Regular.ttf
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-  #   - family: Trajan Pro
-  #     fonts:
-  #       - asset: fonts/TrajanPro.ttf
-  #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/to/font-from-package
+  fonts:
+    - family: PublicSans
+      fonts:
+        - asset: assets/fonts/public_sans/PublicSans-Regular.ttf
+        - asset: assets/fonts/public_sans/PublicSans-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/public_sans/PublicSans-Italic.ttf
+          style: italic

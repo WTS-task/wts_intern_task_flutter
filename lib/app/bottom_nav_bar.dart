@@ -1,5 +1,8 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:wts_task/core/constants/app_colors.dart';
 
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
@@ -11,6 +14,8 @@ class AppBottomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
+      selectedItemColor: AppColors.primaryText,
+      unselectedItemColor: AppColors.secondaryText,
       currentIndex: currentIndex,
       onTap: (index) {
         if (index != currentIndex) {
