@@ -13,7 +13,6 @@ class _CheckoutScreenState extends State<CheckoutScreen> {
   @override
   Widget build(BuildContext context) {
     // тут можно вот так получить список выбранных товаров с прошлого экрана
-    // только не знаю как правильно это сделать под mvvm, потому что если сделать вот так, то view будет хранить объекты, а такого быть не должно
     final List<CartProductModel>? items = GoRouterState.of(context).extra as List<CartProductModel>?;
 
     return Scaffold(

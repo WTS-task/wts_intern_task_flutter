@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'loading_indicator.dart';
+
 class CustomCachedImage extends StatelessWidget {
   final String imageUrl;
   final double? width;
@@ -34,7 +36,7 @@ class CustomCachedImage extends StatelessWidget {
             child: SizedBox(
               width: (width ?? 50) / 2,
               height: (height ?? 50) / 2,
-              child: const CircularProgressIndicator(),
+              child: loadingIndicator(),
             ),
           ),
       errorWidget: (context, url, error) =>

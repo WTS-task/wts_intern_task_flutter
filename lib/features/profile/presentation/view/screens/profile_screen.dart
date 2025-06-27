@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wts_task/app/bottom_nav_bar.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -13,7 +14,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Профиль')),
-      body: const Center(child: Text('Профиль')),
+      body: Center(
+        child: ElevatedButton(
+          onPressed: () {
+            context.pushNamed('orders');
+          },
+          child: Icon(Icons.history),
+        ),
+      ),
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
     );
   }

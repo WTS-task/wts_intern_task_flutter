@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../../core/constants/app_colors.dart';
 
-Widget cartLoading() {
+Widget loadingIndicator() {
   return Center(
     child: SizedBox(
       width: 120,

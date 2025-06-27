@@ -18,6 +18,7 @@ class CartItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final vm = context.read<CartViewModel>();
     return Dismissible(
+      direction: DismissDirection.endToStart,
       key: ValueKey(product.product?.productId),
       background: Container(
         alignment: Alignment.centerRight,

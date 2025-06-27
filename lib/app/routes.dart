@@ -9,10 +9,11 @@ import 'package:wts_task/features/catalog/presentation/view/product_detail_scree
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_reviews_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
-import 'package:wts_task/features/profile/presentation/view/edit_profile_screen.dart';
-import 'package:wts_task/features/profile/presentation/view/order_detail_screen.dart';
-import 'package:wts_task/features/profile/presentation/view/order_history_screen.dart';
-import 'package:wts_task/features/profile/presentation/view/profile_screen.dart';
+import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
+import 'package:wts_task/features/profile/presentation/view/screens/order_detail_screen.dart';
+import 'package:wts_task/features/profile/presentation/view/screens/order_history_screen.dart';
+
+import '../features/profile/presentation/view/screens/profile_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/catalog',
@@ -73,10 +74,12 @@ final GoRouter appRouter = GoRouter(
         ),
         GoRoute(
           path: 'orders',
+          name: 'orders',
           builder: (context, state) => const OrderHistoryScreen(),
           routes: [
             GoRoute(
               path: ':id',
+              name: 'order_detail',
               builder: (context, state) => OrderDetailScreen(),
             ),
           ],
