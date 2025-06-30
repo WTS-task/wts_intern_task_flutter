@@ -69,7 +69,6 @@ class OrderHistoryView extends StatelessWidget {
           },
         ),
       ),
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
     );
   }
 }

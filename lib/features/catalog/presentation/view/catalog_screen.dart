@@ -14,7 +14,6 @@ class _CatalogScreenState extends State<CatalogScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Каталог')),
       body: const Center(child: Text('Категории товаров')),
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
     );
   }
 }
