@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:wts_task/app/bottom_nav_bar.dart';
@@ -19,6 +20,7 @@ import '../features/profile/presentation/view/screens/profile_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/auth/phone',
+  observers: [BotToastNavigatorObserver()],
   routes: [
     //Авторизация
     GoRoute(

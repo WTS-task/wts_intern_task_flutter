@@ -2,10 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
 import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
-
-import '../../../../core/exceptions/app_exception.dart';
-import '../../data/fake_cart_items.dart';
-import 'cart_view_model_state.dart';
+import 'package:wts_task/core/exceptions/app_exception.dart';
+import 'package:wts_task/features/cart/data/fake_cart_items.dart';
+import 'package:wts_task/features/cart/presentation/view_models/cart_view_model_state.dart';
 
 class CartViewModel extends ChangeNotifier {
   var _state = CartViewModelState(
@@ -50,7 +49,7 @@ class CartViewModel extends ChangeNotifier {
 
   Future<void> onIncrementButtonPressed(int index) async {
     try {
-      var oldProduct = _state.products[index];
+      final oldProduct = _state.products[index];
       final newProduct = oldProduct.copyWith(count: oldProduct.count + 1);
       final newProducts = List<CartProductModel>.from(_state.products)
         ..[index] = newProduct;
@@ -73,8 +72,8 @@ class CartViewModel extends ChangeNotifier {
 
   Future<void> onDecrementButtonPressed(int index) async {
     try {
-      var oldCount = _state.products[index].count;
-      var oldProduct = _state.products[index];
+      final oldCount = _state.products[index].count;
+      final oldProduct = _state.products[index];
       if (oldCount > 1) {
         final newProduct = oldProduct.copyWith(count: oldProduct.count - 1);
         final newProducts = List<CartProductModel>.from(_state.products)
@@ -99,7 +98,7 @@ class CartViewModel extends ChangeNotifier {
 
   Future<void> onCheckboxPressed(int index) async {
     try {
-      var oldProduct = _state.products[index];
+      final oldProduct = _state.products[index];
       final newProduct = oldProduct.copyWith(
         isSelected: !oldProduct.isSelected,
       );
@@ -164,17 +163,16 @@ class CartViewModel extends ChangeNotifier {
     final prods = products ?? _state.products;
     double total = 0.0;
     for (final item in prods) {
-      if (item.isSelected) total += (item.product?.price ?? 0) * item.count;
+      if (item.isSelected) total += (item.product?.price ?? 0.0) * item.count;
     }
     return total;
   }
 
-  Future<void> onPlaceOrderButtonPressed(BuildContext context) async {
+  List<CartProductModel>? prepareOrder() {
     if (!hasSelectedProducts) {
-      return;
+      return null;
     }
-    final selectedProducts = getSelectedProducts();
-    context.pushNamed('checkout', extra: selectedProducts);
+    return getSelectedProducts();
   }
 
   // Очищает корзину и добавляет туда тестовые товары из подготовленного массива

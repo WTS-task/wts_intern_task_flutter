@@ -9,7 +9,7 @@ abstract class ProductModel with _$ProductModel {
     int? productId,
     String? name,
     String? productDescription,
-    int? price,
+    double? price,
     int? userId,
     int? categoryId,
     int? rating,

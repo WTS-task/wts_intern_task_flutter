@@ -23,11 +23,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
       ),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            context.pushNamed('orders');
-          },
-          child: Icon(Icons.history),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              context.pushNamed('orders');
+            },
+            child: Icon(Icons.history),
+          ),
         ),
       ),
     );

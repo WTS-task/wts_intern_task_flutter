@@ -1,20 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
-
-import 'loading_indicator.dart';
+import 'package:wts_task/core/widgets/loading_indicator.dart';
 
 class CustomCachedImage extends StatelessWidget {
-  final String imageUrl;
-  final double? width;
-  final double? height;
-  final BoxFit fit;
-  final Widget? placeholder;
-  final Widget? errorWidget;
-  final BorderRadius? borderRadius;
-
   const CustomCachedImage({
-    super.key,
     required this.imageUrl,
+    super.key,
     this.width,
     this.height,
     this.fit = BoxFit.cover,
@@ -22,6 +13,13 @@ class CustomCachedImage extends StatelessWidget {
     this.errorWidget,
     this.borderRadius,
   });
+  final String imageUrl;
+  final double? width;
+  final double? height;
+  final BoxFit fit;
+  final Widget? placeholder;
+  final Widget? errorWidget;
+  final BorderRadius? borderRadius;
 
   @override
   Widget build(BuildContext context) {

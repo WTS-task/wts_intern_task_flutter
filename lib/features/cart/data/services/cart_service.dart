@@ -5,14 +5,14 @@ import 'package:path_provider/path_provider.dart';
 import 'package:wts_task/core/exceptions/app_exception.dart';
 import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
 
-import '../exceptions/cache_exception.dart';
+import 'package:wts_task/core/exceptions/cache_exception.dart';
 
-class HiveService {
+class CartService {
+  CartService._();
+
   static const String _boxName = 'cartBox';
   static const String _key = 'cartList';
-
-  HiveService._();
-  static final HiveService instance = HiveService._();
+  static final CartService instance = CartService._();
 
   static Future<void> init() async {
     try {

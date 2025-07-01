@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:wts_task/core/widgets/show_toast.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
-
-import '../../../../../core/widgets/custom_button.dart';
-import 'cart_item_widget.dart';
-import 'total_price_widget.dart';
+import 'package:wts_task/core/widgets/custom_button.dart';
+import 'package:wts_task/features/cart/presentation/view/widgets/cart_item_widget.dart';
+import 'package:wts_task/features/cart/presentation/view/widgets/total_price_widget.dart';
 
 class CartBodyLoaded extends StatelessWidget {
+  const CartBodyLoaded({required this.vm, super.key});
   final CartViewModel vm;
-  const CartBodyLoaded({super.key, required this.vm});
   @override
   Widget build(BuildContext context) {
     final products = vm.state.products;
@@ -19,10 +20,7 @@ class CartBodyLoaded extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (context, index) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: CartItemWidget(
-                  product: products[index],
-                  index: index,
-                ),
+                child: CartItemWidget(product: products[index], index: index),
               ),
               childCount: products.length,
             ),
@@ -36,15 +34,12 @@ class CartBodyLoaded extends StatelessWidget {
                 CustomButton(
                   title: 'Оформить заказ',
                   onPressed: () {
-                    if (!vm.hasSelectedProducts) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text('Выберите хотя бы один товар!'),
-                        ),
-                      );
-                    } else {
-                      vm.onPlaceOrderButtonPressed(context);
+                    final selectedProducts = vm.prepareOrder();
+                    if (selectedProducts == null) {
+                      showToast(message: 'Выберите хотя бы один товар!');
+                      return;
                     }
+                    context.pushNamed('checkout', extra: selectedProducts);
                   },
                 ),
               ],
