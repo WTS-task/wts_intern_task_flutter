@@ -48,7 +48,6 @@ class _CartScreenState extends State<CartScreen> {
     return Scaffold(
       appBar: cartAppbar(context),
       body: body,
-      bottomNavigationBar: const AppBottomNavBar(currentIndex: 1),
     );
   }
 }
