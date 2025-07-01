@@ -1,11 +1,10 @@
-import 'package:wts_task/core/database/hive_service.dart';
+import 'package:wts_task/features/cart/data/services/cart_service.dart';
 import 'package:wts_task/core/exceptions/app_exception.dart';
 import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
-
-import '../../../../core/exceptions/repo_exception.dart';
+import 'package:wts_task/core/exceptions/repo_exception.dart';
 
 class CartRepository {
-  HiveService hiveService = HiveService.instance;
+  CartService hiveService = CartService.instance;
 
   Future<List<CartProductModel>> getAllCartProducts() async {
     try {

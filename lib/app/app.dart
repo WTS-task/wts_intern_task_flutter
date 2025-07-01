@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:wts_task/app/routes.dart';
+import 'package:bot_toast/bot_toast.dart';
+import 'package:wts_task/app/theme/app_theme.dart';
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -9,9 +11,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: appRouter,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
+      theme: mainTheme,
+      builder: BotToastInit(),
     );
   }
 }

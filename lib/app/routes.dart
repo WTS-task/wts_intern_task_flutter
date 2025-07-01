@@ -1,3 +1,4 @@
+import 'package:bot_toast/bot_toast.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
@@ -12,11 +13,11 @@ import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dar
 import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_detail_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_history_screen.dart';
-
-import '../features/profile/presentation/view/screens/profile_screen.dart';
+import 'package:wts_task/features/profile/presentation/view/screens/profile_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/catalog',
+  observers: [BotToastNavigatorObserver()],
   routes: [
     GoRoute(
       path: '/auth/phone',

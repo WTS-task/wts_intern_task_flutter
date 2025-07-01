@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/widgets/custom_alert_dialog.dart';
+import 'package:wts_task/core/widgets/show_toast.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 
 
@@ -16,8 +17,9 @@ PreferredSizeWidget? cartAppbar(BuildContext context) {
         onPressed: () async {
           await vm.addFakeCartItems();
           await vm.getCartProducts();
+          showToast(message: 'Тестовые товары добавлены');
         },
-        icon: Icon(Icons.add, size: 26, color: AppColors.buttonBgPrimary),
+        icon: Icon(Icons.add),
       ),
       IconButton(
         onPressed: () {
@@ -27,10 +29,11 @@ PreferredSizeWidget? cartAppbar(BuildContext context) {
             content: 'Все товары из корзины будут удалены, продолжить?',
             onConfirm: () {
               context.read<CartViewModel>().removeAllProducts();
+              showToast(message: 'Корзина очищена!');
             },
           );
         },
-        icon: Icon(Icons.delete, size: 26, color: AppColors.buttonBgPrimary),
+        icon: Icon(Icons.delete),
       ),
     ],
   );

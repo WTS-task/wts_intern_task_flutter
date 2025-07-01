@@ -1,6 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:wts_task/core/constants/app_colors.dart';
+import 'package:wts_task/core/constants/app_text_styles.dart';
 
 final mainTheme = ThemeData(
-  colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
   fontFamily: 'PublicSans',
+  elevatedButtonTheme: ElevatedButtonThemeData(
+    style: ElevatedButton.styleFrom(
+      foregroundColor: AppColors.onBackgroundText,
+      minimumSize: const Size.fromHeight(50),
+      backgroundColor: AppColors.buttonBgPrimary,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+    ),
+  ),
+  iconButtonTheme: IconButtonThemeData(
+    style: ButtonStyle(
+      iconSize: WidgetStateProperty.all(22),
+      foregroundColor: WidgetStateProperty.all(AppColors.buttonBgPrimary),
+    ),
+  )
 );

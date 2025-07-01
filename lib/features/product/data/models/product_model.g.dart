@@ -11,7 +11,7 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
       productId: (json['productId'] as num?)?.toInt(),
       name: json['name'] as String?,
       productDescription: json['productDescription'] as String?,
-      price: (json['price'] as num?)?.toInt(),
+      price: (json['price'] as num?)?.toDouble(),
       userId: (json['userId'] as num?)?.toInt(),
       categoryId: (json['categoryId'] as num?)?.toInt(),
       rating: (json['rating'] as num?)?.toInt(),

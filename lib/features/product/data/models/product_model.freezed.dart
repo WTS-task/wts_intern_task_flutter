@@ -18,7 +18,7 @@ mixin _$ProductModel {
   int? get productId;
   String? get name;
   String? get productDescription;
-  int? get price;
+  double? get price;
   int? get userId;
   int? get categoryId;
   int? get rating;
@@ -102,7 +102,7 @@ abstract mixin class $ProductModelCopyWith<$Res> {
       {int? productId,
       String? name,
       String? productDescription,
-      int? price,
+      double? price,
       int? userId,
       int? categoryId,
       int? rating,
@@ -156,7 +156,7 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
       price: freezed == price
           ? _self.price
           : price // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       userId: freezed == userId
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable
@@ -225,7 +225,7 @@ class _ProductModel implements ProductModel {
   @override
   final String? productDescription;
   @override
-  final int? price;
+  final double? price;
   @override
   final int? userId;
   @override
@@ -332,7 +332,7 @@ abstract mixin class _$ProductModelCopyWith<$Res>
       {int? productId,
       String? name,
       String? productDescription,
-      int? price,
+      double? price,
       int? userId,
       int? categoryId,
       int? rating,
@@ -387,7 +387,7 @@ class __$ProductModelCopyWithImpl<$Res>
       price: freezed == price
           ? _self.price
           : price // ignore: cast_nullable_to_non_nullable
-              as int?,
+              as double?,
       userId: freezed == userId
           ? _self.userId
           : userId // ignore: cast_nullable_to_non_nullable

@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-
-import '../../../../../core/constants/app_text_styles.dart';
-import '../../view_models/cart_view_model.dart';
+import 'package:wts_task/core/constants/app_text_styles.dart';
+import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 
 class TotalPriceWidget extends StatelessWidget {
   const TotalPriceWidget({super.key});
@@ -12,7 +11,7 @@ class TotalPriceWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Total', style: AppTextStyles.priceSmall),
+        Text('Итого', style: AppTextStyles.priceSmall),
         Text(
           '\$${context.read<CartViewModel>().calculateTotalPrice()}',
           style: AppTextStyles.priceSmall,

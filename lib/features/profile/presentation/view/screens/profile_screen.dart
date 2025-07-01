@@ -15,11 +15,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: AppBar(title: const Text('Профиль')),
       body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            context.pushNamed('orders');
-          },
-          child: Icon(Icons.history),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: ElevatedButton(
+            onPressed: () {
+              context.pushNamed('orders');
+            },
+            child: Icon(Icons.history),
+          ),
         ),
       ),
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
