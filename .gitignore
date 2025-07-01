@@ -1,6 +1,13 @@
 
 Podfile.lock
 
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/*
+!.idea/runConfigurations/
+
 # Miscellaneous
 *.ipa
 *.app.dSYM.zip
