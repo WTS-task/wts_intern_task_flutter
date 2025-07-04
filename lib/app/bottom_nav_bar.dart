@@ -1,35 +1,37 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wts_task/core/constants/app_colors.dart';
 
 class AppBottomNavBar extends StatelessWidget {
-  final int currentIndex;
+  final StatefulNavigationShell navigationShell;
 
-  const AppBottomNavBar({super.key, required this.currentIndex});
-
-  static const _routes = ['/catalog', '/cart', '/profile'];
+  const AppBottomNavBar({super.key, required this.navigationShell});
 
   @override
   Widget build(BuildContext context) {
-    return BottomNavigationBar(
-      selectedItemColor: AppColors.primaryText,
-      unselectedItemColor: AppColors.secondaryText,
-      currentIndex: currentIndex,
-      onTap: (index) {
-        if (index != currentIndex) {
-          context.go(_routes[index]);
-        }
-      },
-      items: const [
-        BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Каталог'),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.shopping_cart),
-          label: 'Корзина',
+    return Scaffold(
+      body: navigationShell,
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: navigationShell.currentIndex,
+        onTap: (index) =>
+        navigationShell.goBranch(
+          index,
+          initialLocation: index == navigationShell.currentIndex,
         ),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Профиль'),
-      ],
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.store),
+              label: 'Каталог'
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.shopping_cart),
+            label: 'Корзина',
+          ),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              label: 'Профиль'
+          ),
+        ],
+      ),
     );
   }
 }
