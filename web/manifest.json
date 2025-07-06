@@ -1,6 +1,6 @@
 {
-    "name": "wts_task",
-    "short_name": "wts_task",
+    "name": "shop1",
+    "short_name": "shop1",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
