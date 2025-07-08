@@ -1,8 +1,10 @@
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/cart_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/checkout_screen.dart';
+import 'package:wts_task/features/catalog/data/repositories/product_repository.dart';
 import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_detail_screen.dart';
@@ -32,11 +34,17 @@ final GoRouter appRouter = GoRouter(
           routes: [
             GoRoute(
               path: 'product/:productId',
-              builder: (context, state) => ProductDetailScreen(),
+              builder: (context, state) => ProductDetailScreen(
+                productId: state.pathParameters['productId']!,
+                repository: Provider.of<ProductRepository>(context),
+              ),
               routes: [
                 GoRoute(
                   path: 'reviews',
-                  builder: (context, state) => ProductReviewsScreen(),
+                  builder: (context, state) => ProductReviewsScreen(
+                    productId: state.pathParameters['productId']!,
+                    repository: Provider.of<ProductRepository>(context),
+                  ),
                   routes: [
                     GoRoute(
                       path: 'add',

@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
+import 'package:wts_task/features/catalog/data/models/review/review_model.dart';
+import 'package:wts_task/features/catalog/presentation/widgets/user_avatar.dart';
+import 'package:intl/intl.dart';
 
 class ReviewItem extends StatelessWidget {
-  final String userName;
-  final DateTime reviewDate;
-  final int rating;
-  final String reviewText;
-  final String userImage;
+  final Review review;
+  final int maxLines;
+  final bool showFullDate;
 
   const ReviewItem({
     super.key,
-    required this.userName,
-    required this.reviewDate,
-    required this.rating,
-    required this.reviewText,
-    required this.userImage,
+    required this.review,
+    this.maxLines = 2,
+    this.showFullDate = false,
   });
 
   @override
@@ -40,19 +39,26 @@ class ReviewItem extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage(userImage),
-                child: userImage.isEmpty ? const Icon(Icons.person) : null,
+              UserAvatar(
+                avatarUrl: review.authorAvatarUrl,
+                userName: review.authorName,
               ),
               const SizedBox(width: 12),
 
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(userName, style: AppTextStyles.reviewUserName),
                   Text(
-                    _formatTimeAgo(reviewDate),
+                    review.authorName,
+                    style: AppTextStyles.reviewUserName,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  Text(
+                    showFullDate
+                        ? DateFormat('dd.MM.yyyy').format(
+                            review.createdAt,
+                          ) //????
+                        : _formatTimeAgo(review.createdAt),
                     style: AppTextStyles.reviewData,
                   ),
                 ],
@@ -61,11 +67,11 @@ class ReviewItem extends StatelessWidget {
           ),
 
           const SizedBox(height: 8),
-          _buildRatingStars(rating),
+          _buildRatingStars(review.rating),
           const SizedBox(height: 8),
           Expanded(
             child: Text(
-              reviewText,
+              review.text,
               style: AppTextStyles.reviewText,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,

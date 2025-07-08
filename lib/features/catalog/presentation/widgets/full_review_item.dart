@@ -1,22 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
+import 'package:wts_task/features/catalog/data/models/review/review_model.dart';
+import 'package:wts_task/features/catalog/presentation/widgets/user_avatar.dart';
 
 class FullReviewItem extends StatelessWidget {
-  final String userName;
-  final DateTime reviewDate;
-  final int rating;
-  final String reviewText;
-  final String userImage;
+  final Review review;
 
-  const FullReviewItem({
-    super.key,
-    required this.userName,
-    required this.reviewDate,
-    required this.rating,
-    required this.reviewText,
-    required this.userImage,
-  });
+  const FullReviewItem({super.key, required this.review});
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +31,17 @@ class FullReviewItem extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              CircleAvatar(
-                radius: 20,
-                backgroundImage: AssetImage(userImage),
-                child: userImage.isEmpty ? const Icon(Icons.person) : null,
+              UserAvatar(
+                avatarUrl: review.authorAvatarUrl,
+                userName: review.authorName,
               ),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(userName, style: AppTextStyles.reviewUserName),
+                  Text(review.authorName, style: AppTextStyles.reviewUserName),
                   Text(
-                    _formatTimeAgo(reviewDate),
+                    _formatTimeAgo(review.createdAt),
                     style: AppTextStyles.reviewData,
                   ),
                 ],
@@ -59,9 +49,9 @@ class FullReviewItem extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 12),
-          _buildRatingStars(rating),
+          _buildRatingStars(review.rating),
           const SizedBox(height: 12),
-          Text(reviewText, style: AppTextStyles.reviewText),
+          Text(review.text, style: AppTextStyles.reviewText),
         ],
       ),
     );

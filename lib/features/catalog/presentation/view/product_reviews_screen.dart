@@ -1,55 +1,109 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/app/bottom_nav_bar.dart';
 import 'package:wts_task/app/top_app_bar.dart';
-import 'package:wts_task/core/constants/assets_path.dart';
+import 'package:wts_task/features/catalog/data/repositories/product_repository.dart';
+import 'package:wts_task/features/catalog/data/view_models/product_review_view_model.dart';
 import 'package:wts_task/features/catalog/presentation/widgets/full_review_item.dart';
 
-class ProductReviewsScreen extends StatelessWidget {
-  const ProductReviewsScreen({super.key});
+class ProductReviewsScreen extends StatefulWidget {
+  final String productId;
+  final ProductRepository repository;
+  final int skipReviews;
+
+  const ProductReviewsScreen({
+    super.key,
+    required this.productId,
+    required this.repository,
+    this.skipReviews = 0,
+  });
+
+  @override
+  State<ProductReviewsScreen> createState() => _ProductReviewsScreenState();
+}
+
+class _ProductReviewsScreenState extends State<ProductReviewsScreen> {
+  late final ProductReviewsViewModel _vm;
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    _vm = ProductReviewsViewModel(
+      widget.repository,
+      widget.productId,
+      skipReviews: widget.skipReviews,
+    )..loadReviews();
+
+    _scrollController.addListener(_scrollListener);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _scrollListener() {
+    if (_scrollController.position.pixels ==
+        _scrollController.position.maxScrollExtent) {
+      _vm.loadMoreReviews();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final reviews = [
-      FullReviewItem(
-        userName: 'Ethan Carter',
-        reviewDate: DateTime.now().subtract(const Duration(days: 14)),
-        rating: 5,
-        reviewText:
-            'This product exceeded my expectations! The quality is outstanding, and it performs flawlessly. I highly recommend it to anyone looking for a reliable and efficient solution.',
-        userImage: reviewsPersonOne,
-      ),
-      FullReviewItem(
-        userName: 'Olivia Bennet',
-        reviewDate: DateTime.now().subtract(const Duration(days: 30)),
-        rating: 4,
-        reviewText:
-            "I'm quite satisfied with my purchase. The product is well-designed and functions as described. There are a few minor improvements that could be made, but overall, it's a great value for the price.",
-        userImage: reviewsPersonTwo,
-      ),
-      FullReviewItem(
-        userName: 'Noah Thompson',
-        reviewDate: DateTime.now().subtract(const Duration(days: 60)),
-        rating: 3,
-        reviewText:
-            "The product is decent, but it didn't quite meet my expectations. It works, but there are some noticeable drawbacks. I might consider other options in the future.",
-        userImage: reviewsPersonThree,
-      ),
-    ];
+    return ChangeNotifierProvider.value(
+      value: _vm,
+      child: Consumer<ProductReviewsViewModel>(
+        builder: (context, vm, child) {
+          if (vm.isLoading && vm.reviews.isEmpty) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
 
-    final int _currentNavIndex = 0;
+          if (vm.error != null) {
+            return Scaffold(body: Center(child: Text(vm.error!)));
+          }
 
-    return Scaffold(
-      appBar: TopAppBar(
-        title: 'Отзывы',
-        onBackPressed: () => Navigator.pop(context),
-        showBackButton: true,
-        showCartButton: false,
+          return Scaffold(
+            appBar: TopAppBar(
+              title: 'Отзывы',
+              onBackPressed: () => Navigator.pop(context),
+              showBackButton: true,
+              showCartButton: false,
+            ),
+            body: NotificationListener<ScrollNotification>(
+              onNotification: (scrollInfo) {
+                if (scrollInfo.metrics.pixels ==
+                        scrollInfo.metrics.maxScrollExtent &&
+                    !vm.isLoadingMore) {
+                  vm.loadMoreReviews();
+                }
+                return true;
+              },
+              child: ListView.builder(
+                controller: _scrollController,
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                itemCount: vm.reviews.length + (vm.hasMore ? 1 : 0),
+                itemBuilder: (context, index) {
+                  if (index == vm.reviews.length) {
+                    return const Padding(
+                      padding: EdgeInsets.all(16),
+                      child: Center(child: CircularProgressIndicator()),
+                    );
+                  }
+
+                  final review = vm.reviews[index];
+                  return FullReviewItem(review: review);
+                },
+              ),
+            ),
+            bottomNavigationBar: AppBottomNavBar(currentIndex: 0),
+          );
+        },
       ),
-      body: ListView(
-        padding: const EdgeInsets.only(right: 16, left: 16, bottom: 16),
-        children: [...reviews.map((reviews) => reviews).toList()],
-      ),
-      bottomNavigationBar: AppBottomNavBar(currentIndex: _currentNavIndex),
     );
   }
 }

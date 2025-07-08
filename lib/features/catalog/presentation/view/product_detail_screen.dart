@@ -1,54 +1,86 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/app/bottom_nav_bar.dart';
-import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/app/top_app_bar.dart';
 import 'package:wts_task/core/constants/assets_path.dart';
+import 'package:wts_task/features/catalog/data/repositories/product_repository.dart';
+import 'package:wts_task/features/catalog/data/view_models/product_detail_view_model.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_reviews_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/add_review_dialog.dart';
 import 'package:wts_task/features/catalog/presentation/widgets/submit_button.dart';
 import 'package:wts_task/features/catalog/presentation/widgets/price_widget.dart';
 import 'package:wts_task/features/catalog/presentation/widgets/review_item.dart';
 
-class ProductDetailScreen extends StatelessWidget {
-  const ProductDetailScreen({super.key});
+class ProductDetailScreen extends StatefulWidget {
+  final String productId;
+  final ProductRepository repository;
 
-  final int _currentNavIndex = 0;
-  final productTitle = 'Беспроводные наушники Logitech G435 черный';
-  final productSubtitle =
-      'Беспроводные наушники Logitech G435 черный [2021, 2.0, поддержка Nintendo Switch, PS4, PS5, охватывающие, 20 Гц - 20000 Гц, 45Ω, Bluetooth, радиоканал]';
-  final double productPrice = 6999;
+  const ProductDetailScreen({
+    super.key,
+    required this.productId,
+    required this.repository,
+  });
+
+  @override
+  State<ProductDetailScreen> createState() => _ProductDetailScreenState();
+}
+
+class _ProductDetailScreenState extends State<ProductDetailScreen> {
+  late final ProductDetailViewModel _vm;
+
+  @override
+  void initState() {
+    super.initState();
+    _vm = ProductDetailViewModel(widget.repository, widget.productId)
+      ..loadProduct();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: TopAppBar(
-        title: 'Детали товара',
-        onBackPressed: () {},
-        onCartPressed: () {},
+    return ChangeNotifierProvider.value(
+      value: _vm,
+      child: Consumer<ProductDetailViewModel>(
+        builder: (context, vm, child) {
+          if (vm.isLoading && vm.product == null) {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          }
+
+          if (vm.error != null) {
+            return Scaffold(body: Center(child: Text(vm.error!)));
+          }
+
+          return Scaffold(
+            appBar: TopAppBar(
+              title: 'Детали товара',
+              onBackPressed: () => Navigator.pop(context),
+              onCartPressed: () {},
+            ),
+            body: SingleChildScrollView(
+              child: Column(
+                children: [
+                  _buildProductImage(context),
+                  _buildProductInfo(vm),
+                  _buildReviewsSection(context, vm),
+                  _buildReviewsList(vm),
+                  _buildCartButton(vm),
+                ],
+              ),
+            ),
+            bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
+          );
+        },
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            _buildProductImage(context),
-            _buildProductInfo(),
-            _buildReviewsSection(context),
-            _buildReviewsList(),
-            _buildCartButton(),
-          ],
-        ),
-      ),
-      bottomNavigationBar: AppBottomNavBar(currentIndex: _currentNavIndex),
     );
   }
 
   Widget _buildProductImage(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
-
     return SizedBox(
-      width: screenWidth,
-      height: screenWidth,
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.width,
       child: Image.asset(
         headphonesImage,
         fit: BoxFit.cover,
@@ -62,7 +94,7 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildProductInfo() {
+  Widget _buildProductInfo(ProductDetailViewModel vm) {
     return Column(
       children: [
         Padding(
@@ -73,22 +105,15 @@ class ProductDetailScreen extends StatelessWidget {
             bottom: 8,
           ),
           child: Text(
-            productTitle,
+            vm.product?.name ?? 'Название товара',
             style: AppTextStyles.titleProductLarge,
-            textAlign: TextAlign.left,
           ),
         ),
         Padding(
-          padding: const EdgeInsets.only(
-            left: 16,
-            top: 12,
-            right: 16,
-            bottom: 12,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Text(
-            productSubtitle,
+            vm.product?.description ?? 'Описание товара',
             style: AppTextStyles.subtitleProductMedium,
-            textAlign: TextAlign.left,
           ),
         ),
         Padding(
@@ -96,7 +121,7 @@ class ProductDetailScreen extends StatelessWidget {
           child: Align(
             alignment: Alignment.centerRight,
             child: PriceWidget(
-              amount: productPrice,
+              amount: vm.product?.price ?? 0,
               style: AppTextStyles.productPrice,
             ),
           ),
@@ -105,7 +130,7 @@ class ProductDetailScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildReviewsSection(BuildContext context) {
+  Widget _buildReviewsSection(BuildContext context, ProductDetailViewModel vm) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
@@ -116,58 +141,29 @@ class ProductDetailScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               OutlinedButton(
-                onPressed: () => _showAddReviewDialog(context),
-                style: ButtonStyle(
-                  padding: WidgetStateProperty.all(
-                    const EdgeInsets.symmetric(horizontal: 8),
-                  ),
-                  minimumSize: WidgetStateProperty.all(const Size(123, 21)),
-                  side: WidgetStateProperty.all(const BorderSide(width: 1)),
-                  shape: WidgetStateProperty.all(
-                    RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  backgroundColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.hovered)) {
-                      return Color.fromRGBO(158, 158, 158, 0.1);
-                    }
-                    if (states.contains(WidgetState.pressed)) {
-                      return Color.fromRGBO(158, 158, 158, 0.2);
-                    }
-                    return Colors.transparent;
-                  }),
-                  foregroundColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.pressed)) {
-                      return AppColors.primaryText;
-                    }
-                    return AppColors.primaryText;
-                  }),
-                  overlayColor: WidgetStateProperty.resolveWith((states) {
-                    if (states.contains(WidgetState.hovered)) {
-                      return Color.fromRGBO(158, 158, 158, 0.5);
-                    }
-                    return null;
-                  }),
-                ),
+                onPressed: () => _showAddReviewDialog(context, vm),
+                style: _outlinedButtonStyle(),
                 child: Text(
                   'Оставить отзыв',
                   style: AppTextStyles.reviewButtonText,
                 ),
               ),
-
               InkWell(
                 onTap: () => Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const ProductReviewsScreen(),
+                    builder: (context) => ProductReviewsScreen(
+                      productId: widget.productId,
+                      repository: widget.repository,
+                      skipReviews: vm.reviews.length,
+                    ),
                   ),
                 ),
                 borderRadius: BorderRadius.circular(8),
-                hoverColor: Color.fromRGBO(158, 158, 158, 0.1),
-                splashColor: Color.fromRGBO(158, 158, 158, 0.2),
+                hoverColor: const Color.fromRGBO(158, 158, 158, 0.1),
+                splashColor: const Color.fromRGBO(158, 158, 158, 0.2),
                 child: Padding(
-                  padding: const EdgeInsets.only(right: 8, left: 8),
+                  padding: const EdgeInsets.symmetric(horizontal: 8),
                   child: Text(
                     'Все отзывы',
                     style: AppTextStyles.reviewLinkText,
@@ -176,88 +172,77 @@ class ProductDetailScreen extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 16),
         ],
       ),
     );
   }
 
-  Widget _buildCartButton() {
-    return Padding(
-      padding: const EdgeInsets.only(top: 12, bottom: 12, right: 16, left: 16),
-      child: SubmitButton(text: 'Добавить в корзину', onPressed: () {}),
+  ButtonStyle _outlinedButtonStyle() {
+    return ButtonStyle(
+      padding: WidgetStateProperty.all(
+        const EdgeInsets.symmetric(horizontal: 8),
+      ),
+      minimumSize: WidgetStateProperty.all(const Size(123, 21)),
+      side: WidgetStateProperty.all(const BorderSide(width: 1)),
+      shape: WidgetStateProperty.all(
+        RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      ),
+      backgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.hovered))
+          return const Color.fromRGBO(158, 158, 158, 0.1);
+        if (states.contains(WidgetState.pressed))
+          return const Color.fromRGBO(158, 158, 158, 0.2);
+        return Colors.transparent;
+      }),
+      overlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.hovered))
+          return const Color.fromRGBO(158, 158, 158, 0.5);
+        return null;
+      }),
     );
   }
 
-  Widget _buildReviewsList() {
-    final reviews = [
-      ReviewItem(
-        userName: 'Sophia',
-        reviewDate: DateTime.now().subtract(const Duration(days: 60)),
-        rating: 5,
-        reviewText: 'Great product, exactly as described!',
-        userImage: avatarOneImage,
-      ),
-      ReviewItem(
-        userName: 'Ethan',
-        reviewDate: DateTime.now().subtract(const Duration(days: 90)),
-        rating: 4,
-        reviewText: 'Good quality, but could be better.',
-        userImage: avatarTwoImage,
-      ),
-    ];
-
-    ValueNotifier<int> currentIndex = ValueNotifier<int>(0);
-
+  Widget _buildReviewsList(ProductDetailViewModel vm) {
     return Column(
       children: [
         CarouselSlider(
           options: CarouselOptions(
             height: 137,
             viewportFraction: 0.7,
+            initialPage: 0,
             enableInfiniteScroll: true,
+            reverse: false,
             autoPlay: false,
             enlargeCenterPage: true,
-            scrollDirection: Axis.horizontal,
             padEnds: false,
-            onPageChanged: (index, reason) {
-              currentIndex.value = index;
-            },
+            disableCenter: true,
+            pageSnapping: true,
           ),
-          items: reviews.map((review) => review).toList(),
+          items: vm.reviews
+              .map((review) => ReviewItem(review: review))
+              .toList(),
         ),
         const SizedBox(height: 8),
-
-        ValueListenableBuilder<int>(
-          valueListenable: currentIndex,
-          builder: (context, index, _) {
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: reviews.asMap().entries.map((entry) {
-                return Container(
-                  width: 8.0,
-                  height: 8.0,
-                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: entry.key == index
-                        ? AppColors.primaryText
-                        : Color.fromRGBO(158, 158, 158, 0.4),
-                  ),
-                );
-              }).toList(),
-            );
-          },
-        ),
       ],
     );
   }
 
-  void _showAddReviewDialog(BuildContext context) {
+  Widget _buildCartButton(ProductDetailViewModel vm) {
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: SubmitButton(text: 'Добавить в корзину', onPressed: vm.addToCart),
+    );
+  }
+
+  void _showAddReviewDialog(BuildContext context, ProductDetailViewModel vm) {
     showDialog(
       context: context,
-      builder: (context) => AddReviewDialog(productName: productTitle),
+      builder: (context) => AddReviewDialog(
+        productId: widget.productId,
+        repository: widget.repository,
+        productName: vm.product?.name ?? 'Товар',
+      ),
     );
   }
 }
