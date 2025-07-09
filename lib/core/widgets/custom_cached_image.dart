@@ -34,7 +34,7 @@ class CustomCachedImage extends StatelessWidget {
             child: SizedBox(
               width: (width ?? 50) / 2,
               height: (height ?? 50) / 2,
-              child: loadingIndicator(),
+              child: AppLoadingIndicator(),
             ),
           ),
       errorWidget: (context, url, error) =>

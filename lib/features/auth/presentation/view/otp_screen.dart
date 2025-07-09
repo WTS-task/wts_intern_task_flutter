@@ -1,26 +1,35 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter/services.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
+import 'package:provider/provider.dart';
+import 'package:wts_task/app/routes.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
-import 'package:flutter/services.dart';
-import 'dart:async';
-import 'package:wts_task/core/services/auth_service.dart';
+import 'package:wts_task/core/constants/assets_catalog.dart';
+import 'package:wts_task/core/page/base_form_page_state.dart';
+import 'package:wts_task/core/page/base_page.dart';
+import 'package:wts_task/features/auth/presentation/models/otp_auth_model.dart';
 
-class OtpScreen extends StatefulWidget {
-  final String phoneNumber;
-
+class OtpScreen extends BasePage {
   const OtpScreen({
-    super.key,
     required this.phoneNumber,
+    super.key,
+    super.title = 'Подтверждение',
   });
+
+  final String phoneNumber;
 
   @override
   State<OtpScreen> createState() => _OtpScreenState();
 }
 
-class _OtpScreenState extends State<OtpScreen> {
-  final TextEditingController _otpController = TextEditingController();
+class _OtpScreenState extends BaseFormPageState<OtpScreen, OtpAuthModel> {
+  @override
+  OtpAuthModel createModel() =>
+      OtpAuthModel(phone: widget.phoneNumber, appUser: context.read());
+
   bool _isResendEnabled = false;
   int _resendTimer = 30;
   late Timer _timer;
@@ -52,129 +61,96 @@ class _OtpScreenState extends State<OtpScreen> {
     });
   }
 
-  void _handleContinue() {
-    if (_otpController.text.length == 4) {
-      authService.login();
-      context.go('/catalog');
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-            'Введите полный код',
+  @override
+  Widget buildForm(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(24.0),
+      child: Column(
+        children: [
+          Image.asset(AssetsCatalog.logo, fit: BoxFit.contain),
+          const SizedBox(height: 15),
+          Text('Введите код', style: AppTextStyles.bodyLarge),
+          const SizedBox(height: 16),
+          Text(
+            'Мы отправили код подтверждения на номер\n${PhoneNumberFormatter.format(widget.phoneNumber)}',
             style: AppTextStyles.bodyMedium.copyWith(
-              color: AppColors.onBackgroundText,
+              color: AppColors.secondaryText,
             ),
             textAlign: TextAlign.center,
           ),
-          backgroundColor: AppColors.error,
-        ),
-      );
+          const SizedBox(height: 32),
+          OtpPinField(
+            controller: vm.otpController,
+            onCompleted: (_) => submit(),
+            validator: vm.validateCode,
+          ),
+          const SizedBox(height: 24),
+          Center(
+            child: ResendCodeButton(
+              isResendEnabled: _isResendEnabled,
+              resendTimer: _resendTimer,
+              onResendPressed: _startResendTimer,
+            ),
+          ),
+
+          const Spacer(),
+          ContinueButton(onPressed: submit),
+        ],
+      ),
+    );
+  }
+
+  void submit() {
+    setState(() {
+      autovalidateMode = AutovalidateMode.always;
+    });
+    trySubmitForm(context);
+  }
+
+  @override
+  Future<void> submitForm() async {
+    final result = await vm.authByPhone();
+    if (result) {
+      await context.clearStackAndNavigate('/catalog');
     }
   }
 
   @override
   void dispose() {
-    _otpController.dispose();
     _timer.cancel();
     super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.background,
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        title: Text(
-          'Подтверждение',
-          style: AppTextStyles.appBarText,
-        ),
-        centerTitle: true,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => context.go('/auth/phone'),
-        ),
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/the_shop_creative.jpg',
-              fit: BoxFit.contain,
-            ),
-            const SizedBox(height: 15),
-            Text(
-              'Введите код',
-              style: AppTextStyles.bodyLarge,
-            ),
-            const SizedBox(height: 16),
-            Text(
-              'Мы отправили код подтверждения на номер\n${PhoneNumberFormatter.format(widget.phoneNumber)}',
-              style: AppTextStyles.bodyMedium.copyWith(
-                color: AppColors.secondaryText,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const SizedBox(height: 32),
-
-            OtpPinField(controller: _otpController),
-            const SizedBox(height: 24),
-
-            Center(
-              child: ResendCodeButton(
-                isResendEnabled: _isResendEnabled,
-                resendTimer: _resendTimer,
-                onResendPressed: _startResendTimer,
-              ),
-            ),
-
-            const Spacer(),
-
-            ContinueButton(
-              otpCode: _otpController.text,
-              onPressed: _handleContinue,
-            ),
-          ],
-        ),
-      ),
-    );
   }
 }
 
 class ResendCodeButton extends StatelessWidget {
-  final bool isResendEnabled;
-  final int resendTimer;
-  final VoidCallback onResendPressed;
-
   const ResendCodeButton({
-    super.key,
     required this.isResendEnabled,
     required this.resendTimer,
     required this.onResendPressed,
+    super.key,
   });
+
+  final bool isResendEnabled;
+  final int resendTimer;
+  final VoidCallback onResendPressed;
 
   @override
   Widget build(BuildContext context) {
     return isResendEnabled
         ? TextButton(
-      onPressed: onResendPressed,
-      style: TextButton.styleFrom(
-        tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-        backgroundColor: AppColors.buttonBgSecondary,
-      ),
-      child: Text(
-        'Повторно отправить код',
-        style: AppTextStyles.button,
-      ),
-    )
+            onPressed: onResendPressed,
+            style: TextButton.styleFrom(
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              backgroundColor: AppColors.buttonBgSecondary,
+            ),
+            child: Text('Повторно отправить код', style: AppTextStyles.button),
+          )
         : Text(
-      'Повторно отправить код через $resendTimer сек',
-      style: AppTextStyles.bodySmall.copyWith(
-        color: AppColors.secondaryText,
-      ),
-    );
+            'Повторно отправить код через $resendTimer сек',
+            style: AppTextStyles.bodySmall.copyWith(
+              color: AppColors.secondaryText,
+            ),
+          );
   }
 }
 
@@ -188,54 +164,60 @@ class PhoneNumberFormatter {
 }
 
 class OtpPinField extends StatelessWidget {
-  final TextEditingController controller;
-  final ValueChanged<String>? onChanged;
-
   const OtpPinField({
-    super.key,
     required this.controller,
-    this.onChanged,
+    super.key,
+    this.validator,
+    this.onCompleted,
   });
+
+  final TextEditingController controller;
+
+  final ValueChanged<String>? onCompleted;
+  final FormFieldValidator<String>? validator;
 
   @override
   Widget build(BuildContext context) {
-    return PinCodeTextField(
-      appContext: context,
-      length: 4,
-      controller: controller,
-      keyboardType: TextInputType.number,
-      textStyle: AppTextStyles.bodyLarge,
-      pinTheme: PinTheme(
-        shape: PinCodeFieldShape.box,
-        borderRadius: BorderRadius.circular(8),
-        fieldHeight: 56,
-        fieldWidth: 48,
-        activeFillColor: AppColors.backgroundSecondary,
-        activeColor: AppColors.primaryText,
-        selectedColor: AppColors.primaryText,
-        inactiveColor: AppColors.dividerBorder,
-        selectedFillColor: AppColors.backgroundSecondary,
-        inactiveFillColor: AppColors.backgroundSecondary,
+    return SizedBox(
+      width: 231,
+      child: PinCodeTextField(
+        appContext: context,
+        length: 4,
+        autoFocus: true,
+        controller: controller,
+        keyboardType: TextInputType.number,
+        textStyle: AppTextStyles.bodyLarge,
+        validator: validator,
+        errorTextMargin: EdgeInsets.only(left: 231 / 4),
+        errorTextSpace: 25,
+        separatorBuilder: (context, index) => SizedBox(width: 13),
+        pinTheme: PinTheme(
+          shape: PinCodeFieldShape.box,
+          borderRadius: BorderRadius.circular(8),
+          fieldHeight: 56,
+          fieldWidth: 48,
+          activeFillColor: AppColors.backgroundSecondary,
+          activeColor: AppColors.primaryText,
+          selectedColor: AppColors.primaryText,
+          inactiveColor: AppColors.dividerBorder,
+          selectedFillColor: AppColors.backgroundSecondary,
+          inactiveFillColor: AppColors.backgroundSecondary,
+        ),
+        animationDuration: Duration.zero,
+        enableActiveFill: true,
+        animationType: AnimationType.none,
+        cursorColor: AppColors.primaryText,
+        onCompleted: onCompleted,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
       ),
-      animationDuration: const Duration(milliseconds: 0),
-      enableActiveFill: true,
-      animationType: AnimationType.none,
-      cursorColor: AppColors.primaryText,
-      inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-      onChanged: onChanged ?? (value) {},
     );
   }
 }
 
 class ContinueButton extends StatelessWidget {
-  final String otpCode;
-  final VoidCallback onPressed;
+  const ContinueButton({required this.onPressed, super.key});
 
-  const ContinueButton({
-    super.key,
-    required this.otpCode,
-    required this.onPressed,
-  });
+  final VoidCallback onPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -246,14 +228,9 @@ class ContinueButton extends StatelessWidget {
         style: ElevatedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
           backgroundColor: AppColors.buttonBgPrimary,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: Text(
-          'Продолжить',
-          style: AppTextStyles.button,
-        ),
+        child: Text('Продолжить', style: AppTextStyles.button),
       ),
     );
   }
