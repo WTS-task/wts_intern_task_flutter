@@ -46,7 +46,7 @@ class OrderHistoryView extends StatelessWidget {
         child: Builder(
           builder: (_) {
             if (vm.isLoading) {
-              return loadingIndicator();
+              return AppLoadingIndicator();
             }
             if (vm.error != null) {
               return Center(

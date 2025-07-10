@@ -10,9 +10,10 @@ _CartProductModel _$CartProductModelFromJson(Map<String, dynamic> json) =>
     _CartProductModel(
       count: (json['count'] as num).toInt(),
       isSelected: json['isSelected'] as bool,
-      product: json['product'] == null
-          ? null
-          : ProductModel.fromJson(json['product'] as Map<String, dynamic>),
+      product:
+          json['product'] == null
+              ? null
+              : ProductModel.fromJson(json['product'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CartProductModelToJson(_CartProductModel instance) =>
