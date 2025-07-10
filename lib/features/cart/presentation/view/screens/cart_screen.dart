@@ -1,53 +1,79 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:wts_task/core/constants/app_colors.dart';
-import 'package:wts_task/core/widgets/loading_indicator.dart';
-import 'package:wts_task/features/cart/presentation/view/widgets/cart_appbar.dart';
-import 'package:wts_task/features/cart/presentation/view/widgets/cart_body_loaded.dart';
+import 'package:wts_task/core/model/base_model.dart';
+import 'package:wts_task/core/page/base_page.dart';
+import 'package:wts_task/core/widgets/show_toast.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
-import 'package:wts_task/features/cart/presentation/view_models/cart_view_model_state.dart';
+import 'package:wts_task/features/cart/presentation/view/widgets/cart_appbar.dart';
+import 'package:wts_task/core/constants/app_colors.dart';
+import 'package:wts_task/features/cart/presentation/view/widgets/cart_body_loaded.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class CartScreen extends BasePage {
+  const CartScreen({super.key}) : super(title: 'Корзина');
 
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState extends BasePageState<CartScreen>
+    implements IBaseModelListener {
+  late final CartViewModel vm;
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CartViewModel>().getCartProducts();
-    });
+    vm = CartViewModel()
+      ..addModelListener(this)
+      ..getCartProducts();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final vm = context.watch<CartViewModel>();
-    final state = vm.state;
+  void dispose() {
+    vm
+      ..removeModelListener(this)
+      ..dispose();
+    super.dispose();
+  }
 
-    Widget body;
-    switch (state.loadState) {
-      case LoadState.loading:
-        body = AppLoadingIndicator();
-        break;
-      case LoadState.empty:
-        body = CartEmpty();
-        break;
-      case LoadState.error:
-        body = CartError(message: state.errorMessage);
-        break;
-      case LoadState.loaded:
-        body = state.products.isEmpty ? CartEmpty() : CartBodyLoaded(vm: vm);
-        break;
+  @override
+  void onModelUpdated() {
+    if (vm.isLoading) {
+      showLoadingIndicator();
+    } else {
+      hideLoadingIndicator();
+    }
+    setState(() {});
+  }
+
+  @override
+  void onModelError(String error) {
+    hideLoadingIndicator();
+    showToast(message: error);
+  }
+
+  @override
+  void onModelMessage(String message) {
+    hideLoadingIndicator();
+    showToast(message: message);
+  }
+
+  @override
+  Widget buildBody(BuildContext context) {
+    if (vm.isLoading) {
+      showLoadingIndicator();
+      return SizedBox.shrink();
     }
 
-    return Scaffold(
-      appBar: cartAppbar(context),
-      body: body,
-    );
+    if (vm.hasError) {
+      return CartError(message: vm.lastError);
+    }
+    if (vm.products.isEmpty) {
+      return CartEmpty();
+    }
+    return CartBodyLoaded(vm: vm);
+  }
+
+  @override
+  PreferredSizeWidget? buildAppBar(BuildContext context) {
+    return cartAppbar(vm: vm, context: context);
   }
 }
 
@@ -79,4 +105,3 @@ class CartError extends StatelessWidget {
     );
   }
 }
-

@@ -11,7 +11,7 @@ class CartBodyLoaded extends StatelessWidget {
   final CartViewModel vm;
   @override
   Widget build(BuildContext context) {
-    final products = vm.state.products;
+    final products = vm.products;
     return Padding(
       padding: const EdgeInsets.all(12.0),
       child: CustomScrollView(
@@ -20,7 +20,11 @@ class CartBodyLoaded extends StatelessWidget {
             delegate: SliverChildBuilderDelegate(
               (context, index) => Padding(
                 padding: const EdgeInsets.only(bottom: 10),
-                child: CartItemWidget(product: products[index], index: index),
+                child: CartItemWidget(
+                  vm: vm,
+                  product: products[index],
+                  index: index,
+                ),
               ),
               childCount: products.length,
             ),
@@ -29,7 +33,7 @@ class CartBodyLoaded extends StatelessWidget {
             child: Column(
               children: [
                 SizedBox(height: 10),
-                TotalPriceWidget(),
+                TotalPriceWidget(vm: vm),
                 SizedBox(height: 25),
                 CustomButton(
                   title: 'Оформить заказ',

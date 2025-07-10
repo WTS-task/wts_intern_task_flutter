@@ -1,81 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
+import 'package:wts_task/core/model/base_model.dart';
+import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
+import 'package:wts_task/core/widgets/show_toast.dart';
 import 'package:wts_task/features/profile/presentation/view_models/order_history_view_model.dart';
 import 'package:wts_task/features/profile/utils/datetime_to_string.dart';
 import 'package:wts_task/features/profile/utils/order_status_to_string.dart';
+import 'package:wts_task/core/widgets/loading_indicator.dart';
+import 'package:wts_task/features/profile/data/models/order_detail.dart';
+import 'package:wts_task/features/profile/data/models/shop_order_item.dart';
 
-import '../../../../../app/bottom_nav_bar.dart';
-import '../../../../../core/widgets/loading_indicator.dart';
-import '../../../data/models/order_detail.dart';
-import '../../../data/models/shop_order_item.dart';
-
-class OrderHistoryScreen extends StatelessWidget {
+class OrderHistoryScreen extends BasePage {
   const OrderHistoryScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) {
-        final vm = OrderHistoryViewModel();
-        vm.loadOrders();
-        return vm;
-      },
-      child: OrderHistoryView(),
-    );
-  }
+  State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
 }
 
-class OrderHistoryView extends StatelessWidget {
-  const OrderHistoryView({super.key});
+class _OrderHistoryScreenState extends BasePageState<OrderHistoryScreen>
+    implements IBaseModelListener {
+  late final OrderHistoryViewModel vm;
 
   @override
-  Widget build(BuildContext context) {
-    final vm = context.watch<OrderHistoryViewModel>();
+  void initState() {
+    super.initState();
+    vm = OrderHistoryViewModel()
+      ..addModelListener(this)
+      ..loadOrders();
+  }
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Заказы', style: AppTextStyles.appBarText),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Builder(
-          builder: (_) {
-            if (vm.isLoading) {
-              return AppLoadingIndicator();
-            }
-            if (vm.error != null) {
-              return Center(
-                child: Text(
-                  vm.error!,
-                  style: TextStyle(color: AppColors.error),
-                ),
-              );
-            }
-            if (vm.orders.isEmpty) {
-              return const Center(child: Text('Нет заказов', style: AppTextStyles.bodyMedium,));
-            }
-            return ListView.builder(
-              itemCount: vm.orders.length,
-              itemBuilder: (context, index) {
-                final orderDetail = vm.orders[index];
-                return OrderDetailWidget(orderDetail: orderDetail);
-              },
-            );
-          },
-        ),
+  @override
+  void dispose() {
+    vm
+      ..removeModelListener(this)
+      ..dispose();
+    super.dispose();
+  }
+
+  @override
+  void onModelUpdated() {
+    if (vm.isLoading) {
+      showLoadingIndicator();
+    } else {
+      hideLoadingIndicator();
+    }
+    setState(() {});
+  }
+
+  @override
+  void onModelError(String error) {
+    hideLoadingIndicator();
+    showToast(message: error);
+  }
+
+  @override
+  void onModelMessage(String message) {
+    hideLoadingIndicator();
+    showToast(message: message);
+  }
+
+  @override
+  PreferredSizeWidget? buildAppBar(BuildContext context) {
+    return AppBar(
+      title: const Text('Заказы', style: AppTextStyles.appBarText),
+      centerTitle: true,
+    );
+  }
+
+  @override
+  Widget buildBody(BuildContext context) {
+    if (vm.isLoading) {
+      return AppLoadingIndicator();
+    }
+    if (vm.hasError) {
+      return Center(
+        child: Text(vm.lastError!, style: TextStyle(color: AppColors.error)),
+      );
+    }
+    if (vm.orders.isEmpty) {
+      return const Center(
+        child: Text('Нет заказов', style: AppTextStyles.bodyMedium),
+      );
+    }
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: ListView.builder(
+        itemCount: vm.orders.length,
+        itemBuilder: (context, index) {
+          final orderDetail = vm.orders[index];
+          return OrderDetailWidget(orderDetail: orderDetail);
+        },
       ),
     );
   }
 }
 
 class OrdersListWidget extends StatelessWidget {
+  const OrdersListWidget({required this.vm, super.key});
   final OrderHistoryViewModel vm;
-  const OrdersListWidget({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +116,8 @@ class OrdersListWidget extends StatelessWidget {
 }
 
 class OrderDetailWidget extends StatelessWidget {
+  const OrderDetailWidget({required this.orderDetail, super.key});
   final OrderDetail orderDetail;
-  const OrderDetailWidget({super.key, required this.orderDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -102,10 +127,9 @@ class OrderDetailWidget extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            context.pushNamed(
-              'order_detail',
-              pathParameters: {'id': order.shopOrderId.toString()},
-            );
+            final id = orderDetail.shopOrder?.shopOrderId.toString() ?? '-1';
+            // context.push('/profile/orders/${id}');
+            context.pushNamed('order_detail', pathParameters: {'id': id});
           },
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -139,8 +163,8 @@ class OrderDetailWidget extends StatelessWidget {
 }
 
 class OrderItemsGrid extends StatelessWidget {
+  const OrderItemsGrid({required this.items, super.key});
   final List<ShopOrderItem> items;
-  const OrderItemsGrid({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +175,6 @@ class OrderItemsGrid extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: 0,
             crossAxisSpacing: 8,
             childAspectRatio: 0.8,
           ),
@@ -161,15 +184,15 @@ class OrderItemsGrid extends StatelessWidget {
           },
           itemCount: items.length,
         ),
-        SizedBox(height: 10),
+        SizedBox(height: 12),
       ],
     );
   }
 }
 
 class ProductCard extends StatelessWidget {
+  const ProductCard({required this.product, super.key});
   final ShopOrderItem product;
-  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {

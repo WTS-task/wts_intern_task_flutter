@@ -5,7 +5,6 @@ import 'package:provider/provider.dart';
 import 'package:wts_task/app/bottom_nav_bar.dart';
 import 'package:wts_task/core/model/app_user.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
-import 'package:wts_task/features/auth/data/repositories/auth_repository.dart';
 import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
@@ -19,8 +18,7 @@ import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dar
 import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_detail_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_history_screen.dart';
-
-import '../features/profile/presentation/view/screens/profile_screen.dart';
+import 'package:wts_task/features/profile/presentation/view/screens/profile_screen.dart';
 
 extension GoRouterExtension on BuildContext {
   Future<void> clearStackAndNavigate(String location) async {
@@ -128,7 +126,10 @@ class AppRouter {
                       GoRoute(
                         path: ':id',
                         name: 'order_detail',
-                        builder: (context, state) => OrderDetailScreen(),
+                        builder: (context, state) {
+                          final id = state.pathParameters['id'] ?? '-1';
+                          return OrderDetailScreen(orderId: id);
+                        },
                       ),
                     ],
                   ),

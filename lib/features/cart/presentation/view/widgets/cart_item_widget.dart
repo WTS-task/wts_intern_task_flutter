@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
@@ -9,13 +8,13 @@ import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.
 import 'package:wts_task/features/cart/presentation/view/widgets/product_count_widget.dart';
 
 class CartItemWidget extends StatelessWidget {
-  const CartItemWidget({required this.product, required this.index, super.key});
+  const CartItemWidget({required this.vm, required this.product, required this.index, super.key});
+  final CartViewModel vm;
   final CartProductModel product;
   final int index;
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<CartViewModel>();
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: ValueKey(product.product?.productId),
