@@ -1,9 +1,8 @@
 import 'package:flutter/cupertino.dart';
-import 'package:go_router/go_router.dart';
-import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
-import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
 import 'package:wts_task/core/exceptions/app_exception.dart';
 import 'package:wts_task/features/cart/data/fake_cart_items.dart';
+import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
+import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model_state.dart';
 
 class CartViewModel extends ChangeNotifier {

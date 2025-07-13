@@ -1,8 +1,8 @@
 abstract class AppException implements Exception {
-  final String errorMessage;
   AppException({this.errorMessage = 'Неизвестная ошибка!'});
+
+  final String errorMessage;
 
   @override
   String toString() => errorMessage;
 }
-

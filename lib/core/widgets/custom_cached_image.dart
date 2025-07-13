@@ -29,16 +29,16 @@ class CustomCachedImage extends StatelessWidget {
       height: height,
       fit: fit,
       placeholder: (context, url) =>
-          placeholder ??
+      placeholder ??
           Center(
             child: SizedBox(
               width: (width ?? 50) / 2,
               height: (height ?? 50) / 2,
-              child: loadingIndicator(),
+              child: AppLoadingIndicator(),
             ),
           ),
       errorWidget: (context, url, error) =>
-          errorWidget ??
+      errorWidget ??
           Center(
             child: Icon(
               Icons.broken_image,

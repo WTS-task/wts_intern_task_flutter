@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
-import 'package:wts_task/features/cart/presentation/view_models/cart_view_model_state.dart';
-import 'package:wts_task/features/cart/presentation/view/widgets/cart_appbar.dart';
 import 'package:provider/provider.dart';
-import 'package:wts_task/app/bottom_nav_bar.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/widgets/loading_indicator.dart';
+import 'package:wts_task/features/cart/presentation/view/widgets/cart_appbar.dart';
 import 'package:wts_task/features/cart/presentation/view/widgets/cart_body_loaded.dart';
+import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
+import 'package:wts_task/features/cart/presentation/view_models/cart_view_model_state.dart';
 
 class CartScreen extends StatefulWidget {
   const CartScreen({super.key});
@@ -32,7 +31,7 @@ class _CartScreenState extends State<CartScreen> {
     Widget body;
     switch (state.loadState) {
       case LoadState.loading:
-        body = loadingIndicator();
+        body = AppLoadingIndicator();
         break;
       case LoadState.empty:
         body = CartEmpty();

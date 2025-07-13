@@ -1,6 +1,6 @@
-import 'models/order_detail.dart';
-import 'models/shop_order.dart';
-import 'models/shop_order_item.dart';
+import 'package:wts_task/features/profile/data/models/order_detail.dart';
+import 'package:wts_task/features/profile/data/models/shop_order.dart';
+import 'package:wts_task/features/profile/data/models/shop_order_item.dart';
 
 final fakeOrders = [
   OrderDetail(
@@ -17,7 +17,8 @@ final fakeOrders = [
       shopOrderItems: [
         ShopOrderItem(
           productId: 101,
-          name: "Наушники Bluetooth asdsdadsdsasdadadasdadsadsadsasdasdadadsadsasdads",
+          name:
+              "Наушники Bluetooth asdsdadsdsasdadadasdadsadsadsasdasdadadsadsasdads",
           productDescription: "Беспроводные наушники с шумоподавлением",
           imageUrl: "https://s.a-5.ru/i/file/161/7/0d/ce/0dce0e51f77de7bc.jpg",
           price: 100,
@@ -27,7 +28,8 @@ final fakeOrders = [
           productId: 102,
           name: "Чехол для телефона",
           productDescription: "Силиконовый чехол для iPhone",
-          imageUrl: "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
+          imageUrl:
+              "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
           price: 1500,
           count: 1,
         ),
@@ -41,7 +43,6 @@ final fakeOrders = [
       status: 0,
       address: "Frankfurt am Main, Zeil 106",
       phoneNumber: "+49 987 6543210",
-      comment: null,
       totalPrice: 12000,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
@@ -50,7 +51,8 @@ final fakeOrders = [
           productId: 201,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",
-          imageUrl: "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
+          imageUrl:
+              "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
           price: 12000,
           count: 1,
         ),
@@ -58,7 +60,8 @@ final fakeOrders = [
           productId: 211,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",
-          imageUrl: "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
+          imageUrl:
+              "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
           price: 12000,
           count: 1,
         ),
@@ -66,7 +69,8 @@ final fakeOrders = [
           productId: 221,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",
-          imageUrl: "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
+          imageUrl:
+              "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
           price: 12000,
           count: 1,
         ),
@@ -80,7 +84,6 @@ final fakeOrders = [
       status: 0,
       address: "Frankfurt am Main, Zeil 106",
       phoneNumber: "+49 987 6543210",
-      comment: null,
       totalPrice: 12000,
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
@@ -89,7 +92,8 @@ final fakeOrders = [
           productId: 201,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",
-          imageUrl: "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
+          imageUrl:
+              "https://ae01.alicdn.com/kf/Sbe2ec612c79543c6b29e061b456a1d32u.jpg",
           price: 12000,
           count: 1,
         ),

@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 
-import '../constants/app_colors.dart';
-
 class CustomAlertDialog extends StatelessWidget {
+  const CustomAlertDialog({
+    required this.title,
+    required this.content,
+    super.key,
+    this.confirmText = "ОК",
+    this.cancelText = "Отмена",
+    this.onConfirm,
+    this.onCancel,
+  });
+
   final String title;
   final String content;
   final String confirmText;
   final String cancelText;
   final VoidCallback? onConfirm;
   final VoidCallback? onCancel;
-
-  const CustomAlertDialog({
-    super.key,
-    required this.title,
-    required this.content,
-    this.confirmText = "ОК",
-    this.cancelText = "Отмена",
-    this.onConfirm,
-    this.onCancel,
-  });
 
   @override
   Widget build(BuildContext context) {

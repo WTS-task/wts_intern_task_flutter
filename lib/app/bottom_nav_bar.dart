@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class AppBottomNavBar extends StatelessWidget {
-  final StatefulNavigationShell navigationShell;
+  const AppBottomNavBar({required this.navigationShell, super.key});
 
-  const AppBottomNavBar({super.key, required this.navigationShell});
+  final StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
@@ -12,24 +12,17 @@ class AppBottomNavBar extends StatelessWidget {
       body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
-        onTap: (index) =>
-        navigationShell.goBranch(
+        onTap: (index) => navigationShell.goBranch(
           index,
           initialLocation: index == navigationShell.currentIndex,
         ),
         items: const [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.store),
-              label: 'Каталог'
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Каталог'),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Корзина',
           ),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Профиль'
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Профиль'),
         ],
       ),
     );

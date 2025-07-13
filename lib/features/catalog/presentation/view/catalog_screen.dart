@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:wts_task/app/bottom_nav_bar.dart';
 
 class CatalogScreen extends StatefulWidget {
   const CatalogScreen({super.key});

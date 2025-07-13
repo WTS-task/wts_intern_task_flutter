@@ -4,14 +4,12 @@ import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
+import 'package:wts_task/core/widgets/loading_indicator.dart';
+import 'package:wts_task/features/profile/data/models/order_detail.dart';
+import 'package:wts_task/features/profile/data/models/shop_order_item.dart';
 import 'package:wts_task/features/profile/presentation/view_models/order_history_view_model.dart';
 import 'package:wts_task/features/profile/utils/datetime_to_string.dart';
 import 'package:wts_task/features/profile/utils/order_status_to_string.dart';
-
-import '../../../../../app/bottom_nav_bar.dart';
-import '../../../../../core/widgets/loading_indicator.dart';
-import '../../../data/models/order_detail.dart';
-import '../../../data/models/shop_order_item.dart';
 
 class OrderHistoryScreen extends StatelessWidget {
   const OrderHistoryScreen({super.key});
@@ -20,8 +18,7 @@ class OrderHistoryScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (_) {
-        final vm = OrderHistoryViewModel();
-        vm.loadOrders();
+        final vm = OrderHistoryViewModel()..loadOrders();
         return vm;
       },
       child: OrderHistoryView(),
@@ -46,7 +43,7 @@ class OrderHistoryView extends StatelessWidget {
         child: Builder(
           builder: (_) {
             if (vm.isLoading) {
-              return loadingIndicator();
+              return AppLoadingIndicator();
             }
             if (vm.error != null) {
               return Center(
@@ -57,7 +54,9 @@ class OrderHistoryView extends StatelessWidget {
               );
             }
             if (vm.orders.isEmpty) {
-              return const Center(child: Text('Нет заказов', style: AppTextStyles.bodyMedium,));
+              return const Center(
+                child: Text('Нет заказов', style: AppTextStyles.bodyMedium),
+              );
             }
             return ListView.builder(
               itemCount: vm.orders.length,
@@ -74,8 +73,9 @@ class OrderHistoryView extends StatelessWidget {
 }
 
 class OrdersListWidget extends StatelessWidget {
+  const OrdersListWidget({required this.vm, super.key});
+
   final OrderHistoryViewModel vm;
-  const OrdersListWidget({super.key, required this.vm});
 
   @override
   Widget build(BuildContext context) {
@@ -91,8 +91,9 @@ class OrdersListWidget extends StatelessWidget {
 }
 
 class OrderDetailWidget extends StatelessWidget {
+  const OrderDetailWidget({required this.orderDetail, super.key});
+
   final OrderDetail orderDetail;
-  const OrderDetailWidget({super.key, required this.orderDetail});
 
   @override
   Widget build(BuildContext context) {
@@ -139,8 +140,9 @@ class OrderDetailWidget extends StatelessWidget {
 }
 
 class OrderItemsGrid extends StatelessWidget {
+  const OrderItemsGrid({required this.items, super.key});
+
   final List<ShopOrderItem> items;
-  const OrderItemsGrid({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -151,7 +153,6 @@ class OrderItemsGrid extends StatelessWidget {
           physics: const NeverScrollableScrollPhysics(),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
             crossAxisCount: 2,
-            mainAxisSpacing: 0,
             crossAxisSpacing: 8,
             childAspectRatio: 0.8,
           ),
@@ -168,8 +169,9 @@ class OrderItemsGrid extends StatelessWidget {
 }
 
 class ProductCard extends StatelessWidget {
+  const ProductCard({required this.product, super.key});
+
   final ShopOrderItem product;
-  const ProductCard({super.key, required this.product});
 
   @override
   Widget build(BuildContext context) {
