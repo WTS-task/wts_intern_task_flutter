@@ -65,19 +65,19 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: 'category/:categoryId',
-                    builder: (context, state) => ProductListScreen(),
+                    builder: (context, state) => const ProductListScreen(),
                     routes: [
                       GoRoute(
                         path: 'product/:productId',
-                        builder: (context, state) => ProductDetailScreen(),
+                        builder: (context, state) => const ProductDetailScreen(),
                         routes: [
                           GoRoute(
                             path: 'reviews',
-                            builder: (context, state) => ProductReviewsScreen(),
+                            builder: (context, state) => const ProductReviewsScreen(),
                             routes: [
                               GoRoute(
                                 path: 'add',
-                                builder: (context, state) => AddReviewScreen(),
+                                builder: (context, state) => const AddReviewScreen(),
                               ),
                             ],
                           ),
@@ -95,7 +95,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/cart',
-                builder: (context, state) => CartScreen(),
+                builder: (context, state) => const CartScreen(),
                 routes: [
                   GoRoute(
                     path: 'checkout',
@@ -126,7 +126,7 @@ class AppRouter {
                       GoRoute(
                         path: ':id',
                         name: 'order_detail',
-                        builder: (context, state) => OrderDetailScreen(),
+                        builder: (context, state) => const OrderDetailScreen(),
                       ),
                     ],
                   ),

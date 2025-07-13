@@ -5,6 +5,7 @@ class AppColors {
   static const Color buttonBgPrimary = Color(0xFF352828); // Цвет фона кнопок
   static const Color buttonBgSecondary = Color(0xE5A88A8C); // Цвет фона кнопок
   static const Color backgroundSecondary = Color(0xFFF5F2F2); // secondary цвет фона
+  static const Color updatingIndicatorColor = Color(0xFFF5F2F2);
 
   static const Color primaryText = Color(0xFF171212); // Текст primary
   static const Color secondaryText = Color(0xFF8A6163); // Текст secondary

@@ -1,11 +1,12 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
-part 'product_model.freezed.dart';
-part 'product_model.g.dart';
+part 'product.freezed.dart';
+
+part 'product.g.dart';
 
 @freezed
-abstract class ProductModel with _$ProductModel {
-  const factory ProductModel({
+abstract class Product with _$Product {
+  const factory Product({
     int? productId,
     String? name,
     String? productDescription,
@@ -19,8 +20,8 @@ abstract class ProductModel with _$ProductModel {
     int? createdAt,
     int? updatedAt,
     int? isFavorite,
-  }) = _ProductModel;
+  }) = _Product;
 
-  factory ProductModel.fromJson(Map<String, dynamic> json) =>
-      _$ProductModelFromJson(json);
+  factory Product.fromJson(Map<String, dynamic> json) =>
+      _$ProductFromJson(json);
 }
