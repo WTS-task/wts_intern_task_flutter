@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/app/bottom_nav_bar.dart';
-import 'package:wts_task/core/model/app_user.dart';
+import 'package:wts_task/core/models/app_user.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
 import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
@@ -65,19 +65,19 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: 'category/:categoryId',
-                    builder: (context, state) => ProductListScreen(),
+                    builder: (context, state) => const ProductListScreen(),
                     routes: [
                       GoRoute(
                         path: 'product/:productId',
-                        builder: (context, state) => ProductDetailScreen(),
+                        builder: (context, state) => const ProductDetailScreen(),
                         routes: [
                           GoRoute(
                             path: 'reviews',
-                            builder: (context, state) => ProductReviewsScreen(),
+                            builder: (context, state) => const ProductReviewsScreen(),
                             routes: [
                               GoRoute(
                                 path: 'add',
-                                builder: (context, state) => AddReviewScreen(),
+                                builder: (context, state) => const AddReviewScreen(),
                               ),
                             ],
                           ),
@@ -95,7 +95,7 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/cart',
-                builder: (context, state) => CartScreen(),
+                builder: (context, state) => const CartScreen(),
                 routes: [
                   GoRoute(
                     path: 'checkout',

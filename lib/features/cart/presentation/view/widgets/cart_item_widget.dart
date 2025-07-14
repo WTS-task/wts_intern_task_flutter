@@ -18,12 +18,13 @@ class CartItemWidget extends StatelessWidget {
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: ValueKey(product.product?.productId),
-      background: ItemCardDismissBackground(),
+      background: const ItemCardDismissBackground(),
       onDismissed: (direction) {
         vm.removeProductAt(index);
         showToast(message: 'Товар "${product.product?.name}" удалён');
       },
       child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 0.4,
         color: Colors.white,
@@ -34,7 +35,7 @@ class CartItemWidget extends StatelessWidget {
               isSelected: product.isSelected,
               onCheckboxPressed: () => vm.onCheckboxPressed(index),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Expanded(
               child: _CartItemDetails(
                 name: product.product?.name ?? 'empty',
@@ -45,8 +46,8 @@ class CartItemWidget extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: ProductCountWidget(
                 count: product.count,
-                onIncrement: () => vm.onIncrementButtonPressed(index),
-                onDecrement: () => vm.onDecrementButtonPressed(index),
+                onIncrement: () => vm.onChangeCountPressed(index, 1),
+                onDecrement: () => vm.onChangeCountPressed(index, -1),
               ),
             ),
           ],
@@ -124,7 +125,7 @@ class _CartItemDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(name, style: AppTextStyles.bodyMedium, maxLines: 1),
-        SizedBox(height: 3),
+        const SizedBox(height: 3),
         Text(
           '${price.toString()} \$',
           style: AppTextStyles.bodySmall,

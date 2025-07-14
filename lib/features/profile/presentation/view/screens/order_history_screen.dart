@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
-import 'package:wts_task/core/model/base_model.dart';
+import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
-import 'package:wts_task/core/widgets/show_toast.dart';
 import 'package:wts_task/features/profile/presentation/view_models/order_history_view_model.dart';
 import 'package:wts_task/features/profile/utils/datetime_to_string.dart';
 import 'package:wts_task/features/profile/utils/order_status_to_string.dart';
-import 'package:wts_task/core/widgets/loading_indicator.dart';
 import 'package:wts_task/features/profile/data/models/order_detail.dart';
 import 'package:wts_task/features/profile/data/models/shop_order_item.dart';
 
@@ -20,47 +18,10 @@ class OrderHistoryScreen extends BasePage {
   State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
 }
 
-class _OrderHistoryScreenState extends BasePageState<OrderHistoryScreen>
-    implements IBaseModelListener {
-  late final OrderHistoryViewModel vm;
-
+class _OrderHistoryScreenState
+    extends BaseListViewPageState<OrderHistoryScreen, OrderHistoryViewModel> {
   @override
-  void initState() {
-    super.initState();
-    vm = OrderHistoryViewModel()
-      ..addModelListener(this)
-      ..loadOrders();
-  }
-
-  @override
-  void dispose() {
-    vm
-      ..removeModelListener(this)
-      ..dispose();
-    super.dispose();
-  }
-
-  @override
-  void onModelUpdated() {
-    if (vm.isLoading) {
-      showLoadingIndicator();
-    } else {
-      hideLoadingIndicator();
-    }
-    setState(() {});
-  }
-
-  @override
-  void onModelError(String error) {
-    hideLoadingIndicator();
-    showToast(message: error);
-  }
-
-  @override
-  void onModelMessage(String message) {
-    hideLoadingIndicator();
-    showToast(message: message);
-  }
+  OrderHistoryViewModel createModel() => OrderHistoryViewModel();
 
   @override
   PreferredSizeWidget? buildAppBar(BuildContext context) {
@@ -71,47 +32,9 @@ class _OrderHistoryScreenState extends BasePageState<OrderHistoryScreen>
   }
 
   @override
-  Widget buildBody(BuildContext context) {
-    if (vm.isLoading) {
-      return AppLoadingIndicator();
-    }
-    if (vm.hasError) {
-      return Center(
-        child: Text(vm.lastError!, style: TextStyle(color: AppColors.error)),
-      );
-    }
-    if (vm.orders.isEmpty) {
-      return const Center(
-        child: Text('Нет заказов', style: AppTextStyles.bodyMedium),
-      );
-    }
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: ListView.builder(
-        itemCount: vm.orders.length,
-        itemBuilder: (context, index) {
-          final orderDetail = vm.orders[index];
-          return OrderDetailWidget(orderDetail: orderDetail);
-        },
-      ),
-    );
-  }
-}
-
-class OrdersListWidget extends StatelessWidget {
-  const OrdersListWidget({required this.vm, super.key});
-  final OrderHistoryViewModel vm;
-
-  @override
-  Widget build(BuildContext context) {
-    final orders = vm.orders;
-    return ListView.builder(
-      itemCount: orders.length,
-      itemBuilder: (context, index) {
-        final orderDetail = orders[index];
-        return OrderDetailWidget(orderDetail: orderDetail);
-      },
-    );
+  Widget buildListItemImpl(BuildContext context, int index) {
+    final orderDetail = model.items[index];
+    return OrderDetailWidget(orderDetail: orderDetail);
   }
 }
 
@@ -123,41 +46,45 @@ class OrderDetailWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final order = orderDetail.shopOrder!;
     final orderItemCount = order.shopOrderItems?.length ?? 0;
-    return Column(
-      children: [
-        InkWell(
-          onTap: () {
-            final id = orderDetail.shopOrder?.shopOrderId.toString() ?? '-1';
-            // context.push('/profile/orders/${id}');
-            context.pushNamed('order_detail', pathParameters: {'id': id});
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Заказ #${order.shopOrderId}',
-                    style: AppTextStyles.bodyMedium,
-                  ),
-                  InkWell(child: const Icon(Icons.arrow_forward, size: 24)),
-                ],
-              ),
-              Text(
-                '${orderItemCount.toString()} ${orderItemCount > 1 ? 'items' : 'item'}',
-                style: AppTextStyles.bodySmall,
-              ),
-              Text(
-                '${datetimeToString(order.createdAt!)} · ${orderStatusToString(order.status!)}',
-                style: AppTextStyles.bodySmall,
-              ),
-            ],
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
+      child: Column(
+        children: [
+          InkWell(
+            onTap: () {
+              final id = orderDetail.shopOrder?.shopOrderId.toString();
+              // context.push('/profile/orders/${id}');
+              context.pushNamed('order_detail', pathParameters: {'id': id!});
+            },
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Заказ #${order.shopOrderId}',
+                      style: AppTextStyles.bodyMedium,
+                    ),
+                    const InkWell(child: Icon(Icons.arrow_forward, size: 24)),
+                  ],
+                ),
+                Text(
+                  '${orderItemCount.toString()} ${orderItemCount > 1 ? 'items' : 'item'}',
+                  style: AppTextStyles.bodySmall,
+                ),
+                Text(
+                  '${datetimeToString(order.createdAt!)} · ${orderStatusToString(order.status!)}',
+                  style: AppTextStyles.bodySmall,
+                ),
+              ],
+            ),
           ),
-        ),
-        SizedBox(height: 8),
-        OrderItemsGrid(items: order.shopOrderItems ?? []),
-      ],
+          const SizedBox(height: 8),
+          OrderItemsGrid(items: order.shopOrderItems ?? []),
+          const SizedBox(height: 12),
+        ],
+      ),
     );
   }
 }
@@ -184,7 +111,6 @@ class OrderItemsGrid extends StatelessWidget {
           },
           itemCount: items.length,
         ),
-        SizedBox(height: 12),
       ],
     );
   }
@@ -196,27 +122,35 @@ class ProductCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CustomCachedImage(
-          imageUrl: product.imageUrl!,
-          width: double.infinity,
-          height: 180,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        SizedBox(height: 5),
-        Text(
-          product.name!,
-          style: TextStyle(
-            fontSize: 16,
-            color: AppColors.primaryText,
-            fontWeight: FontWeight.w400,
+    return InkWell(
+      borderRadius: BorderRadius.circular(16),
+      onTap: () {
+        // можно добавить переход на экран с деталями товара из каталога (по id)
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          CustomCachedImage(
+            imageUrl: product.imageUrl!,
+            width: double.infinity,
+            height: 180,
+            borderRadius: BorderRadius.circular(16),
           ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
+          const SizedBox(height: 5),
+          Flexible(
+            child: Text(
+              product.name!,
+              style: const TextStyle(
+                fontSize: 16,
+                color: AppColors.primaryText,
+                fontWeight: FontWeight.w400,
+              ),
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

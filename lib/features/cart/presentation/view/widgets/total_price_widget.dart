@@ -12,9 +12,9 @@ class TotalPriceWidget extends StatelessWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text('Итого', style: AppTextStyles.priceSmall),
+        const Text('Итого', style: AppTextStyles.priceSmall),
         Text(
-          '\$${vm.calculateTotalPrice()}',
+          '\$${vm.totalPrice}',
           style: AppTextStyles.priceSmall,
         ),
       ],

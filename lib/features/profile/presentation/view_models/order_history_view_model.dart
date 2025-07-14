@@ -1,27 +1,20 @@
-import 'package:wts_task/core/model/base_model.dart';
+import 'package:wts_task/core/exceptions/app_exception.dart';
+import 'package:wts_task/core/models/list_model.dart';
 import 'package:wts_task/features/profile/data/models/order_detail.dart';
 import 'package:wts_task/features/profile/data/repositories/order_history_repository.dart';
 
-class OrderHistoryViewModel extends BaseModel {
+class OrderHistoryViewModel extends ListModel<OrderDetail> {
+  OrderHistoryViewModel() : super(items: []);
+
   final OrderHistoryRepository _repository = OrderHistoryRepository();
 
-  List<OrderDetail> _orders = [];
-  bool _isLoading = false;
-
-  List<OrderDetail> get orders => _orders;
-  bool get isLoading => _isLoading;
-
-  Future<void> loadOrders() async {
-    _isLoading = true;
-    notifyModelListeners();
-
+  @override
+  Future<void> loadNextItems(String? loadingUuid) async {
     try {
-      _orders = await _repository.fetchOrderHistory();
+      final allOrders = await _repository.fetchOrderHistory();
+      await onNextItemsLoaded(allOrders, loadingUuid);
     } catch (e) {
-      addError('Не удалось загрузить заказы');
+      onLoadingError(e is AppException ? e.errorMessage : e.toString());
     }
-
-    _isLoading = false;
-    notifyModelListeners();
   }
 }

@@ -34,7 +34,7 @@ void main() async {
         ),
         ChangeNotifierProvider(create: (_) => CartViewModel()),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
