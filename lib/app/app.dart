@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:wts_task/app/routes.dart';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:wts_task/app/theme/app_theme.dart';
-import 'package:wts_task/core/model/app_user.dart';
+import 'package:wts_task/core/models/app_user.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({super.key});

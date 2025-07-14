@@ -2,7 +2,7 @@ import 'dart:core';
 
 import 'package:flutter/material.dart';
 import 'package:wts_task/core/mixins/base_page_model_mixin.dart';
-import 'package:wts_task/core/model/base_model.dart';
+import 'package:wts_task/core/models/base_model.dart';
 import 'package:wts_task/core/page/base_page.dart';
 
 enum FormType { normal, fullScreenSize, sliverFixedFooter }

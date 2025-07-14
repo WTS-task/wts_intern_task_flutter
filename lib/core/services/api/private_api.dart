@@ -14,9 +14,9 @@ class PrivateApi extends DioNetworkService {
   final AuthLocalDataSource authRepository;
 
   void onRequest(
-    RequestOptions options,
-    RequestInterceptorHandler handler,
-  ) async {
+      RequestOptions options,
+      RequestInterceptorHandler handler,
+      ) async {
     if (!await authRepository.isAuthenticated()) {
       return;
     } else {

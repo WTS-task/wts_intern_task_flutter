@@ -5,7 +5,7 @@ import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/constants/assets_catalog.dart';
 import 'package:wts_task/core/page/base_form_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
-import 'package:wts_task/features/auth/presentation/models/phone_auth_model.dart';
+import 'package:wts_task/features/auth/presentation/model/phone_auth_model.dart';
 
 class PhoneAuthScreen extends BasePage {
   const PhoneAuthScreen({super.key, super.title = 'Авторизация'});
@@ -56,7 +56,7 @@ class _PhoneAuthScreenState
   Future<void> submitForm() async {
     final result = await vm.authByPhone();
     if (result) {
-      context.push('/auth/otp', extra: vm.phoneController.text);
+      await context.push('/auth/otp', extra: vm.phoneController.text);
     }
   }
 }

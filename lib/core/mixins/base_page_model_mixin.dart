@@ -1,6 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
-import 'package:wts_task/core/model/base_model.dart';
+import 'package:wts_task/core/models/base_model.dart';
 import 'package:wts_task/core/page/base_page.dart';
 
 mixin BasePageModelMixin<T extends BasePage, TModel extends BaseModel>

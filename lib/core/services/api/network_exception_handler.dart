@@ -19,9 +19,9 @@ mixin ExceptionHandlerMixin on NetworkService {
   /// Returns a `Future<ApiResponse>` that resolves to the response data if the request is successful,
   /// or throws an `AppException` if an error occurs.
   Future<BaseApiResponse> handleException(
-    Future<Response<Map<String, dynamic>>> Function() handler, {
-    String endpoint = '',
-  }) async {
+      Future<Response<Map<String, dynamic>>> Function() handler, {
+        String endpoint = '',
+      }) async {
     try {
       final res = await handler();
       final meta = Meta.fromJson(res.data?['meta']);

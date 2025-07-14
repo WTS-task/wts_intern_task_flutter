@@ -10,7 +10,7 @@ import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/constants/assets_catalog.dart';
 import 'package:wts_task/core/page/base_form_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
-import 'package:wts_task/features/auth/presentation/models/otp_auth_model.dart';
+import 'package:wts_task/features/auth/presentation/model/otp_auth_model.dart';
 
 class OtpScreen extends BasePage {
   const OtpScreen({
@@ -69,7 +69,7 @@ class _OtpScreenState extends BaseFormPageState<OtpScreen, OtpAuthModel> {
         children: [
           Image.asset(AssetsCatalog.logo, fit: BoxFit.contain),
           const SizedBox(height: 15),
-          Text('Введите код', style: AppTextStyles.bodyLarge),
+          const Text('Введите код', style: AppTextStyles.bodyLarge),
           const SizedBox(height: 16),
           Text(
             'Мы отправили код подтверждения на номер\n${PhoneNumberFormatter.format(widget.phoneNumber)}',
@@ -143,7 +143,10 @@ class ResendCodeButton extends StatelessWidget {
               tapTargetSize: MaterialTapTargetSize.shrinkWrap,
               backgroundColor: AppColors.buttonBgSecondary,
             ),
-            child: Text('Повторно отправить код', style: AppTextStyles.button),
+            child: const Text(
+              'Повторно отправить код',
+              style: AppTextStyles.button,
+            ),
           )
         : Text(
             'Повторно отправить код через $resendTimer сек',
@@ -188,9 +191,9 @@ class OtpPinField extends StatelessWidget {
         keyboardType: TextInputType.number,
         textStyle: AppTextStyles.bodyLarge,
         validator: validator,
-        errorTextMargin: EdgeInsets.only(left: 231 / 4),
+        errorTextMargin: const EdgeInsets.only(left: 231 / 4),
         errorTextSpace: 25,
-        separatorBuilder: (context, index) => SizedBox(width: 13),
+        separatorBuilder: (context, index) => const SizedBox(width: 13),
         pinTheme: PinTheme(
           shape: PinCodeFieldShape.box,
           borderRadius: BorderRadius.circular(8),
@@ -230,7 +233,7 @@ class ContinueButton extends StatelessWidget {
           backgroundColor: AppColors.buttonBgPrimary,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
         ),
-        child: Text('Продолжить', style: AppTextStyles.button),
+        child: const Text('Продолжить', style: AppTextStyles.button),
       ),
     );
   }

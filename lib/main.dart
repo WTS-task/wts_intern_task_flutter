@@ -3,8 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/app/app.dart';
 import 'package:wts_task/app/routes.dart';
-import 'package:wts_task/core/model/app_model.dart';
-import 'package:wts_task/core/model/app_user.dart';
+import 'package:wts_task/core/models/app_user.dart';
 import 'package:wts_task/core/services/api/private_api.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
 import 'package:wts_task/features/cart/data/services/cart_service.dart';
@@ -19,7 +18,6 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider(create: (_) => AppModel()),
         Provider(lazy: false, create: (context) => AuthLocalDataSource()),
         Provider(
           lazy: false,
