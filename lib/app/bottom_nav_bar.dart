@@ -1,24 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:shop1/app/router.dart';
+import 'package:go_router/go_router.dart';
 
-class TabScreen extends StatelessWidget {
-  const TabScreen({super.key, required this.child});
+class AppBottomNavBar extends StatelessWidget {
+  const AppBottomNavBar({required this.navigationShell, super.key});
 
-  final Widget child;
+  final StatefulNavigationShell navigationShell;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Scaffold(
-      body: child,
+      body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: AppRouter.getCurrentIndex(context),
-        onTap: (index) => AppRouter.onTabTapped(index, context),
-        iconSize: 35,
-        selectedItemColor: theme.primaryColor,
-        items: [
-          BottomNavigationBarItem(icon: Icon(Icons.list), label: 'Каталог'),
+        currentIndex: navigationShell.currentIndex,
+        onTap: (index) => navigationShell.goBranch(
+          index,
+          initialLocation: index == navigationShell.currentIndex,
+        ),
+        items: const [
+          BottomNavigationBarItem(icon: Icon(Icons.store), label: 'Каталог'),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart),
             label: 'Корзина',
