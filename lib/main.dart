@@ -8,11 +8,13 @@ import 'package:wts_task/core/services/api/private_api.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
 import 'package:wts_task/features/cart/data/services/cart_service.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
+import 'package:wts_task/features/product/data/models/product_model.dart';
 import 'package:wts_task/features/profile/data/repositories/profile_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
+  Hive.registerAdapter(ProductModelAdapter());
   await CartService.init();
 
   runApp(

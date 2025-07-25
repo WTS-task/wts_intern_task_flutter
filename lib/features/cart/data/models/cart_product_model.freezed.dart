@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CartProductModel {
 
- int get count; bool get isSelected; Product? get product;
+ int get count; bool get isSelected; ProductModel? get product;
 /// Create a copy of CartProductModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,11 +48,11 @@ abstract mixin class $CartProductModelCopyWith<$Res>  {
   factory $CartProductModelCopyWith(CartProductModel value, $Res Function(CartProductModel) _then) = _$CartProductModelCopyWithImpl;
 @useResult
 $Res call({
- int count, bool isSelected, Product? product
+ int count, bool isSelected, ProductModel? product
 });
 
 
-$ProductCopyWith<$Res>? get product;
+$ProductModelCopyWith<$Res>? get product;
 
 }
 /// @nodoc
@@ -70,19 +70,19 @@ class _$CartProductModelCopyWithImpl<$Res>
 count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
 as int,isSelected: null == isSelected ? _self.isSelected : isSelected // ignore: cast_nullable_to_non_nullable
 as bool,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as Product?,
+as ProductModel?,
   ));
 }
 /// Create a copy of CartProductModel
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ProductCopyWith<$Res>? get product {
+$ProductModelCopyWith<$Res>? get product {
     if (_self.product == null) {
     return null;
   }
 
-  return $ProductCopyWith<$Res>(_self.product!, (value) {
+  return $ProductModelCopyWith<$Res>(_self.product!, (value) {
     return _then(_self.copyWith(product: value));
   });
 }
@@ -167,7 +167,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int count,  bool isSelected,  Product? product)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int count,  bool isSelected,  ProductModel? product)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CartProductModel() when $default != null:
 return $default(_that.count,_that.isSelected,_that.product);case _:
@@ -188,7 +188,7 @@ return $default(_that.count,_that.isSelected,_that.product);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int count,  bool isSelected,  Product? product)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int count,  bool isSelected,  ProductModel? product)  $default,) {final _that = this;
 switch (_that) {
 case _CartProductModel():
 return $default(_that.count,_that.isSelected,_that.product);case _:
@@ -208,7 +208,7 @@ return $default(_that.count,_that.isSelected,_that.product);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int count,  bool isSelected,  Product? product)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int count,  bool isSelected,  ProductModel? product)?  $default,) {final _that = this;
 switch (_that) {
 case _CartProductModel() when $default != null:
 return $default(_that.count,_that.isSelected,_that.product);case _:
@@ -228,7 +228,7 @@ class _CartProductModel extends CartProductModel {
 
 @override final  int count;
 @override final  bool isSelected;
-@override final  Product? product;
+@override final  ProductModel? product;
 
 /// Create a copy of CartProductModel
 /// with the given fields replaced by the non-null parameter values.
@@ -263,11 +263,11 @@ abstract mixin class _$CartProductModelCopyWith<$Res> implements $CartProductMod
   factory _$CartProductModelCopyWith(_CartProductModel value, $Res Function(_CartProductModel) _then) = __$CartProductModelCopyWithImpl;
 @override @useResult
 $Res call({
- int count, bool isSelected, Product? product
+ int count, bool isSelected, ProductModel? product
 });
 
 
-@override $ProductCopyWith<$Res>? get product;
+@override $ProductModelCopyWith<$Res>? get product;
 
 }
 /// @nodoc
@@ -285,7 +285,7 @@ class __$CartProductModelCopyWithImpl<$Res>
 count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
 as int,isSelected: null == isSelected ? _self.isSelected : isSelected // ignore: cast_nullable_to_non_nullable
 as bool,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as Product?,
+as ProductModel?,
   ));
 }
 
@@ -293,12 +293,12 @@ as Product?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$ProductCopyWith<$Res>? get product {
+$ProductModelCopyWith<$Res>? get product {
     if (_self.product == null) {
     return null;
   }
 
-  return $ProductCopyWith<$Res>(_self.product!, (value) {
+  return $ProductModelCopyWith<$Res>(_self.product!, (value) {
     return _then(_self.copyWith(product: value));
   });
 }

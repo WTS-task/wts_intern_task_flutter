@@ -13,7 +13,7 @@ _CartProductModel _$CartProductModelFromJson(Map<String, dynamic> json) =>
       product:
           json['product'] == null
               ? null
-              : Product.fromJson(json['product'] as Map<String, dynamic>),
+              : ProductModel.fromJson(json['product'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CartProductModelToJson(_CartProductModel instance) =>

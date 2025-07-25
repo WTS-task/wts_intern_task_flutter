@@ -1,24 +1,28 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:wts_task/core/constants/constants.dart';
 import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
-import 'package:wts_task/features/catalog/presentation/view/sub_catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view_models/catalog_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/product_list_screen.dart';
 
-class CatalogScreen extends BasePage {
-  const CatalogScreen({super.key, super.title = 'Каталог'});
+class SubCatalogScreen extends BasePage {
+  const SubCatalogScreen({
+    required this.categoryId,
+    required this.catalogName,
+    super.key,
+  }) : super(title: catalogName);
+  final String catalogName;
+  final String categoryId;
 
   @override
-  State<CatalogScreen> createState() => _CatalogScreenState();
+  State<SubCatalogScreen> createState() => _SubCatalogScreenState();
 }
 
-class _CatalogScreenState
-    extends BaseListViewPageState<CatalogScreen, CatalogViewModel> {
+class _SubCatalogScreenState
+    extends BaseListViewPageState<SubCatalogScreen, CatalogViewModel> {
   @override
   CatalogViewModel createModel() =>
-      CatalogViewModel(items: [Constants.allProductCategory]);
+      CatalogViewModel(categoryId: widget.categoryId.toString());
 
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
