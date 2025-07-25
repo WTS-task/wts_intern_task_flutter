@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Product {
 
- int? get productId; String? get name; String? get productDescription; double? get price; int? get userId; int? get categoryId; int? get rating; int? get popularity; String? get imageUrl; List<String>? get images; int? get createdAt; int? get updatedAt; int? get isFavorite;
+ int? get productId; String? get name; String? get productDescription; double? get price; int? get userId; int? get categoryId; int? get rating; int? get popularity; String? get imageUrl; List<String>? get images; int? get createdAt; int? get updatedAt;@BoolJsonConverter() dynamic get isFavorite;
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,12 +28,12 @@ $ProductCopyWith<Product> get copyWith => _$ProductCopyWithImpl<Product>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Product&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.name, name) || other.name == name)&&(identical(other.productDescription, productDescription) || other.productDescription == productDescription)&&(identical(other.price, price) || other.price == price)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.popularity, popularity) || other.popularity == popularity)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.images, images)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Product&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.name, name) || other.name == name)&&(identical(other.productDescription, productDescription) || other.productDescription == productDescription)&&(identical(other.price, price) || other.price == price)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.popularity, popularity) || other.popularity == popularity)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other.images, images)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.isFavorite, isFavorite));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,productId,name,productDescription,price,userId,categoryId,rating,popularity,imageUrl,const DeepCollectionEquality().hash(images),createdAt,updatedAt,isFavorite);
+int get hashCode => Object.hash(runtimeType,productId,name,productDescription,price,userId,categoryId,rating,popularity,imageUrl,const DeepCollectionEquality().hash(images),createdAt,updatedAt,const DeepCollectionEquality().hash(isFavorite));
 
 @override
 String toString() {
@@ -48,7 +48,7 @@ abstract mixin class $ProductCopyWith<$Res>  {
   factory $ProductCopyWith(Product value, $Res Function(Product) _then) = _$ProductCopyWithImpl;
 @useResult
 $Res call({
- int? productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt, int? isFavorite
+ int? productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt,@BoolJsonConverter() dynamic isFavorite
 });
 
 
@@ -80,7 +80,7 @@ as String?,images: freezed == images ? _self.images : images // ignore: cast_nul
 as List<String>?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as int?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as int?,isFavorite: freezed == isFavorite ? _self.isFavorite : isFavorite // ignore: cast_nullable_to_non_nullable
-as int?,
+as dynamic,
   ));
 }
 
@@ -165,7 +165,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt,  int? isFavorite)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Product() when $default != null:
 return $default(_that.productId,_that.name,_that.productDescription,_that.price,_that.userId,_that.categoryId,_that.rating,_that.popularity,_that.imageUrl,_that.images,_that.createdAt,_that.updatedAt,_that.isFavorite);case _:
@@ -186,7 +186,7 @@ return $default(_that.productId,_that.name,_that.productDescription,_that.price,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt,  int? isFavorite)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)  $default,) {final _that = this;
 switch (_that) {
 case _Product():
 return $default(_that.productId,_that.name,_that.productDescription,_that.price,_that.userId,_that.categoryId,_that.rating,_that.popularity,_that.imageUrl,_that.images,_that.createdAt,_that.updatedAt,_that.isFavorite);case _:
@@ -206,7 +206,7 @@ return $default(_that.productId,_that.name,_that.productDescription,_that.price,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt,  int? isFavorite)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)?  $default,) {final _that = this;
 switch (_that) {
 case _Product() when $default != null:
 return $default(_that.productId,_that.name,_that.productDescription,_that.price,_that.userId,_that.categoryId,_that.rating,_that.popularity,_that.imageUrl,_that.images,_that.createdAt,_that.updatedAt,_that.isFavorite);case _:
@@ -221,7 +221,7 @@ return $default(_that.productId,_that.name,_that.productDescription,_that.price,
 @JsonSerializable()
 
 class _Product implements Product {
-  const _Product({this.productId, this.name, this.productDescription, this.price, this.userId, this.categoryId, this.rating, this.popularity, this.imageUrl, final  List<String>? images, this.createdAt, this.updatedAt, this.isFavorite}): _images = images;
+  const _Product({this.productId, this.name, this.productDescription, this.price, this.userId, this.categoryId, this.rating, this.popularity, this.imageUrl, final  List<String>? images, this.createdAt, this.updatedAt, @BoolJsonConverter() this.isFavorite = false}): _images = images;
   factory _Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 
 @override final  int? productId;
@@ -244,7 +244,7 @@ class _Product implements Product {
 
 @override final  int? createdAt;
 @override final  int? updatedAt;
-@override final  int? isFavorite;
+@override@JsonKey()@BoolJsonConverter() final  dynamic isFavorite;
 
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
@@ -259,12 +259,12 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Product&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.name, name) || other.name == name)&&(identical(other.productDescription, productDescription) || other.productDescription == productDescription)&&(identical(other.price, price) || other.price == price)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.popularity, popularity) || other.popularity == popularity)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._images, _images)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.isFavorite, isFavorite) || other.isFavorite == isFavorite));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Product&&(identical(other.productId, productId) || other.productId == productId)&&(identical(other.name, name) || other.name == name)&&(identical(other.productDescription, productDescription) || other.productDescription == productDescription)&&(identical(other.price, price) || other.price == price)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.rating, rating) || other.rating == rating)&&(identical(other.popularity, popularity) || other.popularity == popularity)&&(identical(other.imageUrl, imageUrl) || other.imageUrl == imageUrl)&&const DeepCollectionEquality().equals(other._images, _images)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&const DeepCollectionEquality().equals(other.isFavorite, isFavorite));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,productId,name,productDescription,price,userId,categoryId,rating,popularity,imageUrl,const DeepCollectionEquality().hash(_images),createdAt,updatedAt,isFavorite);
+int get hashCode => Object.hash(runtimeType,productId,name,productDescription,price,userId,categoryId,rating,popularity,imageUrl,const DeepCollectionEquality().hash(_images),createdAt,updatedAt,const DeepCollectionEquality().hash(isFavorite));
 
 @override
 String toString() {
@@ -279,7 +279,7 @@ abstract mixin class _$ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
   factory _$ProductCopyWith(_Product value, $Res Function(_Product) _then) = __$ProductCopyWithImpl;
 @override @useResult
 $Res call({
- int? productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt, int? isFavorite
+ int? productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt,@BoolJsonConverter() dynamic isFavorite
 });
 
 
@@ -311,7 +311,7 @@ as String?,images: freezed == images ? _self._images : images // ignore: cast_nu
 as List<String>?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as int?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as int?,isFavorite: freezed == isFavorite ? _self.isFavorite : isFavorite // ignore: cast_nullable_to_non_nullable
-as int?,
+as dynamic,
   ));
 }
 
