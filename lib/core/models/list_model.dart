@@ -71,7 +71,7 @@ abstract class ListModel<T> extends BaseDataModel<List<T>> {
   }
 
   bool checkAllLoaded(List<T> nextItems) {
-    return nextItems.isEmpty || (nextItems.length < _defaultItemsPortionSize);
+    return nextItems.isEmpty || (nextItems.length <= _defaultItemsPortionSize);
   }
 
   @override

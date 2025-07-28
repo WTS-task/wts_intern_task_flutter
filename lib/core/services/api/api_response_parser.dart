@@ -27,9 +27,15 @@ class ApiResponseParser {
           baseApiResponse: response,
         );
       }
-      final list = (jsonData as List<Map<String, dynamic>>)
-          .map((e) => fromJson(e))
-          .toList();
+      final list = (jsonData as List<dynamic>).map((e) {
+        if (e is Map<String, dynamic>) {
+          return fromJson(e);
+        } else {
+          throw FormatException(
+            'Ожидался Map<String, dynamic>, но получен ${e.runtimeType}',
+          );
+        }
+      }).toList();
       return ApiResponse(result: list, baseApiResponse: response);
     } catch (e, s) {
       log('Parse list error', error: e, stackTrace: s);

@@ -2,6 +2,7 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+
 import 'package:wts_task/app/bottom_nav_bar.dart';
 import 'package:wts_task/core/models/app_user.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
@@ -11,8 +12,8 @@ import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dar
 import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/product_detail_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
+import 'package:wts_task/features/catalog/presentation/view/sub_catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_reviews_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
@@ -38,7 +39,7 @@ class AppRouter {
     initialLocation: '/catalog',
     observers: [BotToastNavigatorObserver()],
     routes: [
-      //Авторизация
+      // Авторизация
       GoRoute(
         path: '/auth/phone',
         builder: (context, state) => const PhoneAuthScreen(),
@@ -51,25 +52,50 @@ class AppRouter {
         },
       ),
 
-      //Главный интерфейс
+      // Основной интерфейс
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppBottomNavBar(navigationShell: navigationShell);
         },
         branches: [
+          // Каталог
           StatefulShellBranch(
             routes: [
               GoRoute(
                 path: '/catalog',
-                builder: (context, state) => const CatalogScreen(),
+                builder: (context, state) => CatalogScreen(),
                 routes: [
                   GoRoute(
-                    path: 'category/:categoryId',
-                    builder: (context, state) => const ProductListScreen(),
+                    path: 'category',
+                    builder: (context, state) {
+                      final categoryId = state.uri.queryParameters['categoryId'];
+                      final catalogName = state.uri.queryParameters['catalogName'];
+
+                      if (categoryId == null || catalogName == null) {
+                        throw Exception("Missing query parameters");
+                      }
+
+                      return SubCatalogScreen(
+                        categoryId: categoryId,
+                        catalogName: catalogName,
+                      );
+                    },
                     routes: [
                       GoRoute(
-                        path: 'product/:productId',
-                        builder: (context, state) => const ProductDetailScreen(),
+                        path: 'products',
+                        builder: (context, state) {
+                          final categoryId = state.uri.queryParameters['categoryId'];
+                          final catalogName = state.uri.queryParameters['catalogName'];
+
+                          if (categoryId == null || catalogName == null) {
+                            throw Exception("Missing query parameters");
+                          }
+
+                          return ProductListScreen(
+                            categoryId: categoryId,
+                            catalogName: catalogName,
+                          );
+                        },
                         routes: [
                           GoRoute(
                             path: 'reviews',
@@ -107,7 +133,7 @@ class AppRouter {
             ],
           ),
 
-          //Профиль
+          // Профиль
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -136,7 +162,8 @@ class AppRouter {
           ),
         ],
       ),
-      //Поддержка
+
+      // Поддержка
       GoRoute(
         path: '/support',
         builder: (context, state) => const SupportChatScreen(),
@@ -149,7 +176,8 @@ class AppRouter {
       if (!await userSource.isAuthenticated() && !path.startsWith('/auth')) {
         return '/auth/phone';
       }
-      return state.fullPath;
+
+      return null;
     },
   );
 }

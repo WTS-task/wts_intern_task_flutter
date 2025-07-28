@@ -1,5 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:wts_task/features/product/data/models/product.dart';
+import 'package:wts_task/features/catalog/data/models/product.dart';
 
 part 'cart_product_model.freezed.dart';
 part 'cart_product_model.g.dart';
