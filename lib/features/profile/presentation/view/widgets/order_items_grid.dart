@@ -4,6 +4,7 @@ import 'package:wts_task/features/profile/presentation/view/widgets/product_card
 
 class OrderItemsGrid extends StatelessWidget {
   const OrderItemsGrid({required this.items, super.key});
+
   final List<ShopOrderItem> items;
 
   @override
@@ -14,12 +15,14 @@ class OrderItemsGrid extends StatelessWidget {
         return Wrap(
           spacing: 12,
           runSpacing: 16,
-          children: items.map((item) {
-            return SizedBox(
-              width: itemWidth,
-              child: ProductCard(product: item, width: itemWidth),
-            );
-          }).toList(),
+          children: items
+              .map(
+                (item) => SizedBox(
+                  width: itemWidth,
+                  child: ProductCard(product: item, width: itemWidth),
+                ),
+              )
+              .toList(),
         );
       },
     );

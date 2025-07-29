@@ -3,14 +3,14 @@ import 'package:go_router/go_router.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
+import 'package:wts_task/features/profile/data/models/order_detail.dart';
 import 'package:wts_task/features/profile/presentation/view/widgets/order_items_grid.dart';
 import 'package:wts_task/features/profile/presentation/view_models/order_history_view_model.dart';
 import 'package:wts_task/features/profile/utils/datetime_to_string.dart';
 import 'package:wts_task/features/profile/utils/order_status_to_string.dart';
-import 'package:wts_task/features/profile/data/models/order_detail.dart';
 
 class OrderHistoryScreen extends BasePage {
-  const OrderHistoryScreen({super.key}) : super(title: 'Заказы');
+  const OrderHistoryScreen({super.key, super.title = 'Заказы'});
 
   @override
   State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
@@ -35,6 +35,7 @@ class _OrderHistoryScreenState
 
 class OrderDetailWidget extends StatelessWidget {
   const OrderDetailWidget({required this.orderDetail, super.key});
+
   final OrderDetail orderDetail;
 
   @override
@@ -91,7 +92,7 @@ class OrderDetailHeader extends StatelessWidget {
             ],
           ),
           Text(
-            '${orderItemCount.toString()} ${ (orderItemCount > 1 || orderItemCount == 0) ? 'items' : 'item'}',
+            '${orderItemCount.toString()} ${(orderItemCount > 1 || orderItemCount == 0) ? 'items' : 'item'}',
             style: AppTextStyles.bodySmall,
           ),
           Text(

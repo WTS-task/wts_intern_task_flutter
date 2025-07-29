@@ -8,7 +8,13 @@ import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.
 import 'package:wts_task/features/cart/presentation/view/widgets/product_count_widget.dart';
 
 class CartItemWidget extends StatelessWidget {
-  const CartItemWidget({required this.vm, required this.product, required this.index, super.key});
+  const CartItemWidget({
+    required this.vm,
+    required this.product,
+    required this.index,
+    super.key,
+  });
+
   final CartViewModel vm;
   final CartProductModel product;
   final int index;

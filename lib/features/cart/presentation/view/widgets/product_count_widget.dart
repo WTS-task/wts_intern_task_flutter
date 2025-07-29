@@ -9,6 +9,7 @@ class ProductCountWidget extends StatelessWidget {
     required this.onDecrement,
     super.key,
   });
+
   final int count;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
@@ -25,7 +26,10 @@ class ProductCountWidget extends StatelessWidget {
             backgroundColor: WidgetStateProperty.all(AppColors.dividerBorder),
           ),
           onPressed: isDecrementAvailable ? onDecrement : null,
-          icon: Icon(Icons.remove, color: isDecrementAvailable ? AppColors.primaryText : Colors.grey),
+          icon: Icon(
+            Icons.remove,
+            color: isDecrementAvailable ? AppColors.primaryText : Colors.grey,
+          ),
         ),
         const SizedBox(width: 10),
         Text('$count', style: AppTextStyles.bodyMedium),
@@ -35,7 +39,10 @@ class ProductCountWidget extends StatelessWidget {
             backgroundColor: WidgetStateProperty.all(AppColors.dividerBorder),
           ),
           onPressed: isIncrementAvailable ? onIncrement : null,
-          icon: Icon(Icons.add, color: isIncrementAvailable ? AppColors.primaryText : Colors.grey),
+          icon: Icon(
+            Icons.add,
+            color: isIncrementAvailable ? AppColors.primaryText : Colors.grey,
+          ),
         ),
       ],
     );

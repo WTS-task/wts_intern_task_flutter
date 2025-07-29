@@ -29,6 +29,8 @@ class ProductCard extends StatelessWidget {
           const SizedBox(height: 5),
           Text(
             product.name ?? '',
+            maxLines: 3,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               fontSize: 16,
               color: AppColors.primaryText,

@@ -11,8 +11,11 @@ class OrderHistoryRepository extends PrivateApi {
     required int offset,
     required int limit,
   }) async {
-    final params = { 'offset': offset, 'limit': limit };
-    final response = await get('/shop/shop-order/list', queryParameters: params);
+    final params = {'offset': offset, 'limit': limit};
+    final response = await get(
+      '/shop/shop-order/list',
+      queryParameters: params,
+    );
 
     return ApiResponseParser.parseListFromResponse(
       response,

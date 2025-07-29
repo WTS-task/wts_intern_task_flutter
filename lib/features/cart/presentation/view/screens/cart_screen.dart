@@ -11,7 +11,7 @@ import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.
 import 'package:wts_task/core/constants/app_colors.dart';
 
 class CartScreen extends BasePage {
-  const CartScreen({super.key}) : super(title: 'Корзина');
+  const CartScreen({super.key, super.title = "Корзина"});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
