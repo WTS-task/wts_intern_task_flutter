@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
+import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/widgets/base_error_widget.dart';
 import 'package:wts_task/core/widgets/loading_indicator.dart';
 
@@ -89,7 +90,7 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
     if (widget.title == null) {
       return null;
     }
-    return Text(widget.title ?? '', maxLines: 2);
+    return Text(widget.title ?? '', maxLines: 2, style: AppTextStyles.appBarText);
   }
 
   @protected

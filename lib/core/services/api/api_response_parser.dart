@@ -27,10 +27,20 @@ class ApiResponseParser {
           baseApiResponse: response,
         );
       }
-      final list = (jsonData as List<Map<String, dynamic>>)
-          .map((e) => fromJson(e))
-          .toList();
-      return ApiResponse(result: list, baseApiResponse: response);
+
+      if (jsonData is List) {
+        final list = jsonData
+            .whereType<Map<String, dynamic>>()
+            .map((e) => fromJson(e))
+            .toList();
+
+        return ApiResponse(result: list, baseApiResponse: response);
+      }
+
+      return ApiResponse.error(
+        error: 'Неверный формат данных',
+        baseApiResponse: response,
+      );
     } catch (e, s) {
       log('Parse list error', error: e, stackTrace: s);
       return ApiResponse.error(

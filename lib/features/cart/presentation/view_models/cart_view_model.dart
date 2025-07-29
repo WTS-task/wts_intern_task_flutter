@@ -5,7 +5,7 @@ import 'package:wts_task/core/exceptions/app_exception.dart';
 import 'package:wts_task/features/cart/data/fake_cart_items.dart';
 
 class CartViewModel extends ListModel<CartProductModel> {
-  CartViewModel() : super(items: []);
+  CartViewModel();
 
   final CartRepository _cartRepository = CartRepository();
 
@@ -21,10 +21,8 @@ class CartViewModel extends ListModel<CartProductModel> {
   Future<void> loadNextItems(String? loadingUuid) async {
     try {
       final allProducts = await _cartRepository.getAllCartProducts();
-      replaceItems(allProducts);
+      await onNextItemsLoaded(allProducts, loadingUuid);
       isAllLoaded = true;
-      isLoading = false;
-      notifyModelListeners();
     } catch (e) {
       onLoadingError(e is AppException ? e.errorMessage : e.toString());
     }

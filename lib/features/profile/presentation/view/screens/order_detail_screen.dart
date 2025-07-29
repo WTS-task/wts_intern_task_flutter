@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wts_task/core/page/base_page.dart';
 
 class OrderDetailScreen extends BasePage {
-  const OrderDetailScreen({required this.orderId, super.key});
+  const OrderDetailScreen({required this.orderId, super.key}) : super(title: 'Заказ #$orderId');
 
   final String orderId;
 
@@ -11,12 +11,6 @@ class OrderDetailScreen extends BasePage {
 }
 
 class _OrderDetailScreenState extends BasePageState<OrderDetailScreen> {
-  @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) {
-    debugPrint('details');
-    debugPrint(widget.orderId);
-    return AppBar(title: Text('Заказ #${widget.orderId}'), centerTitle: true);
-  }
 
   @override
   Widget buildBody(BuildContext context) {

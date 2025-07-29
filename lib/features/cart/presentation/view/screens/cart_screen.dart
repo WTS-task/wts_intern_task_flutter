@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_alert_dialog.dart';
@@ -57,34 +56,30 @@ class _CartScreenState
   }
 
   @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) {
-    return AppBar(
-      title: const Text("Корзина", style: AppTextStyles.appBarText),
-      centerTitle: true,
-      actions: [
-        IconButton(
-          onPressed: () async {
-            await model.addFakeCartItems();
-            showToast(message: 'Тестовые товары добавлены');
-          },
-          icon: const Icon(Icons.add),
-        ),
-        IconButton(
-          onPressed: () {
-            CustomAlertDialog.show(
-              context,
-              title: 'Очистка корзины',
-              content: 'Все товары из корзины будут удалены, продолжить?',
-              onConfirm: () {
-                model.removeAllProducts();
-                showToast(message: 'Корзина очищена!');
-              },
-            );
-          },
-          icon: const Icon(Icons.delete),
-        ),
-      ],
-    );
+  List<Widget>? buildAppBarActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () async {
+          await model.addFakeCartItems();
+          showToast(message: 'Тестовые товары добавлены');
+        },
+        icon: const Icon(Icons.add),
+      ),
+      IconButton(
+        onPressed: () {
+          CustomAlertDialog.show(
+            context,
+            title: 'Очистка корзины',
+            content: 'Все товары из корзины будут удалены, продолжить?',
+            onConfirm: () {
+              model.removeAllProducts();
+              showToast(message: 'Корзина очищена!');
+            },
+          );
+        },
+        icon: const Icon(Icons.delete),
+      ),
+    ];
   }
 
   @override
