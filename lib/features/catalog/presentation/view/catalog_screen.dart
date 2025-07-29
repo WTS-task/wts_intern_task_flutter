@@ -17,7 +17,8 @@ class _CatalogScreenState
 
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
-    // TODO: implement buildListItemImpl
-    throw UnimplementedError();
+    return const Placeholder();
   }
 }
+
+
