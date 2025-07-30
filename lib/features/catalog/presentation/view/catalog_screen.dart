@@ -21,3 +21,4 @@ class _CatalogScreenState
     throw UnimplementedError();
   }
 }
+

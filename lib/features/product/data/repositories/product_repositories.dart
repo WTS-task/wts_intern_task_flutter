@@ -1,6 +1,6 @@
-import 'package:wts_task/core/constants/assets_path.dart';
-import 'package:wts_task/features/catalog/data/models/review/review_model.dart';
-import 'package:wts_task/features/catalog/data/models/product/product_model.dart';
+import 'package:wts_task/core/constants/assets_catalog.dart';
+import 'package:wts_task/features/product/data/models/review/review_model.dart';
+import 'package:wts_task/features/product/data/models/product/product.dart';
 
 abstract class ProductRepository {
   Future<Product> getProductById(String id);
@@ -14,16 +14,18 @@ abstract class ProductRepository {
   Future<void> submitReview(CreateReviewRequest review);
 
   Future<void> addToCart(Product product);
+
+  // Future<List<Product>> getProducts();
 }
 
 class MockProductRepository implements ProductRepository {
   @override
-  Future<Product> getProductById(String id) async {
+  Future<Product> getProductById(String productId) async {
     await Future.delayed(const Duration(seconds: 1));
     return Product(
-      id: id,
+      productId: int.tryParse(productId),
       name: 'Беспроводные наушники Logitech G435 черный',
-      description:
+      productDescription:
           'Беспроводные наушники Logitech G435 черный [2021, 2.0, поддержка Nintendo Switch, PS4, PS5, охватывающие, 20 Гц - 20000 Гц, 45Ω, Bluetooth, радиоканал]',
       price: 6999,
       images: ['assets/headphones.png'],
@@ -42,7 +44,7 @@ class MockProductRepository implements ProductRepository {
         id: '1',
         authorId: 'user1',
         authorName: 'Sophia',
-        authorAvatarUrl: avatarOneImage,
+        authorAvatarUrl: AssetsCatalog.avatarOneImage,
         targetId: productId,
         text: 'Great product, exactly as described!',
         rating: 5,
@@ -54,7 +56,7 @@ class MockProductRepository implements ProductRepository {
         authorId: 'user2',
         authorName: 'Ethan',
         targetId: productId,
-        authorAvatarUrl: avatarTwoImage,
+        authorAvatarUrl: AssetsCatalog.avatarTwoImage,
         text: 'Good quality, but could be better.',
         rating: 4,
         createdAt: DateTime.now().subtract(const Duration(days: 90)),
@@ -75,7 +77,7 @@ class MockProductRepository implements ProductRepository {
         id: '4',
         authorId: 'user4',
         authorName: 'Ethan Carter',
-        authorAvatarUrl: reviewsPersonOne,
+        authorAvatarUrl: AssetsCatalog.reviewsPersonOne,
         targetId: productId,
         text:
             'This product exceeded my expectations! The quality is outstanding, and it performs flawlessly. I highly recommend it to anyone looking for a reliable and efficient solution.',
@@ -86,7 +88,7 @@ class MockProductRepository implements ProductRepository {
         id: '5',
         authorId: 'user5',
         authorName: 'Olivia Bennett',
-        authorAvatarUrl: reviewsPersonTwo,
+        authorAvatarUrl: AssetsCatalog.reviewsPersonTwo,
         targetId: productId,
         text:
             "I'm quite satisfied with my purchase. The product is well-designed and functions as described. There are a few minor improvements that could be made, but overall, it's a great value for the price.",
@@ -97,7 +99,7 @@ class MockProductRepository implements ProductRepository {
         id: '6',
         authorId: 'user6',
         authorName: 'Noah Thompson',
-        authorAvatarUrl: reviewsPersonThree,
+        authorAvatarUrl: AssetsCatalog.reviewsPersonThree,
         targetId: productId,
         text:
             "The product is decent, but it didn't quite meet my expectations. It works, but there are some noticeable drawbacks. I might consider other options in the future.",

@@ -1,30 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
-import 'package:wts_task/features/catalog/data/models/review/review_model.dart';
-import 'package:wts_task/features/catalog/presentation/widgets/user_avatar.dart';
-import 'package:intl/intl.dart';
+import 'package:wts_task/features/product/data/models/review/review_model.dart';
+import 'package:wts_task/features/product/presentation/view/widgets/user_avatar.dart';
 
-class ReviewItem extends StatelessWidget {
+class FullReviewItem extends StatelessWidget {
   final Review review;
-  final int maxLines;
-  final bool showFullDate;
 
-  const ReviewItem({
-    super.key,
-    required this.review,
-    this.maxLines = 2,
-    this.showFullDate = false,
-  });
+  const FullReviewItem({super.key, required this.review});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 264,
-      padding: const EdgeInsets.all(8),
-      margin: const EdgeInsets.symmetric(horizontal: 16),
+      padding: const EdgeInsets.all(16),
+      margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
         boxShadow: [
           BoxShadow(
             color: Color.fromRGBO(158, 158, 158, 0.4),
@@ -44,39 +36,22 @@ class ReviewItem extends StatelessWidget {
                 userName: review.authorName,
               ),
               const SizedBox(width: 12),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Text(review.authorName, style: AppTextStyles.reviewUserName),
                   Text(
-                    review.authorName,
-                    style: AppTextStyles.reviewUserName,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  Text(
-                    showFullDate
-                        ? DateFormat('dd.MM.yyyy').format(
-                            review.createdAt,
-                          ) //????
-                        : _formatTimeAgo(review.createdAt),
+                    _formatTimeAgo(review.createdAt),
                     style: AppTextStyles.reviewData,
                   ),
                 ],
               ),
             ],
           ),
-
-          const SizedBox(height: 8),
+          const SizedBox(height: 12),
           _buildRatingStars(review.rating),
-          const SizedBox(height: 8),
-          Expanded(
-            child: Text(
-              review.text,
-              style: AppTextStyles.reviewText,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
+          const SizedBox(height: 12),
+          Text(review.text, style: AppTextStyles.reviewText),
         ],
       ),
     );
@@ -89,7 +64,7 @@ class ReviewItem extends StatelessWidget {
     if (difference.inDays > 365) {
       final years = (difference.inDays / 365).floor();
       return '$years year${years > 1 ? 's' : ''} ago';
-    } else if (difference.inDays > 30) {
+    } else if (difference.inDays >= 30) {
       final months = (difference.inDays / 30).floor();
       return '$months month${months > 1 ? 's' : ''} ago';
     } else if (difference.inDays >= 14) {

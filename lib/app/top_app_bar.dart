@@ -32,13 +32,16 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                 child: IconButton(
                   onPressed: onBackPressed,
                   padding: EdgeInsets.zero,
-                  icon: const Icon(Icons.arrow_back, size: 24),
+                  icon: const Icon(
+                    Icons.arrow_back,
+                    size: 24,
+                    color: Color(0xFF171212),
+                  ),
                 ),
               ),
             )
           : null,
-      actions:
-          showCartButton
+      actions: showCartButton
           ? [
               Center(
                 child: Padding(
@@ -46,7 +49,11 @@ class TopAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: IconButton(
                     onPressed: onCartPressed,
                     padding: EdgeInsets.zero,
-                    icon: const Icon(Icons.shopping_cart, size: 24),
+                    icon: const Icon(
+                      Icons.shopping_cart,
+                      size: 24,
+                      color: Color(0xFF171212),
+                    ),
                   ),
                 ),
               ),

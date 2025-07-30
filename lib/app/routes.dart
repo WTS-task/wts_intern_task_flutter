@@ -11,9 +11,10 @@ import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dar
 import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/product_detail_screen.dart';
+import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
+import 'package:wts_task/features/product/presentation/view/screens/product_detail_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/product_reviews_screen.dart';
+import 'package:wts_task/features/product/presentation/view/screens/product_reviews_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_detail_screen.dart';
@@ -35,7 +36,7 @@ class AppRouter {
   final AppUser appUser;
 
   late final GoRouter appRouter = GoRouter(
-    initialLocation: '/catalog',
+    initialLocation: '/catalog/category/1/product/1', //временно для тестирования
     observers: [BotToastNavigatorObserver()],
     routes: [
       //Авторизация
@@ -69,15 +70,26 @@ class AppRouter {
                     routes: [
                       GoRoute(
                         path: 'product/:productId',
-                        builder: (context, state) => const ProductDetailScreen(),
+                        builder: (context, state) {
+                          final productId = state.pathParameters['productId']!;
+                          return ProductDetailScreen(productId: productId);
+                        },
                         routes: [
                           GoRoute(
                             path: 'reviews',
-                            builder: (context, state) => const ProductReviewsScreen(),
+                            builder: (context, state) {
+                              final productId = state
+                                  .pathParameters['productId']!;
+                              final repository = state
+                                  .extra as ProductRepository;
+                              return ProductReviewsScreen(
+                                  productId: productId, repository: repository);
+                            },
                             routes: [
                               GoRoute(
                                 path: 'add',
-                                builder: (context, state) => const AddReviewScreen(),
+                                builder: (context, state) =>
+                                const AddReviewScreen(),
                               ),
                             ],
                           ),

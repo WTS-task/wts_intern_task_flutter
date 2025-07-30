@@ -2,23 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
-import 'package:wts_task/core/constants/assets_path.dart';
-import 'package:wts_task/features/catalog/data/repositories/product_repository.dart';
-import 'package:wts_task/features/catalog/data/view_models/add_review_view_model.dart';
-import 'package:wts_task/features/catalog/presentation/widgets/rating_stars.dart';
-import 'package:wts_task/features/catalog/presentation/widgets/submit_button.dart';
+import 'package:wts_task/core/constants/assets_catalog.dart';
+import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
+import 'package:wts_task/features/product/data/view_models/add_review_view_model.dart';
+import 'package:wts_task/features/product/presentation/view/widgets/rating_stars.dart';
+import 'package:wts_task/core/widgets/custom_button.dart';
 
 class AddReviewDialog extends StatefulWidget {
-  final String productId;
-  final String productName;
-  final ProductRepository repository;
-
   const AddReviewDialog({
     super.key,
     required this.productId,
     required this.productName,
-    required this.repository,
   });
+
+  final String productId;
+  final String productName;
 
   @override
   State<AddReviewDialog> createState() => _AddReviewDialogState();
@@ -30,7 +28,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
   @override
   void initState() {
     super.initState();
-    _vm = AddReviewViewModel(widget.repository, widget.productId);
+    _vm = AddReviewViewModel(context.read<ProductRepository>(), widget.productId);
   }
 
   @override
@@ -86,7 +84,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
       alignment: Alignment.center,
       children: [
         const SizedBox(width: 24),
-        Align(
+        const Align(
           alignment: Alignment.center,
           child: Text('Оставить отзыв', style: AppTextStyles.titleProductLarge),
         ),
@@ -97,7 +95,6 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
             child: InkWell(
               borderRadius: BorderRadius.circular(20),
               onTap: () => Navigator.pop(context),
-              hoverColor: const Color.fromRGBO(158, 158, 158, 0.1),
               splashColor: const Color.fromRGBO(158, 158, 158, 0.2),
               highlightColor: const Color.fromRGBO(158, 158, 158, 0.1),
               child: Container(
@@ -122,8 +119,8 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
           height: 77,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            image: DecorationImage(
-              image: AssetImage(headphonesImage),
+            image: const DecorationImage(
+              image: AssetImage(AssetsCatalog.headphonesImage),
               fit: BoxFit.cover,
             ),
           ),
@@ -143,7 +140,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
   }
 
   _buildHelpText() {
-    return Text(
+    return const Text(
       'Ваш отзыв помогает нам улучшить наш сервис.',
       style: AppTextStyles.reviewText,
     );
@@ -160,7 +157,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
 
   _buildReviewTextField(AddReviewViewModel vm) {
     return Container(
-      constraints: BoxConstraints(minHeight: 120),
+      constraints: const BoxConstraints(minHeight: 120),
       child: TextField(
         controller: vm.reviewController,
         focusNode: vm.reviewFocusNode,
@@ -182,9 +179,30 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
   _buildSubmitButton(AddReviewViewModel vm, BuildContext context) {
     return vm.isLoading
         ? const Center(child: CircularProgressIndicator())
-        : SubmitButton(
-            text: 'Отправить',
-            onPressed: () => vm.submitReview(context),
+        : SizedBox(
+            width: 358,
+            height: 48,
+            child: Builder(
+              builder: (context) {
+                return Theme(
+                  data: Theme.of(context).copyWith(
+                    elevatedButtonTheme: ElevatedButtonThemeData(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF4A2C2A),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
+                  child: CustomButton(
+                    title: 'Отправить',
+                    onPressed: () => vm.submitReview(context),
+                  ),
+                );
+              },
+            ),
           );
   }
 }

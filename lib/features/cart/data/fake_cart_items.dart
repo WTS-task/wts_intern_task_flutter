@@ -1,5 +1,5 @@
 import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
-import 'package:wts_task/features/product/data/models/product.dart';
+import 'package:wts_task/features/product/data/models/product/product.dart';
 
 // тестовые товары
 List<CartProductModel> fakeCartItems = [

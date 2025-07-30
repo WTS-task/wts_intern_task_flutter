@@ -2,6 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1798006677/gradle.iml" filepath="$PROJECT_DIR$/.idea/modules/1798006677/gradle.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1798006677/gradle.main.iml" filepath="$PROJECT_DIR$/.idea/modules/1798006677/gradle.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/1798006677/gradle.test.iml" filepath="$PROJECT_DIR$/.idea/modules/1798006677/gradle.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/wts_intern_task_flutter.iml" filepath="$PROJECT_DIR$/.idea/wts_intern_task_flutter.iml" />
     </modules>
   </component>

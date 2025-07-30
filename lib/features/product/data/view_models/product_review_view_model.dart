@@ -1,8 +1,8 @@
-import 'package:wts_task/features/catalog/data/models/review/review_model.dart';
-import 'package:wts_task/features/catalog/data/repositories/product_repository.dart';
-import 'package:wts_task/features/catalog/data/view_models/base_view_model.dart';
+import 'package:wts_task/core/models/base_model.dart';
+import 'package:wts_task/features/product/data/models/review/review_model.dart';
+import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 
-class ProductReviewsViewModel extends BaseViewModel {
+class ProductReviewsViewModel extends BaseModel {
   final ProductRepository repository;
   final String productId;
   final int skipReviews;
@@ -10,6 +10,11 @@ class ProductReviewsViewModel extends BaseViewModel {
   int _currentPage = 0;
   bool _hasMore = true;
   bool _isLoadingMore = false;
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  String? get error => lastError;
 
   ProductReviewsViewModel(
     this.repository,
@@ -22,19 +27,28 @@ class ProductReviewsViewModel extends BaseViewModel {
   bool get hasMore => _hasMore;
 
   Future<void> loadReviews() async {
+    if (isDisposed) return;
+
     try {
+      _isLoading = true;
+      notifyModelListeners();
+
       final newReviews = await repository.getProductReviews(
         productId,
         limit: 10,
         offset: skipReviews + (_currentPage * 10),
       );
+
       reviews.addAll(newReviews);
       _hasMore = newReviews.length == 10;
       _currentPage++;
+
+      clearError();
     } catch (e) {
-      setError('Ошибка загрузки отзывов');
+      addError('Ошибка загрузки отзывов');
     } finally {
-      setLoading(false);
+      _isLoading = false;
+      notifyModelListeners();
     }
   }
 
@@ -42,7 +56,7 @@ class ProductReviewsViewModel extends BaseViewModel {
     if (!_hasMore || _isLoadingMore) return;
 
     _isLoadingMore = true;
-    notifyListeners();
+    notifyModelListeners();
 
     try {
       final newReviews = await repository.getProductReviews(
@@ -55,9 +69,16 @@ class ProductReviewsViewModel extends BaseViewModel {
       _hasMore = newReviews.length == 10;
       _currentPage++;
     } catch (e) {
+      addError('Ошибка загрузки дополнительных отзывов');
     } finally {
       _isLoadingMore = false;
-      notifyListeners();
+      notifyModelListeners();
     }
+  }
+
+  @override
+  void dispose() {
+    reviews.clear();
+    super.dispose();
   }
 }

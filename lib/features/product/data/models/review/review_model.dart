@@ -5,8 +5,7 @@ part 'review_model.freezed.dart';
 part 'review_model.g.dart';
 
 @freezed
-class Review with _$Review {
-  @JsonSerializable()
+abstract class Review with _$Review {
   const factory Review({
     required String id,
     required String authorId,
@@ -23,7 +22,7 @@ class Review with _$Review {
 }
 
 @freezed
-class CreateReviewRequest with _$CreateReviewRequest {
+abstract class CreateReviewRequest with _$CreateReviewRequest {
   const factory CreateReviewRequest({
     required String targetId,
     required String text,

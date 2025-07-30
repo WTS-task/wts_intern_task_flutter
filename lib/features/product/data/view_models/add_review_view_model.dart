@@ -1,26 +1,31 @@
 import 'package:flutter/cupertino.dart';
-import 'package:wts_task/features/catalog/data/models/review/review_model.dart';
-import 'package:wts_task/features/catalog/data/repositories/product_repository.dart';
-import 'package:wts_task/features/catalog/data/view_models/base_view_model.dart';
+import 'package:wts_task/core/models/base_model.dart';
+import 'package:wts_task/features/product/data/models/review/review_model.dart';
+import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 
-class AddReviewViewModel extends BaseViewModel {
+class AddReviewViewModel extends BaseModel {
+  AddReviewViewModel(this.repository, this.productId);
+
   final ProductRepository repository;
   final String productId;
+  bool _isLoading = false;
+
+  bool get isLoading => _isLoading;
+
+  String? get error => lastError;
 
   final TextEditingController reviewController = TextEditingController();
   final FocusNode reviewFocusNode = FocusNode();
   int rating = 0;
 
-  AddReviewViewModel(this.repository, this.productId);
-
   void setRating(int value) {
     rating = value;
-    notifyListeners();
+    notifyModelListeners();
   }
 
   Future<void> submitReview(BuildContext context) async {
     if (rating == 0) {
-      setError('Выберите оценку');
+      addError('Выберите оценку');
       return;
     }
 
@@ -31,14 +36,17 @@ class AddReviewViewModel extends BaseViewModel {
     );
 
     try {
-      setLoading(true);
+      _isLoading = true;
+      notifyModelListeners();
+
       await repository.submitReview(review);
       Navigator.pop(context, true);
-      setError(null);
+      clearError();
     } catch (e) {
-      setError('Ошибка отправки отзыва');
+      addError('Ошибка отправки отзыва');
     } finally {
-      setLoading(false);
+      _isLoading = false;
+      notifyModelListeners();
     }
   }
 
