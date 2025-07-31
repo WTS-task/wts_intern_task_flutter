@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wts_task/features/profile/data/models/shop_order_item.dart';
-import 'package:wts_task/features/profile/presentation/view/widget/product_cart.dart';
+import 'package:wts_task/features/profile/presentation/view/widgets/product_card.dart';
 
 class OrderItemsGrid extends StatelessWidget {
   const OrderItemsGrid({required this.items, super.key});
@@ -18,10 +18,10 @@ class OrderItemsGrid extends StatelessWidget {
           children: items
               .map(
                 (item) => SizedBox(
-                  width: itemWidth,
-                  child: ProductCard(product: item, width: itemWidth),
-                ),
-              )
+              width: itemWidth,
+              child: ProductCard(product: item, width: itemWidth),
+            ),
+          )
               .toList(),
         );
       },

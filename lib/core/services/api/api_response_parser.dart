@@ -7,11 +7,11 @@ import 'package:wts_task/core/entities/base_api_response.dart';
 class ApiResponseParser {
   /// Парсинг списка объектов из результата выполненного запроса к API.
   static ApiResponse<List<T>> parseListFromResponse<T>(
-    BaseApiResponse response, {
-    required String key,
-    required T Function(Map<String, dynamic>) fromJson,
-    String? emptyError,
-  }) {
+      BaseApiResponse response, {
+        required String key,
+        required T Function(Map<String, dynamic>) fromJson,
+        String? emptyError,
+      }) {
     try {
       if (response.isError) {
         return ApiResponse.error(
@@ -27,16 +27,20 @@ class ApiResponseParser {
           baseApiResponse: response,
         );
       }
-      final list = (jsonData as List<dynamic>).map((e) {
-        if (e is Map<String, dynamic>) {
-          return fromJson(e);
-        } else {
-          throw FormatException(
-            'Ожидался Map<String, dynamic>, но получен ${e.runtimeType}',
-          );
-        }
-      }).toList();
-      return ApiResponse(result: list, baseApiResponse: response);
+
+      if (jsonData is List) {
+        final list = jsonData
+            .whereType<Map<String, dynamic>>()
+            .map((e) => fromJson(e))
+            .toList();
+
+        return ApiResponse(result: list, baseApiResponse: response);
+      }
+
+      return ApiResponse.error(
+        error: 'Неверный формат данных',
+        baseApiResponse: response,
+      );
     } catch (e, s) {
       log('Parse list error', error: e, stackTrace: s);
       return ApiResponse.error(
@@ -48,11 +52,11 @@ class ApiResponseParser {
 
   /// Парсинг одного объекта из результата выполненного запроса к API.
   static ApiResponse<T> parseObjectFromResponse<T>(
-    BaseApiResponse response, {
-    required T Function(Map<String, dynamic>) fromJson,
-    String? key,
-    String? emptyError,
-  }) {
+      BaseApiResponse response, {
+        required T Function(Map<String, dynamic>) fromJson,
+        String? key,
+        String? emptyError,
+      }) {
     try {
       if (response.isError) {
         return ApiResponse.error(

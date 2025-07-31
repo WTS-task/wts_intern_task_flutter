@@ -23,7 +23,6 @@ class PrivateApi extends DioNetworkService {
       final accessToken = {
         'accessToken': await authRepository.getAccessToken() ?? '',
       };
-      print(await authRepository.getAccessToken());
       options.queryParameters.addAll(accessToken);
     }
     handler.next(options);

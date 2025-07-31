@@ -24,6 +24,7 @@ class CatalogCard extends StatelessWidget {
               imageUrl: item.icon,
               height: 150,
               width: double.infinity,
+              fit: BoxFit.cover,
             ),
           ),
           Padding(
