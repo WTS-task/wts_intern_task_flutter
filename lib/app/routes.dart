@@ -173,6 +173,7 @@ class AppRouter {
     redirect: (BuildContext context, GoRouterState state) async {
       final path = state.uri.path;
       final userSource = context.read<AuthLocalDataSource>();
+
       if (!await userSource.isAuthenticated() && !path.startsWith('/auth')) {
         return '/auth/phone';
       }
