@@ -1,33 +1,25 @@
-import 'package:flutter/cupertino.dart';
-import 'package:wts_task/features/profile/data/fake_orders.dart';
+import 'package:wts_task/core/exceptions/app_exception.dart';
+import 'package:wts_task/core/models/list_model.dart';
+import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
 import 'package:wts_task/features/profile/data/models/order_detail.dart';
+import 'package:wts_task/features/profile/data/repositories/order_history_repository.dart';
 
-import '../../data/repositories/order_history_repository.dart';
+class OrderHistoryViewModel extends ListModel<OrderDetail> {
+  OrderHistoryViewModel();
 
-class OrderHistoryViewModel extends ChangeNotifier {
-  final OrderHistoryRepository _repository = OrderHistoryRepository();
+  final OrderHistoryRepository _repository = OrderHistoryRepository(AuthLocalDataSource());
 
-  // можно вынести переменные в отдельный OrderHistoryViewModelState
-  List<OrderDetail> _orders = [];
-  bool _isLoading = false;
-  String? _error;
-
-  List<OrderDetail> get orders => _orders;
-  bool get isLoading => _isLoading;
-  String? get error => _error;
-
-  Future<void> loadOrders() async {
-    _isLoading = true;
-    _error = null;
-    notifyListeners();
-
+  @override
+  Future<void> loadNextItems(String? loadingUuid) async {
     try {
-      _orders = await _repository.fetchOrderHistory();
+      final response = await _repository.fetchOrderHistory(offset: offset, limit: 10);
+      if (response.isError) {
+        onLoadingError(response.error!);
+        return;
+      }
+      await onNextItemsLoaded(response.result!, loadingUuid);
     } catch (e) {
-      _error = 'Не удалось загрузить заказы';
+      onLoadingError(e is AppException ? e.errorMessage : e.toString());
     }
-
-    _isLoading = false;
-    notifyListeners();
   }
 }

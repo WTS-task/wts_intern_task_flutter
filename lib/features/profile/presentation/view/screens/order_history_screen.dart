@@ -1,199 +1,106 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:provider/provider.dart';
-import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
-import 'package:wts_task/core/widgets/custom_cached_image.dart';
+import 'package:wts_task/core/page/base_list_view_page_state.dart';
+import 'package:wts_task/core/page/base_page.dart';
+import 'package:wts_task/features/profile/data/models/order_detail.dart';
+import 'package:wts_task/features/profile/presentation/view/widgets/order_items_grid.dart';
 import 'package:wts_task/features/profile/presentation/view_models/order_history_view_model.dart';
 import 'package:wts_task/features/profile/utils/datetime_to_string.dart';
 import 'package:wts_task/features/profile/utils/order_status_to_string.dart';
 
-import '../../../../../app/bottom_nav_bar.dart';
-import '../../../../../core/widgets/loading_indicator.dart';
-import '../../../data/models/order_detail.dart';
-import '../../../data/models/shop_order_item.dart';
-
-class OrderHistoryScreen extends StatelessWidget {
-  const OrderHistoryScreen({super.key});
+class OrderHistoryScreen extends BasePage {
+  const OrderHistoryScreen({super.key, super.title = 'Заказы'});
 
   @override
-  Widget build(BuildContext context) {
-    return ChangeNotifierProvider(
-      create: (_) {
-        final vm = OrderHistoryViewModel();
-        vm.loadOrders();
-        return vm;
-      },
-      child: OrderHistoryView(),
-    );
-  }
+  State<OrderHistoryScreen> createState() => _OrderHistoryScreenState();
 }
 
-class OrderHistoryView extends StatelessWidget {
-  const OrderHistoryView({super.key});
+class _OrderHistoryScreenState
+    extends BaseListViewPageState<OrderHistoryScreen, OrderHistoryViewModel> {
+  @override
+  OrderHistoryViewModel createModel() => OrderHistoryViewModel();
 
   @override
-  Widget build(BuildContext context) {
-    final vm = context.watch<OrderHistoryViewModel>();
-
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Заказы', style: AppTextStyles.appBarText),
-        centerTitle: true,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Builder(
-          builder: (_) {
-            if (vm.isLoading) {
-              return loadingIndicator();
-            }
-            if (vm.error != null) {
-              return Center(
-                child: Text(
-                  vm.error!,
-                  style: TextStyle(color: AppColors.error),
-                ),
-              );
-            }
-            if (vm.orders.isEmpty) {
-              return const Center(child: Text('Нет заказов', style: AppTextStyles.bodyMedium,));
-            }
-            return ListView.builder(
-              itemCount: vm.orders.length,
-              itemBuilder: (context, index) {
-                final orderDetail = vm.orders[index];
-                return OrderDetailWidget(orderDetail: orderDetail);
-              },
-            );
-          },
-        ),
-      ),
-    );
+  Widget buildListItemImpl(BuildContext context, int index) {
+    final orderDetail = model.items[index];
+    return OrderDetailWidget(orderDetail: orderDetail);
   }
-}
-
-class OrdersListWidget extends StatelessWidget {
-  final OrderHistoryViewModel vm;
-  const OrdersListWidget({super.key, required this.vm});
 
   @override
-  Widget build(BuildContext context) {
-    final orders = vm.orders;
-    return ListView.builder(
-      itemCount: orders.length,
-      itemBuilder: (context, index) {
-        final orderDetail = orders[index];
-        return OrderDetailWidget(orderDetail: orderDetail);
-      },
-    );
+  EdgeInsetsGeometry listPadding() {
+    return const EdgeInsets.symmetric(horizontal: 16, vertical: 12);
   }
 }
 
 class OrderDetailWidget extends StatelessWidget {
+  const OrderDetailWidget({required this.orderDetail, super.key});
+
   final OrderDetail orderDetail;
-  const OrderDetailWidget({super.key, required this.orderDetail});
 
   @override
   Widget build(BuildContext context) {
-    final order = orderDetail.shopOrder!;
-    final orderItemCount = order.shopOrderItems?.length ?? 0;
-    return Column(
-      children: [
-        InkWell(
-          onTap: () {
-            context.pushNamed(
-              'order_detail',
-              pathParameters: {'id': order.shopOrderId.toString()},
-            );
-          },
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Заказ #${order.shopOrderId}',
-                    style: AppTextStyles.bodyMedium,
-                  ),
-                  InkWell(child: const Icon(Icons.arrow_forward, size: 24)),
-                ],
-              ),
-              Text(
-                '${orderItemCount.toString()} ${orderItemCount > 1 ? 'items' : 'item'}',
-                style: AppTextStyles.bodySmall,
-              ),
-              Text(
-                '${datetimeToString(order.createdAt!)} · ${orderStatusToString(order.status!)}',
-                style: AppTextStyles.bodySmall,
-              ),
-            ],
-          ),
-        ),
-        SizedBox(height: 8),
-        OrderItemsGrid(items: order.shopOrderItems ?? []),
-      ],
-    );
-  }
-}
+    final order = orderDetail.shopOrder;
 
-class OrderItemsGrid extends StatelessWidget {
-  final List<ShopOrderItem> items;
-  const OrderItemsGrid({super.key, required this.items});
+    if (order == null) {
+      return const SizedBox.shrink();
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            mainAxisSpacing: 0,
-            crossAxisSpacing: 8,
-            childAspectRatio: 0.8,
-          ),
-          itemBuilder: (context, index) {
-            final product = items[index];
-            return ProductCard(product: product);
-          },
-          itemCount: items.length,
-        ),
-        SizedBox(height: 10),
-      ],
-    );
-  }
-}
-
-class ProductCard extends StatelessWidget {
-  final ShopOrderItem product;
-  const ProductCard({super.key, required this.product});
-
-  @override
-  Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        CustomCachedImage(
-          imageUrl: product.imageUrl!,
-          width: double.infinity,
-          height: 180,
-          borderRadius: BorderRadius.circular(16),
-        ),
-        SizedBox(height: 5),
-        Text(
-          product.name!,
-          style: TextStyle(
-            fontSize: 16,
-            color: AppColors.primaryText,
-            fontWeight: FontWeight.w400,
-          ),
-          maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-        ),
+        OrderDetailHeader(orderDetail: orderDetail),
+        const SizedBox(height: 12),
+        OrderItemsGrid(items: order.shopOrderItems ?? []),
+        const SizedBox(height: 30),
       ],
+    );
+  }
+}
+
+class OrderDetailHeader extends StatelessWidget {
+  const OrderDetailHeader({required this.orderDetail, super.key});
+
+  final OrderDetail orderDetail;
+
+  @override
+  Widget build(BuildContext context) {
+    final order = orderDetail.shopOrder;
+    final orderItemCount = order?.shopOrderItems?.length ?? 0;
+
+    if (order == null) {
+      return const SizedBox.shrink();
+    }
+
+    return InkWell(
+      onTap: () {
+        final id = orderDetail.shopOrder?.shopOrderId.toString();
+        // context.push('/profile/orders/${id}');
+        context.pushNamed('order_detail', pathParameters: {'id': id!});
+      },
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                'Заказ #${order.shopOrderId}',
+                style: AppTextStyles.bodyMedium,
+              ),
+              const InkWell(child: Icon(Icons.arrow_forward, size: 24)),
+            ],
+          ),
+          Text(
+            '${orderItemCount.toString()} ${(orderItemCount > 1 || orderItemCount == 0) ? 'items' : 'item'}',
+            style: AppTextStyles.bodySmall,
+          ),
+          Text(
+            '${datetimeToString(order.createdAt!)} · ${orderStatusToString(order.status ?? 0)}',
+            style: AppTextStyles.bodySmall,
+          ),
+        ],
+      ),
     );
   }
 }

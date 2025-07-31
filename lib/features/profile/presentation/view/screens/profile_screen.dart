@@ -25,21 +25,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ElevatedButton(
-                onPressed: () {
-                  context.pushNamed('orders');
-                },
-                child: Icon(Icons.history),
-              ),
-              const SizedBox(height: 16),
-              OutlinedButton(
-                onPressed: () {context.go('/support');},
-                child: const Text('Чат с поддержкой'),
-              ),
-            ],
+          child: ElevatedButton(
+            onPressed: () {
+              context.pushNamed('orders');
+            },
+            child: const Icon(Icons.history),
           ),
         ),
       ),
@@ -66,7 +56,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               },
               child: const Text('Выйти', style: TextStyle(color: Colors.red)),
             ),
-            
           ],
         );
       },
