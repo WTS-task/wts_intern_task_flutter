@@ -15,7 +15,7 @@ final fakeOrders = [
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       shopOrderItems: [
-        ShopOrderItem(
+        const ShopOrderItem(
           productId: 101,
           name:
               "Наушники Bluetooth asdsdadsdsasdadadasdadsadsadsasdasdadadsadsasdads",
@@ -24,7 +24,7 @@ final fakeOrders = [
           price: 100,
           count: 1,
         ),
-        ShopOrderItem(
+        const ShopOrderItem(
           productId: 102,
           name: "Чехол для телефона",
           productDescription: "Силиконовый чехол для iPhone",
@@ -47,7 +47,7 @@ final fakeOrders = [
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       shopOrderItems: [
-        ShopOrderItem(
+        const ShopOrderItem(
           productId: 201,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",
@@ -56,7 +56,7 @@ final fakeOrders = [
           price: 12000,
           count: 1,
         ),
-        ShopOrderItem(
+        const ShopOrderItem(
           productId: 211,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",
@@ -65,7 +65,7 @@ final fakeOrders = [
           price: 12000,
           count: 1,
         ),
-        ShopOrderItem(
+        const ShopOrderItem(
           productId: 221,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",
@@ -88,7 +88,7 @@ final fakeOrders = [
       createdAt: DateTime.now().millisecondsSinceEpoch,
       updatedAt: DateTime.now().millisecondsSinceEpoch,
       shopOrderItems: [
-        ShopOrderItem(
+        const ShopOrderItem(
           productId: 201,
           name: "Беспроводная мышь",
           productDescription: "Удобная мышь для ноутбука",

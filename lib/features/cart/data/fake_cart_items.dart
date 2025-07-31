@@ -1,9 +1,9 @@
 import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
-import 'package:wts_task/features/catalog/data/models/product.dart';
+import 'package:wts_task/features/product/data/models/product.dart';
 
 // тестовые товары
 List<CartProductModel> fakeCartItems = [
-  CartProductModel(
+  const CartProductModel(
     count: 1,
     isSelected: true,
     product: Product(
@@ -23,7 +23,7 @@ List<CartProductModel> fakeCartItems = [
       isFavorite: 0,
     ),
   ),
-  CartProductModel(
+  const CartProductModel(
     count: 5,
     isSelected: true,
     product: Product(
@@ -43,7 +43,7 @@ List<CartProductModel> fakeCartItems = [
       isFavorite: 0,
     ),
   ),
-  CartProductModel(
+  const CartProductModel(
     count: 5,
     isSelected: true,
     product: Product(

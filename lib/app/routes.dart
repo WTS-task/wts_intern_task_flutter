@@ -52,7 +52,7 @@ class AppRouter {
         },
       ),
 
-      // Основной интерфейс
+      // Главный интерфейс
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppBottomNavBar(navigationShell: navigationShell);
@@ -63,13 +63,15 @@ class AppRouter {
             routes: [
               GoRoute(
                 path: '/catalog',
-                builder: (context, state) => CatalogScreen(),
+                builder: (context, state) => const CatalogScreen(),
                 routes: [
                   GoRoute(
                     path: 'category',
                     builder: (context, state) {
-                      final categoryId = state.uri.queryParameters['categoryId'];
-                      final catalogName = state.uri.queryParameters['catalogName'];
+                      final categoryId =
+                          state.uri.queryParameters['categoryId'];
+                      final catalogName =
+                          state.uri.queryParameters['catalogName'];
 
                       if (categoryId == null || catalogName == null) {
                         throw Exception("Missing query parameters");
@@ -84,8 +86,10 @@ class AppRouter {
                       GoRoute(
                         path: 'products',
                         builder: (context, state) {
-                          final categoryId = state.uri.queryParameters['categoryId'];
-                          final catalogName = state.uri.queryParameters['catalogName'];
+                          final categoryId =
+                              state.uri.queryParameters['categoryId'];
+                          final catalogName =
+                              state.uri.queryParameters['catalogName'];
 
                           if (categoryId == null || catalogName == null) {
                             throw Exception("Missing query parameters");
@@ -99,11 +103,13 @@ class AppRouter {
                         routes: [
                           GoRoute(
                             path: 'reviews',
-                            builder: (context, state) => const ProductReviewsScreen(),
+                            builder: (context, state) =>
+                                const ProductReviewsScreen(),
                             routes: [
                               GoRoute(
                                 path: 'add',
-                                builder: (context, state) => const AddReviewScreen(),
+                                builder: (context, state) =>
+                                    const AddReviewScreen(),
                               ),
                             ],
                           ),

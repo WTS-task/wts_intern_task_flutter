@@ -80,7 +80,7 @@ class PhoneInputField extends StatelessWidget {
       inputFormatters: [formatter],
       keyboardType: TextInputType.phone,
       validator: validator,
-      decoration: InputDecoration(
+      decoration: const InputDecoration(
         labelText: 'Номер телефона',
         hintText: '+7 (___) ___-__-__',
       ),

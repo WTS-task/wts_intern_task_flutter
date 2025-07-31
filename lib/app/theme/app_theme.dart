@@ -34,7 +34,7 @@ class ThemeBuilder {
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.dividerBorder),
+        borderSide: const BorderSide(color: AppColors.dividerBorder),
       ),
       filled: true,
       fillColor: AppColors.background,

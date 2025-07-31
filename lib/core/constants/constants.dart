@@ -1,3 +1,4 @@
+
 import 'package:wts_task/features/catalog/data/models/category.dart';
 
 class Constants {
@@ -15,5 +16,4 @@ class Constants {
     createdAt: 1748331100,
     updatedAt: 1748331100,
   );
-  static const String accsessToken = "CaIqP7H-gEhJJD4_gu4imh-_ZpV_wFeh";
 }

@@ -1,21 +1,18 @@
-import 'package:wts_task/core/constants/constants.dart';
 import 'package:wts_task/core/entities/api_response.dart';
 import 'package:wts_task/core/services/api/api_response_parser.dart';
-import 'package:wts_task/core/services/api/dio_network_service.dart';
+import 'package:wts_task/core/services/api/private_api.dart';
 import 'package:wts_task/features/catalog/data/models/category.dart';
 
-class CatalogRepository extends DioNetworkService {
-  CatalogRepository();
+class CatalogRepository extends PrivateApi {
+  CatalogRepository(super.authRepository);
 
-  Future<ApiResponse<List<CatalogResponse>>> getCatalogList(
+  Future<ApiResponse<List<CatalogResponse>>> getCatalogList({
     String? categoryId,
-  ) async {
+    int? offset,
+  }) async {
     final response = await get(
       '/category/list',
-      queryParameters: {
-        "accessToken": Constants.accsessToken,
-        "parentId": categoryId,
-      },
+      queryParameters: {"offset": offset, "parentId": categoryId},
     );
     return ApiResponseParser.parseListFromResponse(
       response,

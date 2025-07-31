@@ -35,6 +35,7 @@ dependencies:
   talker_flutter: ^4.4.1
   logger: ^2.6.0
 
+  uuid: any
 dependency_overrides:
   source_gen: ^2.0.0
 

@@ -1,5 +1,5 @@
 import 'package:hive/hive.dart';
-import 'package:wts_task/features/catalog/data/models/product.dart';
+import 'package:wts_task/features/product/data/models/product.dart';
 
 class ProductCacheService {
   static const String _boxName = 'productsByCategoryBox';
