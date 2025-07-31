@@ -69,15 +69,18 @@ class AppRouter {
                     routes: [
                       GoRoute(
                         path: 'product/:productId',
-                        builder: (context, state) => const ProductDetailScreen(),
+                        builder: (context, state) =>
+                            const ProductDetailScreen(),
                         routes: [
                           GoRoute(
                             path: 'reviews',
-                            builder: (context, state) => const ProductReviewsScreen(),
+                            builder: (context, state) =>
+                                const ProductReviewsScreen(),
                             routes: [
                               GoRoute(
                                 path: 'add',
-                                builder: (context, state) => const AddReviewScreen(),
+                                builder: (context, state) =>
+                                    const AddReviewScreen(),
                               ),
                             ],
                           ),
@@ -142,6 +145,7 @@ class AppRouter {
       //Поддержка
       GoRoute(
         path: '/support',
+        name: 'support',
         builder: (context, state) => const SupportChatScreen(),
       ),
     ],

@@ -1,11 +1,11 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/presentation/view/image_viewer_screen.dart';
-import 'base_message_bubble.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_time_label.dart';
+import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/base_message_bubble.dart';
 
 class ImageMessageBubble extends BaseMessageBubble {
-  const ImageMessageBubble({super.key, required super.message});
+  const ImageMessageBubble({required super.message, super.key});
 
   @override
   Widget buildBubble(BuildContext context) {
@@ -13,16 +13,54 @@ class ImageMessageBubble extends BaseMessageBubble {
     final file = this.file!;
     final createdAt = this.createdAt;
     final imagePath = file.url!;
-    Widget imageWidget = Image.file(
-      File(imagePath),
-      fit: BoxFit.cover,
-      width: 200,
-      cacheWidth: 300,
-      errorBuilder: (context, error, stackTrace) => Container(
-        color: Colors.grey[300],
-        child: const Icon(Icons.broken_image, color: Colors.red),
-      ),
-    );
+
+    final isNetworkImage =
+        imagePath.startsWith('http://') || imagePath.startsWith('https://');
+
+    Widget imageWidget;
+
+    if (isNetworkImage) {
+      imageWidget = Image.network(
+        imagePath,
+        fit: BoxFit.cover,
+        cacheWidth: 400,
+        errorBuilder: (context, error, stackTrace) => Container(
+          constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
+          height: 120,
+          color: Colors.grey[300],
+          child: const Icon(Icons.broken_image, color: Colors.red),
+        ),
+        loadingBuilder: (context, child, loadingProgress) {
+          if (loadingProgress == null) return child;
+          return Container(
+            constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
+            height: 120,
+            color: Colors.grey[200],
+            child: Center(
+              child: CircularProgressIndicator(
+                value: loadingProgress.expectedTotalBytes != null
+                    ? loadingProgress.cumulativeBytesLoaded /
+                          loadingProgress.expectedTotalBytes!
+                    : null,
+              ),
+            ),
+          );
+        },
+      );
+    } else {
+      imageWidget = Image.file(
+        File(imagePath),
+        fit: BoxFit.cover,
+        cacheWidth: 400,
+        errorBuilder: (context, error, stackTrace) => Container(
+          constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
+          height: 120,
+          color: Colors.grey[300],
+          child: const Icon(Icons.broken_image, color: Colors.red),
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -32,6 +70,7 @@ class ImageMessageBubble extends BaseMessageBubble {
         );
       },
       child: Container(
+        constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
@@ -67,4 +106,4 @@ class ImageMessageBubble extends BaseMessageBubble {
       ),
     );
   }
-} 
+}

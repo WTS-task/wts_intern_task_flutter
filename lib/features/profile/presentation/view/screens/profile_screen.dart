@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:wts_task/core/services/auth_service.dart';
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -25,11 +26,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
-          child: ElevatedButton(
-            onPressed: () {
-              context.pushNamed('orders');
-            },
-            child: const Icon(Icons.history),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () {
+                  context.pushNamed('orders');
+                },
+                child: const Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.history),
+                    SizedBox(width: 8),
+                    Text('История заказов'),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 16),
+              ElevatedButton(
+                onPressed: () {
+                  context.pushNamed('support');
+                },
+                child: const Text('Чат поддержки'),
+              ),
+            ],
           ),
         ),
       ),
@@ -50,8 +70,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
             TextButton(
               onPressed: () {
-                authService.logout(); // Вызываем logout из AuthService
-                context.go('/auth/phone'); // Перенаправляем на экран авторизации
+                authService.logout();
+                context.go('/auth/phone');
                 Navigator.of(context).pop();
               },
               child: const Text('Выйти', style: TextStyle(color: Colors.red)),
@@ -61,5 +81,4 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
     );
   }
-
 }

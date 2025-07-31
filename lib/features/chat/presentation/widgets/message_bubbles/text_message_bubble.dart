@@ -4,7 +4,7 @@ import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/bubb
 import 'package:wts_task/features/chat/presentation/widgets/message_time_label.dart';
 
 class TextMessageBubble extends BaseMessageBubble {
-  const TextMessageBubble({super.key, required super.message});
+  const TextMessageBubble({required super.message, super.key});
 
   @override
   Widget buildBubble(BuildContext context) {
@@ -13,7 +13,7 @@ class TextMessageBubble extends BaseMessageBubble {
     final createdAt = this.createdAt;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
-      decoration: bubbleDecoration(context, isMe),
+      decoration: bubbleDecoration(context, isMe: isMe),
       child: Row(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.end,
@@ -33,4 +33,4 @@ class TextMessageBubble extends BaseMessageBubble {
       ),
     );
   }
-} 
+}

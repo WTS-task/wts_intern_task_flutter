@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/utils/date_helpers.dart';
 
 class DateSeparatorWidget extends StatelessWidget {
+  const DateSeparatorWidget({required this.timestamp, super.key});
+
   final int? timestamp;
-  const DateSeparatorWidget({super.key, required this.timestamp});
 
   @override
   Widget build(BuildContext context) {
@@ -18,4 +19,4 @@ class DateSeparatorWidget extends StatelessWidget {
       ),
     );
   }
-} 
+}

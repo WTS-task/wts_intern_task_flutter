@@ -34,6 +34,13 @@ dependencies:
   talker_dio_logger: ^4.4.1
   talker_flutter: ^4.4.1
   logger: ^2.6.0
+  file_picker: ^10.2.0
+  image_picker: ^1.1.2
+  open_file: ^3.5.10
+  photo_view: ^0.15.0
+  typed_data: ^1.4.0
+  video_player: ^2.10.0
+  just_audio: ^0.10.4
 
 dependency_overrides:
   source_gen: ^2.0.0

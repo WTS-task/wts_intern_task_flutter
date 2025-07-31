@@ -32,8 +32,7 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
   }
 
   void _handleSend(String text) {
-    final vm = context.read<ChatViewModel>();
-    vm.sendMessage(
+    context.read<ChatViewModel>().sendMessage(
       MessageModel(
         text: text,
         createdAt: DateTime.now().millisecondsSinceEpoch,
@@ -57,7 +56,9 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
         body = const Center(child: Text('Нет сообщений'));
         break;
       case ChatLoadState.error:
-        body = Center(child: Text(state.errorMessage ?? 'Ошибка загрузки чата'));
+        body = Center(
+          child: Text(state.errorMessage ?? 'Ошибка загрузки чата'),
+        );
         break;
       case ChatLoadState.loaded:
         body = ListView.builder(
@@ -106,6 +107,13 @@ class _SupportChatScreenState extends State<SupportChatScreen> {
         title: const Text('Чат с поддержкой'),
         centerTitle: true,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              context.read<ChatViewModel>().refreshMessages();
+            },
+            tooltip: 'Обновить',
+          ),
           const DebugConsolePrintButton(),
           const DebugClearMessagesButton(),
         ],

@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class MessageTimeLabel extends StatelessWidget {
+  const MessageTimeLabel({
+    required this.createdAt,
+    required this.isMe,
+    super.key,
+  });
+
   final DateTime? createdAt;
   final bool isMe;
-  const MessageTimeLabel({super.key, required this.createdAt, required this.isMe});
 
   @override
   Widget build(BuildContext context) {

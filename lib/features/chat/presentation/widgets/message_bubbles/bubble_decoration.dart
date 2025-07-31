@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-BoxDecoration bubbleDecoration(BuildContext context, bool isMe) {
+BoxDecoration bubbleDecoration(BuildContext context, {required bool isMe}) {
   return BoxDecoration(
     color: isMe ? Theme.of(context).primaryColor : Colors.grey[300],
     borderRadius: BorderRadius.only(

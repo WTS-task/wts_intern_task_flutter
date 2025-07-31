@@ -8,12 +8,16 @@ import 'package:wts_task/core/services/api/private_api.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
 import 'package:wts_task/features/cart/data/services/cart_service.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
+import 'package:wts_task/features/chat/data/repositories/message_repository.dart';
+import 'package:wts_task/features/chat/data/services/message_service.dart';
+import 'package:wts_task/features/chat/presentation/view_models/chat_view_model.dart';
 import 'package:wts_task/features/profile/data/repositories/profile_repository.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
   await CartService.init();
+  await MessageService.init();
 
   runApp(
     MultiProvider(
@@ -22,6 +26,10 @@ void main() async {
         Provider(
           lazy: false,
           create: (context) => ProfileRepository(context.read()),
+        ),
+        Provider(
+          lazy: false,
+          create: (context) => MessageRepository(context.read()),
         ),
         ChangeNotifierProvider(
           lazy: false,
@@ -33,6 +41,9 @@ void main() async {
           create: (context) => AppRouter(context.read()),
         ),
         ChangeNotifierProvider(create: (_) => CartViewModel()),
+        ChangeNotifierProvider(
+          create: (context) => ChatViewModel(context.read()),
+        ),
       ],
       child: const MyApp(),
     ),

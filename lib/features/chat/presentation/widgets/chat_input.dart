@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/presentation/widgets/attachment_popup_menu.dart';
 
 class ChatInput extends StatefulWidget {
-  final Function(String) onSend;
-  final Function(String) onAttachmentSelected;
-
- const ChatInput({
-    super.key,
+  const ChatInput({
     required this.onSend,
     required this.onAttachmentSelected,
+    super.key,
   });
+
+  final Function(String) onSend;
+  final Function(String) onAttachmentSelected;
 
   @override
   State<ChatInput> createState() => _ChatInputState();
@@ -31,11 +31,13 @@ class _ChatInputState extends State<ChatInput> {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.all(8.0),
-      decoration: BoxDecoration(color: Colors.white),
+      decoration: const BoxDecoration(color: Colors.white),
       child: SafeArea(
         child: Row(
           children: [
-            AttachmentPopupMenu(onAttachmentSelected: widget.onAttachmentSelected),
+            AttachmentPopupMenu(
+              onAttachmentSelected: widget.onAttachmentSelected,
+            ),
             Expanded(
               child: TextField(
                 controller: _textController,

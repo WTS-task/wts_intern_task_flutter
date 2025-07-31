@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/data/models/message_model.dart';
 
 abstract class BaseMessageBubble extends StatelessWidget {
+  const BaseMessageBubble({required this.message, super.key});
 
   final MessageModel message;
-  const BaseMessageBubble({super.key, required this.message});
 
   bool get isMe => message.isIncoming == 0;
 

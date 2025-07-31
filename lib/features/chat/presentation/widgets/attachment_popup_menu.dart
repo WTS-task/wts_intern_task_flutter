@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 
 class AttachmentPopupMenu extends StatelessWidget {
+  const AttachmentPopupMenu({required this.onAttachmentSelected, super.key});
+
   final Function(String) onAttachmentSelected;
-  const AttachmentPopupMenu({super.key, required this.onAttachmentSelected});
 
   @override
   Widget build(BuildContext context) {
@@ -13,38 +14,48 @@ class AttachmentPopupMenu extends StatelessWidget {
       },
       color: Colors.white,
       itemBuilder: (context) => [
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 'image',
           child: Row(
-            children: const [
+            children: [
               Icon(Icons.image, color: Colors.black54),
               SizedBox(width: 8),
               Text('Изображение'),
             ],
           ),
         ),
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 'camera',
           child: Row(
-            children: const [
+            children: [
               Icon(Icons.camera_alt, color: Colors.black54),
               SizedBox(width: 8),
               Text('Камера'),
             ],
           ),
         ),
-        PopupMenuItem(
+        const PopupMenuItem(
           value: 'document',
           child: Row(
-            children: const [
+            children: [
               Icon(Icons.insert_drive_file, color: Colors.black54),
               SizedBox(width: 8),
               Text('Документ'),
             ],
           ),
         ),
+        const PopupMenuItem(
+          value: 'video',
+          child: Row(
+            children: [
+              Icon(Icons.videocam, color: Colors.black54),
+              SizedBox(width: 8),
+              Text('Видео'),
+            ],
+          ),
+        ),
       ],
-      offset: const Offset(0, -170),
+      offset: const Offset(0, -260),
     );
   }
 }

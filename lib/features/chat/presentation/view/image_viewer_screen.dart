@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 
 class ImageViewerScreen extends StatefulWidget {
-  final String imagePath;
+  const ImageViewerScreen({required this.imagePath, super.key});
 
-  const ImageViewerScreen({super.key, required this.imagePath});
+  final String imagePath;
 
   @override
   State<ImageViewerScreen> createState() => _ImageViewerScreenState();
@@ -22,6 +22,18 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
     });
   }
 
+  ImageProvider _getImageProvider() {
+    final isNetworkImage =
+        widget.imagePath.startsWith('http://') ||
+        widget.imagePath.startsWith('https://');
+
+    if (isNetworkImage) {
+      return NetworkImage(widget.imagePath);
+    } else {
+      return FileImage(File(widget.imagePath));
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,11 +44,38 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
             child: Transform.rotate(
               angle: _rotation * 3.1415926535 / 180,
               child: PhotoView(
-                imageProvider: FileImage(File(widget.imagePath)),
-                backgroundDecoration: const BoxDecoration(color: Colors.black,),
+                imageProvider: _getImageProvider(),
+                backgroundDecoration: const BoxDecoration(color: Colors.black),
                 minScale: PhotoViewComputedScale.contained,
                 maxScale: PhotoViewComputedScale.covered * 2,
                 enableRotation: false,
+                loadingBuilder: (context, event) {
+                  if (event == null) return const SizedBox.shrink();
+                  return Center(
+                    child: CircularProgressIndicator(
+                      value: event.expectedTotalBytes != null
+                          ? event.cumulativeBytesLoaded /
+                                event.expectedTotalBytes!
+                          : null,
+                      color: Colors.white,
+                    ),
+                  );
+                },
+                errorBuilder: (context, error, stackTrace) {
+                  return const Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.broken_image, color: Colors.white, size: 64),
+                        SizedBox(height: 16),
+                        Text(
+                          'Ошибка загрузки изображения',
+                          style: TextStyle(color: Colors.white, fontSize: 16),
+                        ),
+                      ],
+                    ),
+                  );
+                },
               ),
             ),
           ),
@@ -70,7 +109,10 @@ class _ImageViewerScreenState extends State<ImageViewerScreen> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24),
                   ),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                 ),
                 onPressed: _rotateImage,
                 icon: const Icon(Icons.rotate_90_degrees_ccw),

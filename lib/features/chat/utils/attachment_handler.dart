@@ -10,26 +10,30 @@ class AttachmentHandler {
     final vm = context.read<ChatViewModel>();
     if (type == 'image') {
       final imagePicker = ImagePicker();
-      final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.gallery);
+      final XFile? pickedFile = await imagePicker.pickImage(
+        source: ImageSource.gallery,
+      );
       if (pickedFile != null) {
         await vm.sendMessage(
           MessageModel(
             file: FileModel(url: pickedFile.path, type: 'image'),
             createdAt: DateTime.now().millisecondsSinceEpoch,
-            user: UserModel(name: 'Me', avatar: null, userId: 1),
+            user: const UserModel(name: 'Me', avatar: null, userId: 1),
             isIncoming: 0,
           ),
         );
       }
     } else if (type == 'camera') {
       final imagePicker = ImagePicker();
-      final XFile? pickedFile = await imagePicker.pickImage(source: ImageSource.camera);
+      final XFile? pickedFile = await imagePicker.pickImage(
+        source: ImageSource.camera,
+      );
       if (pickedFile != null) {
         await vm.sendMessage(
           MessageModel(
             file: FileModel(url: pickedFile.path, type: 'image'),
             createdAt: DateTime.now().millisecondsSinceEpoch,
-            user: UserModel(name: 'Me', avatar: null, userId: 1),
+            user: const UserModel(name: 'Me', avatar: null, userId: 1),
             isIncoming: 0,
           ),
         );
@@ -39,9 +43,13 @@ class AttachmentHandler {
       if (result != null && result.files.single.path != null) {
         await vm.sendMessage(
           MessageModel(
-            file: FileModel(url: result.files.single.path, type: 'document', originalName: result.files.single.name),
+            file: FileModel(
+              url: result.files.single.path,
+              type: 'document',
+              originalName: result.files.single.name,
+            ),
             createdAt: DateTime.now().millisecondsSinceEpoch,
-            user: UserModel(name: 'Me', avatar: null, userId: 1),
+            user: const UserModel(name: 'Me', avatar: null, userId: 1),
             isIncoming: 0,
           ),
         );

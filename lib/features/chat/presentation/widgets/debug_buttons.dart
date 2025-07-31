@@ -18,13 +18,15 @@ class DebugConsolePrintButton extends StatelessWidget {
         if (jsonString != null) {
           try {
             final decoded = jsonDecode(jsonString);
-            final formatted = const JsonEncoder.withIndent('  ').convert(decoded);
-            print(formatted);
+            final formatted = const JsonEncoder.withIndent(
+              '  ',
+            ).convert(decoded);
+            debugPrint(formatted);
           } catch (e) {
-            print(jsonString);
+            debugPrint(jsonString);
           }
         } else {
-          print('Пусто');
+          debugPrint('Пусто');
         }
       },
     );
@@ -41,7 +43,7 @@ class DebugClearMessagesButton extends StatelessWidget {
       tooltip: 'Clear chat history',
       onPressed: () async {
         final vm = context.read<ChatViewModel>();
-        vm.clearChat();
+        await vm.clearChat();
       },
     );
   }
