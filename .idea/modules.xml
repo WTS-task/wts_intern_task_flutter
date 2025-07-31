@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/wts_intern_task_flutter.iml" filepath="$PROJECT_DIR$/.idea/wts_intern_task_flutter.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/test_shop_task.iml" filepath="$PROJECT_DIR$/.idea/test_shop_task.iml" />
+      <module fileurl="file://$PROJECT_DIR$/android/test_shop_task_android.iml" filepath="$PROJECT_DIR$/android/test_shop_task_android.iml" />
     </modules>
   </component>
 </project>
