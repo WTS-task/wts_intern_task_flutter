@@ -9,13 +9,9 @@ import 'package:wts_task/features/catalog/presentation/model/catalog_model.dart'
 import 'package:wts_task/features/catalog/presentation/view/widgets/catalog_card.dart';
 
 class CatalogScreen extends BasePage {
-
-  const CatalogScreen({
-    super.key,
-    this.categoryId,
-    String? catalogName,
-  })  : catalogName = catalogName ?? 'Каталог',
-        super(title: catalogName ?? 'Каталог');
+  const CatalogScreen({super.key, this.categoryId, String? catalogName})
+    : catalogName = catalogName ?? 'Каталог',
+      super(title: catalogName ?? 'Каталог');
   final String? categoryId;
   final String catalogName;
 
@@ -25,7 +21,12 @@ class CatalogScreen extends BasePage {
   State<CatalogScreen> createState() => _CatalogScreenState();
 }
 
-class _CatalogScreenState extends BaseListViewPageState<CatalogScreen, CatalogModel> {
+class _CatalogScreenState
+    extends BaseListViewPageState<CatalogScreen, CatalogModel> {
+  @override
+  CatalogModel createModel() =>
+      CatalogModel(authLocalDataSource: context.read<AuthLocalDataSource>());
+
   @override
   void initState() {
     if (widget.isRootCatalog) {
