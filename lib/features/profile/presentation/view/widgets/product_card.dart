@@ -24,6 +24,7 @@ class ProductCard extends StatelessWidget {
             width: width,
             height: 180,
             borderRadius: BorderRadius.circular(16),
+            borderWidth: 0.7,
           ),
           const SizedBox(height: 5),
           Text(

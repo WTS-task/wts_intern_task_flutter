@@ -7,17 +7,12 @@ import 'package:wts_task/features/profile/data/repositories/order_history_reposi
 class OrderHistoryViewModel extends ListModel<OrderDetail> {
   OrderHistoryViewModel();
 
-  final OrderHistoryRepository _repository = OrderHistoryRepository(
-    AuthLocalDataSource(),
-  );
+  final OrderHistoryRepository _repository = OrderHistoryRepository(AuthLocalDataSource());
 
   @override
   Future<void> loadNextItems(String? loadingUuid) async {
     try {
-      final response = await _repository.fetchOrderHistory(
-        offset: offset,
-        limit: 10,
-      );
+      final response = await _repository.fetchOrderHistory(offset: offset, limit: 10);
       if (response.isError) {
         onLoadingError(response.error!);
         return;

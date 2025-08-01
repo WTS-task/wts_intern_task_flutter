@@ -16,53 +16,12 @@ class ProductAdapter extends TypeAdapter<Product> {
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Product(
-      productId: fields[0] as int?,
-      name: fields[1] as String?,
-      productDescription: fields[2] as String?,
-      price: fields[3] as double?,
-      userId: fields[4] as int?,
-      categoryId: fields[5] as int?,
-      rating: fields[6] as int?,
-      popularity: fields[7] as int?,
-      imageUrl: fields[8] as String?,
-      images: (fields[9] as List?)?.cast<String>(),
-      createdAt: fields[10] as int?,
-      updatedAt: fields[11] as int?,
-      isFavorite: fields[12] as int?,
-    );
+    return Product();
   }
 
   @override
   void write(BinaryWriter writer, Product obj) {
-    writer
-      ..writeByte(13)
-      ..writeByte(0)
-      ..write(obj.productId)
-      ..writeByte(1)
-      ..write(obj.name)
-      ..writeByte(2)
-      ..write(obj.productDescription)
-      ..writeByte(3)
-      ..write(obj.price)
-      ..writeByte(4)
-      ..write(obj.userId)
-      ..writeByte(5)
-      ..write(obj.categoryId)
-      ..writeByte(6)
-      ..write(obj.rating)
-      ..writeByte(7)
-      ..write(obj.popularity)
-      ..writeByte(8)
-      ..write(obj.imageUrl)
-      ..writeByte(9)
-      ..write(obj.images)
-      ..writeByte(10)
-      ..write(obj.createdAt)
-      ..writeByte(11)
-      ..write(obj.updatedAt)
-      ..writeByte(12)
-      ..write(obj.isFavorite);
+    writer..writeByte(0);
   }
 
   @override
@@ -93,7 +52,7 @@ _Product _$ProductFromJson(Map<String, dynamic> json) => _Product(
   images: (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
   createdAt: (json['createdAt'] as num?)?.toInt(),
   updatedAt: (json['updatedAt'] as num?)?.toInt(),
-  isFavorite: (json['isFavorite'] as num?)?.toInt(),
+  isFavorite: json['isFavorite'] ?? false,
 );
 
 Map<String, dynamic> _$ProductToJson(_Product instance) => <String, dynamic>{

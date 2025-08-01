@@ -18,9 +18,9 @@ class OrderItemsGrid extends StatelessWidget {
           children: items
               .map(
                 (item) => SizedBox(
-              width: itemWidth,
-              child: ProductCard(product: item, width: itemWidth),
-            ),
+                  width: itemWidth,
+                  child: ProductCard(product: item, width: itemWidth),
+                ),
           )
               .toList(),
         );
