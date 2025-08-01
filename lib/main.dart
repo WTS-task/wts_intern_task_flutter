@@ -6,6 +6,7 @@ import 'package:wts_task/app/routes.dart';
 import 'package:wts_task/core/models/app_user.dart';
 import 'package:wts_task/core/services/api/private_api.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
+import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
 import 'package:wts_task/features/cart/data/services/cart_service.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
@@ -31,7 +32,11 @@ void main() async {
         Provider(create: (context) => PrivateApi(context.read())),
         Provider<ProductRepository>(
           lazy: false,
-          create: (context) => MockProductRepository(), //временно для тестирования
+          create: (context) => ProductRepository(context.read()),
+        ),
+        Provider<CartRepository>(
+          lazy: false,
+          create: (context) => CartRepository(),
         ),
         Provider<AppRouter>(
           lazy: false,

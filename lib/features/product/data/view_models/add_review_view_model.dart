@@ -7,12 +7,13 @@ class AddReviewViewModel extends BaseModel {
   AddReviewViewModel(this.repository, this.productId);
 
   final ProductRepository repository;
-  final String productId;
+  final int productId;
   bool _isLoading = false;
+  String? _error;
 
   bool get isLoading => _isLoading;
 
-  String? get error => lastError;
+  String? get error => _error;
 
   final TextEditingController reviewController = TextEditingController();
   final FocusNode reviewFocusNode = FocusNode();
@@ -20,34 +21,52 @@ class AddReviewViewModel extends BaseModel {
 
   void setRating(int value) {
     rating = value;
-    notifyModelListeners();
+    notifyListeners();
   }
 
   Future<void> submitReview(BuildContext context) async {
     if (rating == 0) {
-      addError('Выберите оценку');
+      _error = 'Выберите оценку';
+      notifyModelListeners();
+      return;
+    }
+
+    if (reviewController.text.isEmpty) {
+      _error = 'Введите текст отзыва';
+      notifyModelListeners();
       return;
     }
 
     final review = CreateReviewRequest(
-      targetId: productId,
+      relatedItemId: productId,
+      objectType: 'product',
       text: reviewController.text,
       rating: rating,
     );
 
     try {
       _isLoading = true;
+      _error = null;
       notifyModelListeners();
 
-      await repository.submitReview(review);
+      final response = await repository.submitReview(review);
+
+      if (response.isError) {
+        throw Exception(response.error);
+      }
+
       Navigator.pop(context, true);
-      clearError();
     } catch (e) {
-      addError('Ошибка отправки отзыва');
+      _error = e.toString();
     } finally {
       _isLoading = false;
       notifyModelListeners();
     }
+  }
+
+  void clearError() {
+    _error = null;
+    notifyModelListeners();
   }
 
   @override

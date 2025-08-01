@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 
 class RatingStars extends StatelessWidget {
-  final int rating;
-  final int maxRating;
-  final double size;
-  final bool interactive;
-  final ValueChanged<int>? onRatingChanged;
 
   const RatingStars({
     super.key,
@@ -16,12 +11,18 @@ class RatingStars extends StatelessWidget {
     this.interactive = false,
     this.onRatingChanged,
   });
+  final int rating;
+  final int maxRating;
+  final double size;
+  final bool interactive;
+  final ValueChanged<int>? onRatingChanged;
 
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: List.generate(maxRating, (index) {
+
         return GestureDetector(
           onTap: interactive ? () => onRatingChanged?.call(index + 1) : null,
           child: Padding(

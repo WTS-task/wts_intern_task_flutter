@@ -5,9 +5,9 @@ import 'package:wts_task/features/product/data/models/review/review_model.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/user_avatar.dart';
 
 class FullReviewItem extends StatelessWidget {
-  final Review review;
-
   const FullReviewItem({super.key, required this.review});
+
+  final Review review;
 
   @override
   Widget build(BuildContext context) {
@@ -18,10 +18,10 @@ class FullReviewItem extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(8),
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Color.fromRGBO(158, 158, 158, 0.4),
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -32,14 +32,14 @@ class FullReviewItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               UserAvatar(
-                avatarUrl: review.authorAvatarUrl,
-                userName: review.authorName,
+                avatarUrl: review.user.avatar,
+                userName: review.user.name,
               ),
               const SizedBox(width: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(review.authorName, style: AppTextStyles.reviewUserName),
+                  Text(review.user.name, style: AppTextStyles.reviewUserName),
                   Text(
                     _formatTimeAgo(review.createdAt),
                     style: AppTextStyles.reviewData,
@@ -57,7 +57,8 @@ class FullReviewItem extends StatelessWidget {
     );
   }
 
-  String _formatTimeAgo(DateTime date) {
+  String _formatTimeAgo(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     final now = DateTime.now();
     final difference = now.difference(date);
 

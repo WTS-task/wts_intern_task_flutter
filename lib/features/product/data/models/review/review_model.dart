@@ -7,26 +7,42 @@ part 'review_model.g.dart';
 @freezed
 abstract class Review with _$Review {
   const factory Review({
-    required String id,
-    required String authorId,
-    required String authorName,
-    required String? authorAvatarUrl,
-    required String targetId,
-    required String text,
+    required int reviewId,
+    required int relatedItemId,
+    required String objectType,
     required int rating,
-    required DateTime createdAt,
-    DateTime? updatedAt,
+    required String text,
+    required int moderationStatus,
+    required ReviewUser user,
+    required int createdAt,
+    int? updatedAt,
   }) = _Review;
 
   factory Review.fromJson(Map<String, dynamic> json) => _$ReviewFromJson(json);
 }
 
 @freezed
+abstract class ReviewUser with _$ReviewUser {
+  const factory ReviewUser({
+    required int userId,
+    required String name,
+    String? avatar,
+    required int toRelationStatus,
+    required int fromRelationStatus,
+  }) = _ReviewUser;
+
+  factory ReviewUser.fromJson(Map<String, dynamic> json) =>
+      _$ReviewUserFromJson(json);
+}
+
+@freezed
 abstract class CreateReviewRequest with _$CreateReviewRequest {
   const factory CreateReviewRequest({
-    required String targetId,
+    required int relatedItemId,
+    required String objectType,
     required String text,
     required int rating,
+    int? updatedAt,
   }) = _CreateReviewRequest;
 
   factory CreateReviewRequest.fromJson(Map<String, dynamic> json) =>

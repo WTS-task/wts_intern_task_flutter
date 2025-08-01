@@ -1,21 +1,23 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
-import 'package:wts_task/app/top_app_bar.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
-import 'package:wts_task/core/constants/assets_catalog.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_button.dart';
+import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
+import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 import 'package:wts_task/features/product/data/view_models/product_detail_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/screens/add_review_dialog.dart';
-import 'package:wts_task/features/product/presentation/view/screens/product_reviews_screen.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/price_widget.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/review_item.dart';
 
+import 'package:wts_task/features/product/data/models/product/product.dart';
+
 class ProductDetailScreen extends BasePage {
-  const ProductDetailScreen({required this.productId, super.key});
+  const ProductDetailScreen({required this.productId, super.key})
+    : super(title: 'Детали товара');
 
   final String productId;
 
@@ -25,23 +27,39 @@ class ProductDetailScreen extends BasePage {
 
 class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
   late final ProductDetailViewModel _vm;
+  late final int parsedProductId;
+  late final bool isValidProductId;
 
   @override
   void initState() {
     super.initState();
+
+    final String cleanedProductId = widget.productId.replaceAll(
+      RegExp(r'[^0-9]'),
+      '',
+    );
+    try {
+      if (cleanedProductId.isEmpty) {
+        throw FormatException(
+          'Empty productId after cleaning: ${widget.productId}',
+        );
+      }
+      parsedProductId = int.parse(cleanedProductId);
+      isValidProductId = parsedProductId > 0;
+      if (!isValidProductId) {
+        throw FormatException('Invalid productId: ${widget.productId}');
+      }
+    } catch (e) {
+      parsedProductId = 2;
+      isValidProductId = true;
+    }
+
     _vm = ProductDetailViewModel(
       context.read<ProductRepository>(),
-      widget.productId,
+      parsedProductId,
+      context.read<CartRepository>(),
+      context.read<CartViewModel>(),
     )..loadProduct();
-  }
-
-  @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) {
-    return TopAppBar(
-      title: widget.title ?? 'Детали товара',
-      showBackButton: true,
-      showCartButton: true,
-    );
   }
 
   @override
@@ -54,14 +72,26 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
             return const Center(child: CircularProgressIndicator());
           }
 
-          if (vm.hasError) {
-            return Center(child: Text(vm.lastError ?? 'Ошибка'));
+          if (vm.error != null) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(vm.error!, style: const TextStyle(color: Colors.red)),
+                  const SizedBox(height: 16),
+                  ElevatedButton(
+                    onPressed: vm.loadProduct,
+                    child: const Text('Повторить попытку'),
+                  ),
+                ],
+              ),
+            );
           }
 
           return SingleChildScrollView(
             child: Column(
               children: [
-                _buildProductImage(context),
+                _buildProductImage(context, vm.product),
                 _buildProductInfo(vm),
                 _buildReviewsSection(context, vm),
                 _buildReviewsList(vm),
@@ -74,20 +104,27 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
     );
   }
 
-  Widget _buildProductImage(BuildContext context) {
+  Widget _buildProductImage(BuildContext context, Product? product) {
+    final imageUrl = product?.imageUrl ?? product?.images?.firstOrNull;
+
     return SizedBox(
       width: MediaQuery.of(context).size.width,
       height: MediaQuery.of(context).size.width,
-      child: Image.asset(
-        AssetsCatalog.headphonesImage,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            color: Colors.grey[200],
-            child: const Center(child: Icon(Icons.error_outline)),
-          );
-        },
-      ),
+      child: imageUrl != null
+          ? Image.network(
+              imageUrl,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) =>
+                  _buildErrorPlaceholder(),
+            )
+          : _buildErrorPlaceholder(),
+    );
+  }
+
+  Widget _buildErrorPlaceholder() {
+    return Container(
+      color: Colors.grey[200],
+      child: const Center(child: Icon(Icons.error_outline)),
     );
   }
 
@@ -147,17 +184,15 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
               ),
               InkWell(
                 onTap: () {
-                  print(
-                    'Navigating to reviews, productId: ${widget.productId}',
-                  );
-                  Navigator.push(
+                  final currentRoute = GoRouter.of(
                     context,
-                    MaterialPageRoute(
-                      builder: (context) => ProductReviewsScreen(
-                        productId: widget.productId,
-                        repository: context.read<ProductRepository>(),
-                      ),
-                    ),
+                  ).routeInformationProvider.value.uri.path;
+                  debugPrint(
+                    'Current route: $currentRoute, Navigating to reviews, productId: $parsedProductId',
+                  );
+                  context.push(
+                    '/catalog/category/1/product/$parsedProductId/reviews',
+                    extra: context.read<ProductRepository>(),
                   );
                 },
                 borderRadius: BorderRadius.circular(8),
@@ -199,6 +234,23 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
   }
 
   Widget _buildReviewsList(ProductDetailViewModel vm) {
+    debugPrint(
+      'Reviews count: ${vm.reviews.length}, isLoading: ${vm.isLoading}',
+    );
+    if (vm.isLoading && vm.reviews.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    if (vm.reviews.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: Text('Отзывов пока нет', style: AppTextStyles.reviewsTitle),
+      );
+    }
+
     return Column(
       children: [
         CarouselSlider(
@@ -222,42 +274,58 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
 
   Widget _buildCartButton(ProductDetailViewModel vm) {
     return Padding(
-      padding: const EdgeInsets.all(16),
-      child: SizedBox(
-        width: 358,
-        height: 48,
-        child: Builder(
-          builder: (context) {
-            return Theme(
-              data: Theme.of(context).copyWith(
-                elevatedButtonTheme: ElevatedButtonThemeData(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF4A2C2A),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+        padding: const EdgeInsets.all(16),
+        child: SizedBox(
+          width: 358,
+          height: 48,
+          child: Builder(
+            builder: (context) {
+              return Theme(
+                data: Theme.of(context).copyWith(
+                  elevatedButtonTheme: ElevatedButtonThemeData(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF4A2C2A),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      foregroundColor: Colors.white,
                     ),
-                    foregroundColor: Colors.white,
                   ),
                 ),
-              ),
-              child: CustomButton(
-                title: 'Добавить в корзину',
-                onPressed: vm.addToCart,
-              ),
-            );
-          },
-        ),
-      ),
+                child: CustomButton(
+                  title: 'Добавить в корзину',
+                  onPressed: () async {
+                    await vm.addToCart();
+                    if (vm.error == null) {
+                      showMessage('Товар добавлен в корзину');
+                    } else {
+                      showMessage(vm.error);
+                    }
+                  },
+                ),
+              );
+            },
+          ),
+        )
     );
   }
 
   void _showAddReviewDialog(BuildContext context, ProductDetailViewModel vm) {
+    debugPrint(
+      'Attempting to show review dialog, isValidProductId: $isValidProductId, productId: $parsedProductId',
+    );
+    if (!isValidProductId) {
+      debugPrint(
+        'Cannot show review dialog, invalid productId: $parsedProductId',
+      );
+      return;
+    }
     showDialog(
       context: context,
       builder: (context) => AddReviewDialog(
-        productId: widget.productId,
-        //repository: widget.repository,
+        productId: parsedProductId.toString(),
         productName: vm.product?.name ?? 'Товар',
+        productImageUrl: vm.product?.imageUrl,
       ),
     );
   }

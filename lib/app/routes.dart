@@ -36,7 +36,7 @@ class AppRouter {
   final AppUser appUser;
 
   late final GoRouter appRouter = GoRouter(
-    initialLocation: '/catalog/category/1/product/1', //временно для тестирования
+    initialLocation: '/catalog/category/2/product/2', //временно для тестирования
     observers: [BotToastNavigatorObserver()],
     routes: [
       //Авторизация
@@ -50,7 +50,7 @@ class AppRouter {
           final phone = state.extra as String;
           return OtpScreen(phoneNumber: phone);
         },
-      ),
+        ),
 
       //Главный интерфейс
       StatefulShellRoute.indexedStack(
@@ -71,19 +71,19 @@ class AppRouter {
                       GoRoute(
                         path: 'product/:productId',
                         builder: (context, state) {
-                          final productId = state.pathParameters['productId']!;
+                          final productId = state.pathParameters['productId'] ?? '2';
                           return ProductDetailScreen(productId: productId);
                         },
                         routes: [
                           GoRoute(
                             path: 'reviews',
                             builder: (context, state) {
-                              final productId = state
-                                  .pathParameters['productId']!;
-                              final repository = state
-                                  .extra as ProductRepository;
+                              final productId = state.pathParameters['productId'] ?? '2';
+                              final repository = state.extra as ProductRepository? ?? context.read<ProductRepository>();
                               return ProductReviewsScreen(
-                                  productId: productId, repository: repository);
+                                productId: productId,
+                                repository: repository,
+                              );
                             },
                             routes: [
                               GoRoute(

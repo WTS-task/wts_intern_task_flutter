@@ -6,10 +6,6 @@ import 'package:wts_task/features/product/presentation/view/widgets/user_avatar.
 import 'package:intl/intl.dart';
 
 class ReviewItem extends StatelessWidget {
-  final Review review;
-  final int maxLines;
-  final bool showFullDate;
-
   const ReviewItem({
     super.key,
     required this.review,
@@ -17,19 +13,23 @@ class ReviewItem extends StatelessWidget {
     this.showFullDate = false,
   });
 
+  final Review review;
+  final int maxLines;
+  final bool showFullDate;
+
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 264,
       padding: const EdgeInsets.all(8),
       margin: const EdgeInsets.symmetric(horizontal: 16),
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         color: Colors.white,
         boxShadow: [
           BoxShadow(
             color: Color.fromRGBO(158, 158, 158, 0.4),
             blurRadius: 4,
-            offset: const Offset(0, 2),
+            offset: Offset(0, 2),
           ),
         ],
       ),
@@ -40,24 +40,25 @@ class ReviewItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               UserAvatar(
-                avatarUrl: review.authorAvatarUrl,
-                userName: review.authorName,
+                avatarUrl: review.user.avatar,
+                userName: review.user.name,
               ),
               const SizedBox(width: 12),
-
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    review.authorName,
+                    review.user.name,
                     style: AppTextStyles.reviewUserName,
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
                     showFullDate
                         ? DateFormat('dd.MM.yyyy').format(
-                            review.createdAt,
-                          ) //????
+                            DateTime.fromMillisecondsSinceEpoch(
+                              review.createdAt,
+                            ),
+                          )
                         : _formatTimeAgo(review.createdAt),
                     style: AppTextStyles.reviewData,
                   ),
@@ -65,7 +66,6 @@ class ReviewItem extends StatelessWidget {
               ),
             ],
           ),
-
           const SizedBox(height: 8),
           _buildRatingStars(review.rating),
           const SizedBox(height: 8),
@@ -73,7 +73,7 @@ class ReviewItem extends StatelessWidget {
             child: Text(
               review.text,
               style: AppTextStyles.reviewText,
-              maxLines: 2,
+              maxLines: maxLines,
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -82,7 +82,8 @@ class ReviewItem extends StatelessWidget {
     );
   }
 
-  String _formatTimeAgo(DateTime date) {
+  String _formatTimeAgo(int timestamp) {
+    final date = DateTime.fromMillisecondsSinceEpoch(timestamp);
     final now = DateTime.now();
     final difference = now.difference(date);
 

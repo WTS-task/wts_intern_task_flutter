@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
-import 'package:wts_task/core/constants/assets_catalog.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 import 'package:wts_task/features/product/data/view_models/add_review_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/rating_stars.dart';
@@ -13,10 +12,12 @@ class AddReviewDialog extends StatefulWidget {
     super.key,
     required this.productId,
     required this.productName,
+    required this.productImageUrl,
   });
 
   final String productId;
   final String productName;
+  final String? productImageUrl;
 
   @override
   State<AddReviewDialog> createState() => _AddReviewDialogState();
@@ -24,15 +25,38 @@ class AddReviewDialog extends StatefulWidget {
 
 class _AddReviewDialogState extends State<AddReviewDialog> {
   late final AddReviewViewModel _vm;
+  late final int parsedProductId;
+  late final bool isValidProductId;
 
   @override
   void initState() {
     super.initState();
-    _vm = AddReviewViewModel(context.read<ProductRepository>(), widget.productId);
+
+    try {
+      parsedProductId = int.parse(
+        widget.productId.replaceAll(RegExp(r'[^0-9]'), ''),
+      );
+      isValidProductId = parsedProductId > 0;
+      if (!isValidProductId) {
+        throw FormatException('Invalid productId: ${widget.productId}');
+      }
+    } catch (e) {
+      parsedProductId = 2;
+      isValidProductId = false;
+    }
+
+    _vm = AddReviewViewModel(
+      context.read<ProductRepository>(),
+      parsedProductId,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    if (!isValidProductId) {
+      return const Center(child: Text('Ошибка: некорректный ID товара'));
+    }
+
     return ChangeNotifierProvider.value(
       value: _vm,
       child: Consumer<AddReviewViewModel>(
@@ -79,7 +103,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     );
   }
 
-  _buildHeader() {
+  Widget _buildHeader() {
     return Stack(
       alignment: Alignment.center,
       children: [
@@ -110,7 +134,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     );
   }
 
-  _buildProductInfoRow() {
+  Widget _buildProductInfoRow() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -119,14 +143,15 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
           height: 77,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(12),
-            image: const DecorationImage(
-              image: AssetImage(AssetsCatalog.headphonesImage),
-              fit: BoxFit.cover,
-            ),
+            image: widget.productImageUrl != null
+                ? DecorationImage(
+                    image: NetworkImage(widget.productImageUrl!),
+                    fit: BoxFit.cover,
+                  )
+                : null,
           ),
         ),
         const SizedBox(width: 8),
-
         Expanded(
           child: Text(
             widget.productName,
@@ -139,14 +164,14 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     );
   }
 
-  _buildHelpText() {
+  Widget _buildHelpText() {
     return const Text(
       'Ваш отзыв помогает нам улучшить наш сервис.',
       style: AppTextStyles.reviewText,
     );
   }
 
-  _buildRatingSection(AddReviewViewModel vm) {
+  Widget _buildRatingSection(AddReviewViewModel vm) {
     return RatingStars(
       rating: vm.rating,
       size: 21,
@@ -155,7 +180,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     );
   }
 
-  _buildReviewTextField(AddReviewViewModel vm) {
+  Widget _buildReviewTextField(AddReviewViewModel vm) {
     return Container(
       constraints: const BoxConstraints(minHeight: 120),
       child: TextField(
@@ -176,7 +201,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     );
   }
 
-  _buildSubmitButton(AddReviewViewModel vm, BuildContext context) {
+  Widget _buildSubmitButton(AddReviewViewModel vm, BuildContext context) {
     return vm.isLoading
         ? const Center(child: CircularProgressIndicator())
         : SizedBox(
