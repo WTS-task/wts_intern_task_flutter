@@ -1,20 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:wts_task/core/page/base_page.dart';
 
-class OrderDetailScreen extends StatefulWidget {
-  const OrderDetailScreen({super.key});
+class OrderDetailScreen extends BasePage {
+  const OrderDetailScreen({required this.orderId, super.key})
+    : super(title: 'Заказ #$orderId');
+
+  final String orderId;
 
   @override
   State<OrderDetailScreen> createState() => _OrderDetailScreenState();
 }
 
-class _OrderDetailScreenState extends State<OrderDetailScreen> {
+class _OrderDetailScreenState extends BasePageState<OrderDetailScreen> {
   @override
-  Widget build(BuildContext context) {
-    final orderId = GoRouterState.of(context).pathParameters['id'];
-    return Scaffold(
-      appBar: AppBar(title: Text('Заказ #$orderId'), centerTitle: true,),
-      body: const Center(child: Text('Детали заказа')),
-    );
+  Widget buildBody(BuildContext context) {
+    return const Center(child: Text('Детали заказа'));
   }
 }

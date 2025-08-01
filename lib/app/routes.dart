@@ -158,7 +158,10 @@ class AppRouter {
                       GoRoute(
                         path: ':id',
                         name: 'order_detail',
-                        builder: (context, state) => const OrderDetailScreen(),
+                        builder: (context, state) {
+                          final id = state.pathParameters['id'] ?? '-1';
+                          return OrderDetailScreen(orderId: id);
+                        },
                       ),
                     ],
                   ),

@@ -44,8 +44,7 @@ class _CatalogScreenState
 
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
-    final item = model.items[index];
-
-    return CatalogCard(item: item);
+    // TODO: implement buildListItemImpl
+    throw UnimplementedError();
   }
 }
