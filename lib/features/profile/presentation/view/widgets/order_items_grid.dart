@@ -21,7 +21,7 @@ class OrderItemsGrid extends StatelessWidget {
                   width: itemWidth,
                   child: ProductCard(product: item, width: itemWidth),
                 ),
-          )
+              )
               .toList(),
         );
       },

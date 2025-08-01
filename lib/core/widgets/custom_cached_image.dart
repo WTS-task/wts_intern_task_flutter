@@ -50,7 +50,7 @@ class CustomCachedImage extends StatelessWidget {
       height: height,
       fit: fit,
       placeholder: (context, url) =>
-      placeholder ??
+          placeholder ??
           Center(
             child: SizedBox(
               width: safeIconWidth,
@@ -59,7 +59,7 @@ class CustomCachedImage extends StatelessWidget {
             ),
           ),
       errorWidget: (context, url, error) =>
-      errorWidget ??
+          errorWidget ??
           ErrorImageWidget(
             width: safeIconWidth,
             height: safeIconHeight,
