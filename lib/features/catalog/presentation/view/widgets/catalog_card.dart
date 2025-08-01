@@ -7,7 +7,7 @@ class CatalogCard extends StatelessWidget {
     required this.item, super.key,
   });
 
-  final CatalogResponse item;
+  final Category item;
 
   @override
   Widget build(BuildContext context) {

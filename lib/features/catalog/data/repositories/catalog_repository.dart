@@ -6,7 +6,7 @@ import 'package:wts_task/features/catalog/data/models/category.dart';
 class CatalogRepository extends PrivateApi {
   CatalogRepository(super.authRepository);
 
-  Future<ApiResponse<List<CatalogResponse>>> getCatalogList({
+  Future<ApiResponse<List<Category>>> getCatalogList({
     String? categoryId,
     int? offset,
   }) async {
@@ -16,7 +16,7 @@ class CatalogRepository extends PrivateApi {
     );
     return ApiResponseParser.parseListFromResponse(
       response,
-      fromJson: CatalogResponse.fromJson,
+      fromJson: Category.fromJson,
       emptyError: 'Объекты не найден',
       key: 'categories',
     );

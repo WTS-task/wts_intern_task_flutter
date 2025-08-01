@@ -1,11 +1,9 @@
-import 'package:hive/hive.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wts_task/core/services/api/json_converters.dart';
 
 part 'product.freezed.dart';
 part 'product.g.dart';
 
-@HiveType(typeId: 0)
 @freezed
 abstract class Product with _$Product {
   const factory Product({

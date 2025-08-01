@@ -9,43 +9,62 @@ import 'package:wts_task/features/catalog/presentation/model/catalog_model.dart'
 import 'package:wts_task/features/catalog/presentation/view/widgets/catalog_card.dart';
 
 class CatalogScreen extends BasePage {
-  const CatalogScreen({super.key, super.title = 'Каталог'});
+
+  const CatalogScreen({
+    super.key,
+    this.categoryId,
+    String? catalogName,
+  })  : catalogName = catalogName ?? 'Каталог',
+        super(title: catalogName ?? 'Каталог');
+  final String? categoryId;
+  final String catalogName;
+
+  bool get isRootCatalog => categoryId == null;
 
   @override
   State<CatalogScreen> createState() => _CatalogScreenState();
 }
 
-class _CatalogScreenState
-    extends BaseListViewPageState<CatalogScreen, CatalogModel> {
-  @override
-  CatalogModel createModel() =>
-      CatalogModel(authLocalDataSource: context.read<AuthLocalDataSource>());
+class _CatalogScreenState extends BaseListViewPageState<CatalogScreen, CatalogModel> {
   @override
   void initState() {
-    model.addItem(Constants.allProductCategory, position: 0);
+    if (widget.isRootCatalog) {
+      model.addItem(Constants.allProductCategory, position: 0);
+    }
     super.initState();
   }
 
   @override
+  CatalogModel createModel() => CatalogModel(
+    categoryId: widget.categoryId,
+    authLocalDataSource: context.read<AuthLocalDataSource>(),
+  );
+
+  @override
   void onListItemTap(BuildContext context, int index) {
     final item = model.items[index];
-    final categoryId = item.categoryId.toString();
-    final catalogName = item.title;
+    final routePath = widget.isRootCatalog && index == 0
+        ? '/catalog/category/products' // Для "Все товары"
+        : item.hasSubcategories == 0
+        ? '/catalog/category/products'
+        : '/catalog/category';
 
-    final uri = Uri(
-      path: item.hasSubcategories == 0
-          ? '/catalog/category/products'
-          : '/catalog/category',
-      queryParameters: {'categoryId': categoryId, 'catalogName': catalogName},
+    context.push(
+      Uri(
+        path: routePath,
+        queryParameters: {
+          'categoryId': widget.isRootCatalog && index == 0
+              ? '0' // ID для "Все товары"
+              : item.categoryId.toString(),
+          'catalogName': item.title,
+        },
+      ).toString(),
     );
-
-    context.push(uri.toString());
   }
 
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
     final item = model.items[index];
-
     return CatalogCard(item: item);
   }
 }

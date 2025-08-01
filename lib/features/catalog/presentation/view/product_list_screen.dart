@@ -29,18 +29,8 @@ class _ProductListScreenState
     authLocalDataSource: context.read<AuthLocalDataSource>(),
   );
 
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _searchFocusNode = FocusNode();
-
   @override
   bool get shouldBuildEmptyListPlaceholder => false;
-
-  @override
-  void dispose() {
-    _searchController.dispose();
-    _searchFocusNode.dispose();
-    super.dispose();
-  }
 
   @override
   Widget buildEmptyListPlaceholder(BuildContext context) {
@@ -49,11 +39,9 @@ class _ProductListScreenState
       child: Column(
         children: [
           SearchTextField(
-            controller: _searchController,
             onChanged: (text) {
               model.loadNextItems(null, searchText: text);
             },
-            focusNode: _searchFocusNode,
           ),
           const Expanded(child: Center(child: Text("Нет данных"))),
         ],
@@ -68,11 +56,9 @@ class _ProductListScreenState
       child: Column(
         children: [
           SearchTextField(
-            controller: _searchController,
             onChanged: (text) {
               model.loadNextItems(null, searchText: text);
             },
-            focusNode: _searchFocusNode,
           ),
         ],
       ),

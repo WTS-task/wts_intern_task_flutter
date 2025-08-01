@@ -3,7 +3,7 @@ import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.da
 import 'package:wts_task/features/catalog/data/models/category.dart';
 import 'package:wts_task/features/catalog/data/repositories/catalog_repository.dart';
 
-class CatalogModel extends ListModel<CatalogResponse> {
+class CatalogModel extends ListModel<Category> {
   CatalogModel({required this.authLocalDataSource, this.categoryId});
   final String? categoryId;
   final AuthLocalDataSource authLocalDataSource;
@@ -22,7 +22,7 @@ class CatalogModel extends ListModel<CatalogResponse> {
       return;
     }
 
-    final items = response.result;
+    final items = response.result; //если удалить это, то не будет отображаться только категория "Все товары"
     if (items == null) {
       onLoadingError('Не удалось загрузить каталог');
       return;

@@ -2,7 +2,6 @@ import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-
 import 'package:wts_task/app/bottom_nav_bar.dart';
 import 'package:wts_task/core/models/app_user.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
@@ -13,7 +12,6 @@ import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen
 import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/sub_catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_reviews_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
@@ -77,7 +75,7 @@ class AppRouter {
                         throw Exception("Missing query parameters");
                       }
 
-                      return SubCatalogScreen(
+                      return CatalogScreen(
                         categoryId: categoryId,
                         catalogName: catalogName,
                       );
@@ -158,7 +156,10 @@ class AppRouter {
                       GoRoute(
                         path: ':id',
                         name: 'order_detail',
-                        builder: (context, state) => const OrderDetailScreen(),
+                        builder: (context, state) {
+                          final id = state.pathParameters['id'] ?? '-1';
+                          return OrderDetailScreen(orderId: id);
+                        },
                       ),
                     ],
                   ),
