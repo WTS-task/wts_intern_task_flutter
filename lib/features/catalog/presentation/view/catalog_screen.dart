@@ -36,12 +36,6 @@ class _CatalogScreenState
   }
 
   @override
-  CatalogModel createModel() => CatalogModel(
-    categoryId: widget.categoryId,
-    authLocalDataSource: context.read<AuthLocalDataSource>(),
-  );
-
-  @override
   void onListItemTap(BuildContext context, int index) {
     final item = model.items[index];
     final routePath = widget.isRootCatalog && index == 0
