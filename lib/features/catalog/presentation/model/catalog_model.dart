@@ -22,11 +22,6 @@ class CatalogModel extends ListModel<Category> {
       return;
     }
 
-    final items = response.result; //если удалить это, то не будет отображаться только категория "Все товары"
-    if (items == null) {
-      onLoadingError('Не удалось загрузить каталог');
-      return;
-    }
-    await onNextItemsLoaded(items, loadingUuid);
+    await onNextItemsLoaded(response.result ?? [], loadingUuid);
   }
 }

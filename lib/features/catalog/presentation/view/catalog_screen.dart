@@ -10,8 +10,8 @@ import 'package:wts_task/features/catalog/presentation/view/widgets/catalog_card
 
 class CatalogScreen extends BasePage {
   const CatalogScreen({super.key, this.categoryId, String? catalogName})
-    : catalogName = catalogName ?? 'Каталог',
-      super(title: catalogName ?? 'Каталог');
+      : catalogName = catalogName ?? 'Каталог',
+        super(title: catalogName ?? 'Каталог');
   final String? categoryId;
   final String catalogName;
 
