@@ -20,6 +20,7 @@ class _CatalogScreenState
   @override
   CatalogModel createModel() =>
       CatalogModel(authLocalDataSource: context.read<AuthLocalDataSource>());
+
   @override
   void initState() {
     model.addItem(Constants.allProductCategory, position: 0);
@@ -44,7 +45,7 @@ class _CatalogScreenState
 
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
-    // TODO: implement buildListItemImpl
-    throw UnimplementedError();
+    final item = model.items[index];
+    return CatalogCard(item: item);
   }
 }
