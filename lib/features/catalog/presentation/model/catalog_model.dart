@@ -22,6 +22,6 @@ class CatalogModel extends ListModel<Category> {
       return;
     }
 
-    await onNextItemsLoaded(response.result ?? [], loadingUuid);
+    await onNextItemsLoaded(response.result!, loadingUuid);
   }
 }
