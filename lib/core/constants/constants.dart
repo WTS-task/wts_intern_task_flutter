@@ -1,4 +1,3 @@
-
 import 'package:wts_task/features/catalog/data/models/category.dart';
 
 class Constants {
@@ -11,7 +10,6 @@ class Constants {
     fullName: 'Все товары',
     description: '',
     isPublic: 1,
-    hasSubcategories: 0,
     icon: 'https://s.26-2.ru/images/Kartinka-K/Raznoe-6/Screenshot_15454.jpg',
     createdAt: 1748331100,
     updatedAt: 1748331100,

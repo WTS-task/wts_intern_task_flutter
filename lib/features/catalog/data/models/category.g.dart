@@ -13,10 +13,13 @@ _Category _$CategoryFromJson(Map<String, dynamic> json) => _Category(
   fullName: json['fullName'] as String,
   description: json['description'] as String,
   isPublic: (json['isPublic'] as num).toInt(),
-  hasSubcategories: json['hasSubcategories'] ?? false,
   icon: json['icon'] as String,
   createdAt: (json['createdAt'] as num).toInt(),
   updatedAt: (json['updatedAt'] as num).toInt(),
+  hasSubcategories:
+      json['hasSubcategories'] == null
+          ? false
+          : const BoolJsonConverter().fromJson(json['hasSubcategories']),
 );
 
 Map<String, dynamic> _$CategoryToJson(_Category instance) => <String, dynamic>{
@@ -26,8 +29,10 @@ Map<String, dynamic> _$CategoryToJson(_Category instance) => <String, dynamic>{
   'fullName': instance.fullName,
   'description': instance.description,
   'isPublic': instance.isPublic,
-  'hasSubcategories': instance.hasSubcategories,
   'icon': instance.icon,
   'createdAt': instance.createdAt,
   'updatedAt': instance.updatedAt,
+  'hasSubcategories': const BoolJsonConverter().toJson(
+    instance.hasSubcategories,
+  ),
 };

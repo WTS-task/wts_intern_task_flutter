@@ -10,11 +10,10 @@ import 'package:wts_task/features/catalog/presentation/view/widgets/search_text_
 class ProductListScreen extends BasePage {
   const ProductListScreen({
     required this.categoryId,
-    required this.catalogName,
+    required String catalogName,
     super.key,
   }) : super(title: catalogName);
   final String categoryId;
-  final String catalogName;
 
   @override
   State<ProductListScreen> createState() => _ProductListScreenState();
@@ -22,7 +21,6 @@ class ProductListScreen extends BasePage {
 
 class _ProductListScreenState
     extends BaseGridViewPageState<ProductListScreen, ProductListModel> {
-
   @override
   ProductListModel createModel() => ProductListModel(
     categoryId: widget.categoryId,
@@ -38,11 +36,7 @@ class _ProductListScreenState
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          SearchTextField(
-            onChanged: (text) {
-              model.loadNextItems(null, searchText: text);
-            },
-          ),
+          SearchTextField(onChanged: onSearch),
           const Expanded(child: Center(child: Text("Нет данных"))),
         ],
       ),
@@ -53,15 +47,7 @@ class _ProductListScreenState
   Widget? buildSliverHeader(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
-      child: Column(
-        children: [
-          SearchTextField(
-            onChanged: (text) {
-              model.loadNextItems(null, searchText: text);
-            },
-          ),
-        ],
-      ),
+      child: Column(children: [SearchTextField(onChanged: onSearch)]),
     );
   }
 
@@ -71,5 +57,14 @@ class _ProductListScreenState
     final item = model.items[index];
 
     return ProductItemCard(item: item, theme: theme);
+  }
+
+  void onSearch(String searchString) {
+    if (searchString == model.searchString ||
+        (searchString.isNotEmpty && searchString.length < 2)) {
+      return;
+    }
+    model.searchString = searchString;
+    reloadData();
   }
 }

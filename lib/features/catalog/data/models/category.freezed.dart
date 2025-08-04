@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Category {
 
- int get categoryId; int? get parentCategoryId; String get title; String get fullName; String get description; int get isPublic;@BoolJsonConverter() dynamic get hasSubcategories; String get icon; int get createdAt; int get updatedAt;
+ int get categoryId; int? get parentCategoryId; String get title; String get fullName; String get description; int get isPublic; String get icon; int get createdAt; int get updatedAt;@BoolJsonConverter() bool get hasSubcategories;
 /// Create a copy of Category
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CategoryCopyWith<Category> get copyWith => _$CategoryCopyWithImpl<Category>(thi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Category&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.parentCategoryId, parentCategoryId) || other.parentCategoryId == parentCategoryId)&&(identical(other.title, title) || other.title == title)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&const DeepCollectionEquality().equals(other.hasSubcategories, hasSubcategories)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Category&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.parentCategoryId, parentCategoryId) || other.parentCategoryId == parentCategoryId)&&(identical(other.title, title) || other.title == title)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.hasSubcategories, hasSubcategories) || other.hasSubcategories == hasSubcategories));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,categoryId,parentCategoryId,title,fullName,description,isPublic,const DeepCollectionEquality().hash(hasSubcategories),icon,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,categoryId,parentCategoryId,title,fullName,description,isPublic,icon,createdAt,updatedAt,hasSubcategories);
 
 @override
 String toString() {
-  return 'Category(categoryId: $categoryId, parentCategoryId: $parentCategoryId, title: $title, fullName: $fullName, description: $description, isPublic: $isPublic, hasSubcategories: $hasSubcategories, icon: $icon, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Category(categoryId: $categoryId, parentCategoryId: $parentCategoryId, title: $title, fullName: $fullName, description: $description, isPublic: $isPublic, icon: $icon, createdAt: $createdAt, updatedAt: $updatedAt, hasSubcategories: $hasSubcategories)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CategoryCopyWith<$Res>  {
   factory $CategoryCopyWith(Category value, $Res Function(Category) _then) = _$CategoryCopyWithImpl;
 @useResult
 $Res call({
- int categoryId, int? parentCategoryId, String title, String fullName, String description, int isPublic,@BoolJsonConverter() dynamic hasSubcategories, String icon, int createdAt, int updatedAt
+ int categoryId, int? parentCategoryId, String title, String fullName, String description, int isPublic, String icon, int createdAt, int updatedAt,@BoolJsonConverter() bool hasSubcategories
 });
 
 
@@ -65,7 +65,7 @@ class _$CategoryCopyWithImpl<$Res>
 
 /// Create a copy of Category
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? categoryId = null,Object? parentCategoryId = freezed,Object? title = null,Object? fullName = null,Object? description = null,Object? isPublic = null,Object? hasSubcategories = freezed,Object? icon = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? categoryId = null,Object? parentCategoryId = freezed,Object? title = null,Object? fullName = null,Object? description = null,Object? isPublic = null,Object? icon = null,Object? createdAt = null,Object? updatedAt = null,Object? hasSubcategories = null,}) {
   return _then(_self.copyWith(
 categoryId: null == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
 as int,parentCategoryId: freezed == parentCategoryId ? _self.parentCategoryId : parentCategoryId // ignore: cast_nullable_to_non_nullable
@@ -73,11 +73,11 @@ as int?,title: null == title ? _self.title : title // ignore: cast_nullable_to_n
 as String,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,isPublic: null == isPublic ? _self.isPublic : isPublic // ignore: cast_nullable_to_non_nullable
-as int,hasSubcategories: freezed == hasSubcategories ? _self.hasSubcategories : hasSubcategories // ignore: cast_nullable_to_non_nullable
-as dynamic,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as int,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as int,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as int,
+as int,hasSubcategories: null == hasSubcategories ? _self.hasSubcategories : hasSubcategories // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -162,10 +162,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int categoryId,  int? parentCategoryId,  String title,  String fullName,  String description,  int isPublic, @BoolJsonConverter()  dynamic hasSubcategories,  String icon,  int createdAt,  int updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int categoryId,  int? parentCategoryId,  String title,  String fullName,  String description,  int isPublic,  String icon,  int createdAt,  int updatedAt, @BoolJsonConverter()  bool hasSubcategories)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Category() when $default != null:
-return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullName,_that.description,_that.isPublic,_that.hasSubcategories,_that.icon,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullName,_that.description,_that.isPublic,_that.icon,_that.createdAt,_that.updatedAt,_that.hasSubcategories);case _:
   return orElse();
 
 }
@@ -183,10 +183,10 @@ return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int categoryId,  int? parentCategoryId,  String title,  String fullName,  String description,  int isPublic, @BoolJsonConverter()  dynamic hasSubcategories,  String icon,  int createdAt,  int updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int categoryId,  int? parentCategoryId,  String title,  String fullName,  String description,  int isPublic,  String icon,  int createdAt,  int updatedAt, @BoolJsonConverter()  bool hasSubcategories)  $default,) {final _that = this;
 switch (_that) {
 case _Category():
-return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullName,_that.description,_that.isPublic,_that.hasSubcategories,_that.icon,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullName,_that.description,_that.isPublic,_that.icon,_that.createdAt,_that.updatedAt,_that.hasSubcategories);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +203,10 @@ return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullNa
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int categoryId,  int? parentCategoryId,  String title,  String fullName,  String description,  int isPublic, @BoolJsonConverter()  dynamic hasSubcategories,  String icon,  int createdAt,  int updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int categoryId,  int? parentCategoryId,  String title,  String fullName,  String description,  int isPublic,  String icon,  int createdAt,  int updatedAt, @BoolJsonConverter()  bool hasSubcategories)?  $default,) {final _that = this;
 switch (_that) {
 case _Category() when $default != null:
-return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullName,_that.description,_that.isPublic,_that.hasSubcategories,_that.icon,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullName,_that.description,_that.isPublic,_that.icon,_that.createdAt,_that.updatedAt,_that.hasSubcategories);case _:
   return null;
 
 }
@@ -218,7 +218,7 @@ return $default(_that.categoryId,_that.parentCategoryId,_that.title,_that.fullNa
 @JsonSerializable()
 
 class _Category implements Category {
-  const _Category({required this.categoryId, required this.parentCategoryId, required this.title, required this.fullName, required this.description, required this.isPublic, @BoolJsonConverter() this.hasSubcategories = false, required this.icon, required this.createdAt, required this.updatedAt});
+  const _Category({required this.categoryId, required this.parentCategoryId, required this.title, required this.fullName, required this.description, required this.isPublic, required this.icon, required this.createdAt, required this.updatedAt, @BoolJsonConverter() this.hasSubcategories = false});
   factory _Category.fromJson(Map<String, dynamic> json) => _$CategoryFromJson(json);
 
 @override final  int categoryId;
@@ -227,10 +227,10 @@ class _Category implements Category {
 @override final  String fullName;
 @override final  String description;
 @override final  int isPublic;
-@override@JsonKey()@BoolJsonConverter() final  dynamic hasSubcategories;
 @override final  String icon;
 @override final  int createdAt;
 @override final  int updatedAt;
+@override@JsonKey()@BoolJsonConverter() final  bool hasSubcategories;
 
 /// Create a copy of Category
 /// with the given fields replaced by the non-null parameter values.
@@ -245,16 +245,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Category&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.parentCategoryId, parentCategoryId) || other.parentCategoryId == parentCategoryId)&&(identical(other.title, title) || other.title == title)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&const DeepCollectionEquality().equals(other.hasSubcategories, hasSubcategories)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Category&&(identical(other.categoryId, categoryId) || other.categoryId == categoryId)&&(identical(other.parentCategoryId, parentCategoryId) || other.parentCategoryId == parentCategoryId)&&(identical(other.title, title) || other.title == title)&&(identical(other.fullName, fullName) || other.fullName == fullName)&&(identical(other.description, description) || other.description == description)&&(identical(other.isPublic, isPublic) || other.isPublic == isPublic)&&(identical(other.icon, icon) || other.icon == icon)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.hasSubcategories, hasSubcategories) || other.hasSubcategories == hasSubcategories));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,categoryId,parentCategoryId,title,fullName,description,isPublic,const DeepCollectionEquality().hash(hasSubcategories),icon,createdAt,updatedAt);
+int get hashCode => Object.hash(runtimeType,categoryId,parentCategoryId,title,fullName,description,isPublic,icon,createdAt,updatedAt,hasSubcategories);
 
 @override
 String toString() {
-  return 'Category(categoryId: $categoryId, parentCategoryId: $parentCategoryId, title: $title, fullName: $fullName, description: $description, isPublic: $isPublic, hasSubcategories: $hasSubcategories, icon: $icon, createdAt: $createdAt, updatedAt: $updatedAt)';
+  return 'Category(categoryId: $categoryId, parentCategoryId: $parentCategoryId, title: $title, fullName: $fullName, description: $description, isPublic: $isPublic, icon: $icon, createdAt: $createdAt, updatedAt: $updatedAt, hasSubcategories: $hasSubcategories)';
 }
 
 
@@ -265,7 +265,7 @@ abstract mixin class _$CategoryCopyWith<$Res> implements $CategoryCopyWith<$Res>
   factory _$CategoryCopyWith(_Category value, $Res Function(_Category) _then) = __$CategoryCopyWithImpl;
 @override @useResult
 $Res call({
- int categoryId, int? parentCategoryId, String title, String fullName, String description, int isPublic,@BoolJsonConverter() dynamic hasSubcategories, String icon, int createdAt, int updatedAt
+ int categoryId, int? parentCategoryId, String title, String fullName, String description, int isPublic, String icon, int createdAt, int updatedAt,@BoolJsonConverter() bool hasSubcategories
 });
 
 
@@ -282,7 +282,7 @@ class __$CategoryCopyWithImpl<$Res>
 
 /// Create a copy of Category
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? categoryId = null,Object? parentCategoryId = freezed,Object? title = null,Object? fullName = null,Object? description = null,Object? isPublic = null,Object? hasSubcategories = freezed,Object? icon = null,Object? createdAt = null,Object? updatedAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? categoryId = null,Object? parentCategoryId = freezed,Object? title = null,Object? fullName = null,Object? description = null,Object? isPublic = null,Object? icon = null,Object? createdAt = null,Object? updatedAt = null,Object? hasSubcategories = null,}) {
   return _then(_Category(
 categoryId: null == categoryId ? _self.categoryId : categoryId // ignore: cast_nullable_to_non_nullable
 as int,parentCategoryId: freezed == parentCategoryId ? _self.parentCategoryId : parentCategoryId // ignore: cast_nullable_to_non_nullable
@@ -290,11 +290,11 @@ as int?,title: null == title ? _self.title : title // ignore: cast_nullable_to_n
 as String,fullName: null == fullName ? _self.fullName : fullName // ignore: cast_nullable_to_non_nullable
 as String,description: null == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
 as String,isPublic: null == isPublic ? _self.isPublic : isPublic // ignore: cast_nullable_to_non_nullable
-as int,hasSubcategories: freezed == hasSubcategories ? _self.hasSubcategories : hasSubcategories // ignore: cast_nullable_to_non_nullable
-as dynamic,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
+as int,icon: null == icon ? _self.icon : icon // ignore: cast_nullable_to_non_nullable
 as String,createdAt: null == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as int,updatedAt: null == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
-as int,
+as int,hasSubcategories: null == hasSubcategories ? _self.hasSubcategories : hasSubcategories // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
