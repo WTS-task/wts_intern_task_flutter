@@ -16,10 +16,14 @@ import 'package:wts_task/features/product/presentation/view/widgets/review_item.
 import 'package:wts_task/features/product/data/models/product/product.dart';
 
 class ProductDetailScreen extends BasePage {
-  const ProductDetailScreen({required this.productId, super.key})
-    : super(title: 'Детали товара');
+  const ProductDetailScreen({
+    required this.productId,
+    required this.categoryId,
+    super.key,
+  }) : super(title: 'Детали товара');
 
   final String productId;
+  final String categoryId;
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
@@ -206,14 +210,8 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
               ),
               InkWell(
                 onTap: () {
-                  final currentRoute = GoRouter.of(
-                    context,
-                  ).routeInformationProvider.value.uri.path;
-                  debugPrint(
-                    'Current route: $currentRoute, Navigating to reviews, productId: $parsedProductId',
-                  );
                   context.push(
-                    '/catalog/category/1/product/$parsedProductId/reviews',
+                    '/catalog/category/products/${widget.productId}/reviews',
                     extra: context.read<ProductRepository>(),
                   );
                 },
@@ -342,6 +340,7 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
       );
       return;
     }
+
     showDialog(
       context: context,
       builder: (context) => AddReviewDialog(

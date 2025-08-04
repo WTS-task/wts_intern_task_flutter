@@ -1,4 +1,3 @@
-import 'package:wts_task/core/exceptions/app_exception.dart';
 import 'package:wts_task/core/models/base_model.dart';
 import 'package:wts_task/features/product/data/models/review/review_model.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
@@ -40,18 +39,21 @@ class ProductReviewsViewModel extends BaseModel {
       final response = await repository.getProductReviews(
         productId: productId,
         limit: 10,
-        offset: skipReviews + (_currentPage * 10),
+        offset: skipReviews,
       );
 
       if (response.isError) {
+        if (response.error?.contains('не найдены') ?? false) {
+          _reviews = [];
+          _hasMore = false;
+          return;
+        }
         throw Exception(response.error ?? 'Ошибка загрузки отзывов');
       }
 
       _reviews = response.result ?? [];
       _hasMore = _reviews.length >= 10;
-      _currentPage++;
-    } on AppException catch (e) {
-      _error = e.errorMessage;
+      _currentPage = 1;
     } catch (e) {
       _error = 'Не удалось загрузить отзывы: ${e.toString()}';
     } finally {

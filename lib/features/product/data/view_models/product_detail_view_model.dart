@@ -74,14 +74,14 @@ class ProductDetailViewModel extends BaseModel {
       final cartProduct = CartProductModel(
         count: 1,
         isSelected: true,
-        product: product,
+        product: product!,
       );
 
       await _cartRepository.addProductToCart(cartProduct);
 
       await _repository.addToCart(product!);
 
-      // await _cartViewModel.getCartProducts(); //посмотреть откуда берется
+      await _cartViewModel.loadNextItems(null);
 
       notifyListeners();
     } catch (e) {

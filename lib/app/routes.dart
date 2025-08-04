@@ -106,7 +106,9 @@ class AppRouter {
                             builder: (context, state) {
                               final productId =
                                   state.pathParameters['productId']!;
-                              return ProductDetailScreen(productId: productId);
+                              final categoryId =
+                              state.uri.queryParameters['categoryId'] ?? '';
+                              return ProductDetailScreen(productId: productId, categoryId: categoryId);
                             },
                             routes: [
                               GoRoute(
