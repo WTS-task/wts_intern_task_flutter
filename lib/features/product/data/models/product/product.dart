@@ -1,7 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wts_task/core/services/api/json_converters.dart';
 
 part 'product.freezed.dart';
-
 part 'product.g.dart';
 
 @freezed
@@ -19,7 +19,7 @@ abstract class Product with _$Product {
     List<String>? images,
     int? createdAt,
     int? updatedAt,
-    int? isFavorite,
+    @BoolJsonConverter() @Default(false) isFavorite,
   }) = _Product;
 
   factory Product.fromJson(Map<String, dynamic> json) =>

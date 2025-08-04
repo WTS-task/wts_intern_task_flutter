@@ -9,20 +9,27 @@ class ProductCountWidget extends StatelessWidget {
     required this.onDecrement,
     super.key,
   });
+
   final int count;
   final VoidCallback onIncrement;
   final VoidCallback onDecrement;
 
   @override
   Widget build(BuildContext context) {
+    final isIncrementAvailable = (count < 999);
+    final isDecrementAvailable = (count > 1);
+
     return Row(
       children: [
         IconButton(
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(AppColors.dividerBorder),
           ),
-          onPressed: onDecrement,
-          icon: const Icon(Icons.remove),
+          onPressed: isDecrementAvailable ? onDecrement : null,
+          icon: Icon(
+            Icons.remove,
+            color: isDecrementAvailable ? AppColors.primaryText : Colors.grey,
+          ),
         ),
         const SizedBox(width: 10),
         Text('$count', style: AppTextStyles.bodyMedium),
@@ -31,8 +38,11 @@ class ProductCountWidget extends StatelessWidget {
           style: ButtonStyle(
             backgroundColor: WidgetStateProperty.all(AppColors.dividerBorder),
           ),
-          onPressed: onIncrement,
-          icon: const Icon(Icons.add),
+          onPressed: isIncrementAvailable ? onIncrement : null,
+          icon: Icon(
+            Icons.add,
+            color: isIncrementAvailable ? AppColors.primaryText : Colors.grey,
+          ),
         ),
       ],
     );

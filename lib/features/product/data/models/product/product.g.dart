@@ -19,7 +19,7 @@ _Product _$ProductFromJson(Map<String, dynamic> json) => _Product(
   images: (json['images'] as List<dynamic>?)?.map((e) => e as String).toList(),
   createdAt: (json['createdAt'] as num?)?.toInt(),
   updatedAt: (json['updatedAt'] as num?)?.toInt(),
-  isFavorite: (json['isFavorite'] as num?)?.toInt(),
+  isFavorite: json['isFavorite'] ?? false,
 );
 
 Map<String, dynamic> _$ProductToJson(_Product instance) => <String, dynamic>{

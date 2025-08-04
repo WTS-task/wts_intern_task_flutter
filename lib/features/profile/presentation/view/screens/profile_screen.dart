@@ -29,7 +29,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             onPressed: () {
               context.pushNamed('orders');
             },
-            child: Icon(Icons.history),
+            child: const Icon(Icons.history),
           ),
         ),
       ),
