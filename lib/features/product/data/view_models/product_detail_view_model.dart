@@ -81,7 +81,7 @@ class ProductDetailViewModel extends BaseModel {
 
       await _repository.addToCart(product!);
 
-      await _cartViewModel.getCartProducts();
+      // await _cartViewModel.getCartProducts(); //посмотреть откуда берется
 
       notifyListeners();
     } catch (e) {

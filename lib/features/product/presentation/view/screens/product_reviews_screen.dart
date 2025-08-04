@@ -32,33 +32,37 @@ class _ProductReviewsScreenState extends BasePageState<ProductReviewsScreen> {
   void initState() {
     super.initState();
 
-    final String cleanedProductId = widget.productId.replaceAll(
-      RegExp(r'[^0-9]'),
-      '',
-    );
     try {
+      final String cleanedProductId = widget.productId.replaceAll(
+        RegExp(r'[^0-9]'),
+        '',
+      );
+
       if (cleanedProductId.isEmpty) {
-        throw FormatException(
-          'Empty productId after cleaning: ${widget.productId}',
-        );
+        throw const FormatException('Empty productId after cleaning');
       }
+
       parsedProductId = int.parse(cleanedProductId);
       isValidProductId = parsedProductId > 0;
+
       if (!isValidProductId) {
         throw FormatException('Invalid productId: ${widget.productId}');
       }
     } catch (e) {
-      parsedProductId = 2;
-      isValidProductId = true;
+      isValidProductId = false;
+      debugPrint('Failed to parse product ID: ${widget.productId}. Error: $e');
+      return;
     }
 
-    _vm = ProductReviewsViewModel(
-      repository: widget.repository,
-      productId: parsedProductId,
-      skipReviews: widget.skipReviews,
-    )..loadReviews();
+    if (isValidProductId) {
+      _vm = ProductReviewsViewModel(
+        repository: widget.repository,
+        productId: parsedProductId,
+        skipReviews: widget.skipReviews,
+      )..loadReviews();
 
-    _scrollController.addListener(_scrollListener);
+      _scrollController.addListener(_scrollListener);
+    }
   }
 
   @override

@@ -1,10 +1,9 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/constants.dart';
-import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/product_detail_screen.dart';
-import 'package:wts_task/features/product/data/models/product.dart';
+import 'package:wts_task/features/product/data/models/product/product.dart';
 
 class ProductItemCard extends StatelessWidget {
   const ProductItemCard({
@@ -96,20 +95,31 @@ class ProductItemCard extends StatelessWidget {
   }
 
   void _openProductDetail(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ProductDetailScreen(product: item, productId: ''),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => const ProductDetailScreen(productId: ''), //???
+    //   ),
+    // );
+
+    if (item.productId == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ошибка: у товара отсутствует ID')),
+      );
+      return;
+    }
+
+    context.push('/catalog/category/products/${item.productId}');
   }
 
   void _openCartScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => const CartScreen(),
-      ),
-    );
+    // Navigator.push(
+    //   context,
+    //   MaterialPageRoute(
+    //     builder: (_) => const CartScreen(),
+    //   ),
+    // );
+
+    context.push('/cart');
   }
 }

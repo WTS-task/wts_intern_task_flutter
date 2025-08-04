@@ -26,44 +26,66 @@ class ProductDetailScreen extends BasePage {
 }
 
 class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
-  late final ProductDetailViewModel _vm;
-  late final int parsedProductId;
-  late final bool isValidProductId;
+  ProductDetailViewModel? _vm;
+  late int parsedProductId;
+  late bool isValidProductId;
 
   @override
   void initState() {
     super.initState();
 
-    final String cleanedProductId = widget.productId.replaceAll(
-      RegExp(r'[^0-9]'),
-      '',
-    );
+    isValidProductId = false;
+    parsedProductId = -1;
+
     try {
-      if (cleanedProductId.isEmpty) {
-        throw FormatException(
-          'Empty productId after cleaning: ${widget.productId}',
-        );
+      if (widget.productId.isEmpty) {
+        throw FormatException('Product ID is empty');
       }
+
+      final String cleanedProductId = widget.productId.replaceAll(
+        RegExp(r'[^0-9]'),
+        '',
+      );
+
+      if (cleanedProductId.isEmpty) {
+        throw FormatException('Product ID contains no digits');
+      }
+
       parsedProductId = int.parse(cleanedProductId);
       isValidProductId = parsedProductId > 0;
-      if (!isValidProductId) {
-        throw FormatException('Invalid productId: ${widget.productId}');
+
+      if (isValidProductId) {
+        _vm = ProductDetailViewModel(
+          context.read<ProductRepository>(),
+          parsedProductId,
+          context.read<CartRepository>(),
+          context.read<CartViewModel>(),
+        )..loadProduct();
       }
     } catch (e) {
-      parsedProductId = 2;
-      isValidProductId = true;
+      isValidProductId = false;
+      debugPrint('Failed to parse product ID: ${widget.productId}. Error: $e');
     }
-
-    _vm = ProductDetailViewModel(
-      context.read<ProductRepository>(),
-      parsedProductId,
-      context.read<CartRepository>(),
-      context.read<CartViewModel>(),
-    )..loadProduct();
   }
 
   @override
   Widget buildBody(BuildContext context) {
+    if (!isValidProductId || _vm == null) {
+      return Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Text('Не удалось загрузить товар: некорректный ID'),
+            const SizedBox(height: 16),
+            ElevatedButton(
+              onPressed: () => context.pop(),
+              child: const Text('Вернуться назад'),
+            ),
+          ],
+        ),
+      );
+    }
+
     return ChangeNotifierProvider.value(
       value: _vm,
       child: Consumer<ProductDetailViewModel>(
@@ -274,39 +296,39 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
 
   Widget _buildCartButton(ProductDetailViewModel vm) {
     return Padding(
-        padding: const EdgeInsets.all(16),
-        child: SizedBox(
-          width: 358,
-          height: 48,
-          child: Builder(
-            builder: (context) {
-              return Theme(
-                data: Theme.of(context).copyWith(
-                  elevatedButtonTheme: ElevatedButtonThemeData(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF4A2C2A),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
-                      foregroundColor: Colors.white,
+      padding: const EdgeInsets.all(16),
+      child: SizedBox(
+        width: 358,
+        height: 48,
+        child: Builder(
+          builder: (context) {
+            return Theme(
+              data: Theme.of(context).copyWith(
+                elevatedButtonTheme: ElevatedButtonThemeData(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xFF4A2C2A),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
                     ),
+                    foregroundColor: Colors.white,
                   ),
                 ),
-                child: CustomButton(
-                  title: 'Добавить в корзину',
-                  onPressed: () async {
-                    await vm.addToCart();
-                    if (vm.error == null) {
-                      showMessage('Товар добавлен в корзину');
-                    } else {
-                      showMessage(vm.error);
-                    }
-                  },
-                ),
-              );
-            },
-          ),
-        )
+              ),
+              child: CustomButton(
+                title: 'Добавить в корзину',
+                onPressed: () async {
+                  await vm.addToCart();
+                  if (vm.error == null) {
+                    showMessage('Товар добавлен в корзину');
+                  } else {
+                    showMessage(vm.error);
+                  }
+                },
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 

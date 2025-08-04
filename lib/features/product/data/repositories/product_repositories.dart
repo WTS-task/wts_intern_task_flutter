@@ -9,6 +9,28 @@ import 'package:wts_task/features/product/data/models/review/review_model.dart';
 class ProductRepository extends PrivateApi {
   ProductRepository(super.authRepository);
 
+  Future<ApiResponse<List<Product>>> getProductList({
+    required String categoryId,
+    int? offset,
+    String? searchString,
+  }) async {
+    final response = await get(
+      '/shop/product/list',
+      queryParameters: {
+        if (categoryId != '0') "categoryId": categoryId,
+        "offset": offset,
+        "text": searchString,
+      },
+    );
+
+    return ApiResponseParser.parseListFromResponse(
+      response,
+      fromJson: Product.fromJson,
+      emptyError: 'Объекты не найдены',
+      key: 'products',
+    );
+  }
+
   Future<ApiResponse<Product>> getProductDetails(int productId) async {
     try {
       final response = await get(

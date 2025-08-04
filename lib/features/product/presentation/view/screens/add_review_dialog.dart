@@ -41,14 +41,17 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
         throw FormatException('Invalid productId: ${widget.productId}');
       }
     } catch (e) {
-      parsedProductId = 2;
       isValidProductId = false;
+      debugPrint('Failed to parse product ID: ${widget.productId}. Error: $e');
+      return;
     }
 
-    _vm = AddReviewViewModel(
-      context.read<ProductRepository>(),
-      parsedProductId,
-    );
+    if (isValidProductId) {
+      _vm = AddReviewViewModel(
+        context.read<ProductRepository>(),
+        parsedProductId,
+      );
+    }
   }
 
   @override
