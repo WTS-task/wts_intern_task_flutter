@@ -7,10 +7,9 @@ part of 'order_detail.dart';
 // **************************************************************************
 
 _OrderDetail _$OrderDetailFromJson(Map<String, dynamic> json) => _OrderDetail(
-  shopOrder:
-      json['shopOrder'] == null
-          ? null
-          : ShopOrder.fromJson(json['shopOrder'] as Map<String, dynamic>),
+  shopOrder: json['shopOrder'] == null
+      ? null
+      : ShopOrder.fromJson(json['shopOrder'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$OrderDetailToJson(_OrderDetail instance) =>

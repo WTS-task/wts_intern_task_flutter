@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hive_flutter/hive_flutter.dart';
+import 'package:hive_ce_flutter/adapters.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/app/app.dart';
 import 'package:wts_task/app/routes.dart';
