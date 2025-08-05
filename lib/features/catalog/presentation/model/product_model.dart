@@ -8,31 +8,26 @@ class ProductListModel extends ListModel<Product> {
     required this.categoryId,
     required this.authLocalDataSource,
   });
+
   final AuthLocalDataSource authLocalDataSource;
   final String categoryId;
   late final ProductRepository _productRepository = ProductRepository(
     authLocalDataSource,
   );
 
+  String? searchString;
+
   @override
-  Future<void> loadNextItems(String? loadingUuid, {String? searchText}) async {
+  Future<void> loadNextItems(String? loadingUuid) async {
     final response = await _productRepository.getProductList(
       categoryId: categoryId,
-      text: searchText,
+      searchString: searchString,
       offset: offset,
     );
     if (response.isError) {
-      onLoadingError(response.error ?? 'Ошибка');
-
+      onLoadingError(response.error ?? 'Не удалось загрузить каталог');
       return;
     }
-
-    final items = response.result;
-    if (items == null) {
-      onLoadingError('Не удалось загрузить каталог');
-      return;
-    }
-    if (searchText != null) reset(soft: true);
-    await onNextItemsLoaded(items, loadingUuid);
+    await onNextItemsLoaded(response.result!, loadingUuid);
   }
 }

@@ -14,10 +14,10 @@ abstract class Category with _$Category {
     required String fullName,
     required String description,
     required int isPublic,
-    @BoolJsonConverter() @Default(false) hasSubcategories,
     required String icon,
     required int createdAt,
     required int updatedAt,
+    @BoolJsonConverter() @Default(false) bool hasSubcategories,
   }) = _Category;
 
   factory Category.fromJson(Map<String, dynamic> json) =>

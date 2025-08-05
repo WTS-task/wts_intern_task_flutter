@@ -10,10 +10,8 @@ import 'package:wts_task/features/catalog/presentation/view/widgets/catalog_card
 
 class CatalogScreen extends BasePage {
   const CatalogScreen({super.key, this.categoryId, String? catalogName})
-      : catalogName = catalogName ?? 'Каталог',
-        super(title: catalogName ?? 'Каталог');
+    : super(title: catalogName ?? 'Каталог');
   final String? categoryId;
-  final String catalogName;
 
   bool get isRootCatalog => categoryId == null;
 
@@ -24,8 +22,10 @@ class CatalogScreen extends BasePage {
 class _CatalogScreenState
     extends BaseListViewPageState<CatalogScreen, CatalogModel> {
   @override
-  CatalogModel createModel() =>
-      CatalogModel(authLocalDataSource: context.read<AuthLocalDataSource>());
+  CatalogModel createModel() => CatalogModel(
+    authLocalDataSource: context.read<AuthLocalDataSource>(),
+    categoryId: widget.categoryId,
+  );
 
   @override
   void initState() {
@@ -39,8 +39,8 @@ class _CatalogScreenState
   void onListItemTap(BuildContext context, int index) {
     final item = model.items[index];
     final routePath = widget.isRootCatalog && index == 0
-        ? '/catalog/category/products' // Для "Все товары"
-        : item.hasSubcategories == 0
+        ? '/catalog/category/products'
+        : !item.hasSubcategories
         ? '/catalog/category/products'
         : '/catalog/category';
 

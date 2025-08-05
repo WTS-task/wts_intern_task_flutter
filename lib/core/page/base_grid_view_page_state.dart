@@ -51,6 +51,9 @@ abstract class BaseGridViewPageState<
   /// Переопределить, чтобы задать "шапку" сетки.
   Widget? buildGridHeaderImpl(BuildContext context) => null;
 
+  static const _scrollThreshold = 200.0;
+  bool isLoading = false;
+
   ScrollController? scrollController;
   @protected
   bool isPrimary = true;
@@ -230,6 +233,26 @@ abstract class BaseGridViewPageState<
   @override
   bool get shouldBuildEmptyListPlaceholder => !hasGridHeader && !hasGridFooter;
 
+
+  @override
+  void initState() {
+    scrollController = ScrollController();
+    scrollController?.addListener(_onScroll);
+    super.initState();
+  }
+
+  void _onScroll() {
+    final maxScroll = scrollController?.position.maxScrollExtent;
+    final currentScroll = scrollController?.position.pixels;
+
+    if (maxScroll! - currentScroll! <= _scrollThreshold && !isLoading) {
+      isLoading = true;
+      model.loadNextItems(model.lastLoadingUuid).then((_) {
+        isLoading = false;
+      });
+    }
+  }
+  
   @override
   void dispose() {
     scrollController?.dispose();

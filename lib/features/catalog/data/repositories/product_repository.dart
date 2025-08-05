@@ -9,26 +9,14 @@ class ProductRepository extends PrivateApi {
   Future<ApiResponse<List<Product>>> getProductList({
     required String categoryId,
     int? offset,
-    String? text,
-  }) async {
-    return await fetchProductsFromServer(
-      offset: offset,
-      categoryId: categoryId,
-      text: text,
-    );
-  }
-
-  Future<ApiResponse<List<Product>>> fetchProductsFromServer({
-    String? categoryId,
-    String? text,
-    int? offset,
+    String? searchString,
   }) async {
     final response = await get(
       '/shop/product/list',
       queryParameters: {
         if (categoryId != '0') "categoryId": categoryId,
         "offset": offset,
-        "text": text,
+        "text": searchString,
       },
     );
 
