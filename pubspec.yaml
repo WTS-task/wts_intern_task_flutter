@@ -37,8 +37,8 @@ dependencies:
   timeago: ^3.7.1
   modal_bottom_sheet: ^3.0.0
   image_picker: 0.8.6
+  uuid: ^4.5.1
 
-  uuid: any
 dependency_overrides:
   source_gen: ^2.0.0
 

@@ -53,10 +53,9 @@ class _ProductListScreenState
 
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
-    final theme = Theme.of(context);
     final item = model.items[index];
 
-    return ProductItemCard(item: item, theme: theme);
+    return ProductItemCard(item: item);
   }
 
   void onSearch(String searchString) {

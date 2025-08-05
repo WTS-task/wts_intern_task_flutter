@@ -75,7 +75,7 @@ abstract class BaseGridViewPageState<
         padding: const EdgeInsets.symmetric(horizontal: 8.0),
         sliver: SliverGrid(
           delegate: SliverChildBuilderDelegate(
-            (context, index) => buildListItemImpl(context, index),
+            buildListItem,
             childCount: model.items.length,
           ),
           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(

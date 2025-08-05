@@ -22,25 +22,33 @@ class CatalogScreen extends BasePage {
 class _CatalogScreenState
     extends BaseListViewPageState<CatalogScreen, CatalogModel> {
   @override
+  bool get hasListHeader => widget.isRootCatalog;
+
+  @override
   CatalogModel createModel() => CatalogModel(
     authLocalDataSource: context.read<AuthLocalDataSource>(),
     categoryId: widget.categoryId,
   );
 
   @override
-  void initState() {
-    if (widget.isRootCatalog) {
-      model.addItem(Constants.allProductCategory, position: 0);
-    }
-    super.initState();
+  Widget buildListHeaderImpl(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        context.push(
+          Uri(
+            path: '/catalog/category/products',
+            queryParameters: {'categoryId': '0', 'catalogName': 'Все товары'},
+          ).toString(),
+        );
+      },
+      child: const CatalogCard(item: Constants.allProductCategory),
+    );
   }
 
   @override
   void onListItemTap(BuildContext context, int index) {
     final item = model.items[index];
-    final routePath = widget.isRootCatalog && index == 0
-        ? '/catalog/category/products'
-        : !item.hasSubcategories
+    final routePath = !item.hasSubcategories
         ? '/catalog/category/products'
         : '/catalog/category';
 
@@ -48,9 +56,7 @@ class _CatalogScreenState
       Uri(
         path: routePath,
         queryParameters: {
-          'categoryId': widget.isRootCatalog && index == 0
-              ? '0' // ID для "Все товары"
-              : item.categoryId.toString(),
+          'categoryId': item.categoryId.toString(),
           'catalogName': item.title,
         },
       ).toString(),

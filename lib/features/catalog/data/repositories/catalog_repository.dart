@@ -12,7 +12,7 @@ class CatalogRepository extends PrivateApi {
   }) async {
     final response = await get(
       '/category/list',
-      queryParameters: {"offset": offset, "parentId": categoryId},
+      queryParameters: {"offset": offset, "parentId": ?categoryId},
     );
     return ApiResponseParser.parseListFromResponse(
       response,
