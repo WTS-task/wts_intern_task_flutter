@@ -5,7 +5,7 @@ import 'package:wts_task/core/widgets/loading_indicator.dart';
 /// Если нужна обводка картинки - указать borderWidth
 class CustomCachedImage extends StatelessWidget {
   const CustomCachedImage({
-    required this.imageUrl,
+    this.imageUrl,
     super.key,
     this.width,
     this.height,
@@ -16,9 +16,10 @@ class CustomCachedImage extends StatelessWidget {
     this.borderColor = Colors.black,
     this.borderWidth = 0.0,
   });
+
   static const double defaultSize = 150.0;
 
-  final String imageUrl;
+  final String? imageUrl;
   final double? width;
   final double? height;
   final BoxFit fit;
@@ -34,7 +35,7 @@ class CustomCachedImage extends StatelessWidget {
     final iconHeight = height ?? defaultSize;
     final safeIconWidth = iconWidth.isFinite ? iconWidth : defaultSize;
     final safeIconHeight = iconHeight.isFinite ? iconHeight : defaultSize;
-    if (imageUrl.trim().isEmpty) {
+    if (imageUrl?.trim().isEmpty ?? true) {
       return errorWidget ??
           ErrorImageWidget(
             width: safeIconWidth,
@@ -45,7 +46,7 @@ class CustomCachedImage extends StatelessWidget {
           );
     }
     Widget image = CachedNetworkImage(
-      imageUrl: imageUrl,
+      imageUrl: imageUrl!,
       width: width,
       height: height,
       fit: fit,

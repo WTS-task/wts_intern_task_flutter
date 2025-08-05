@@ -6,7 +6,7 @@ class SecureStorage {
   static final SecureStorage _instance = SecureStorage._();
 
   static SecureStorage get instance => _instance;
-  final storage = FlutterSecureStorage();
+  final storage = const FlutterSecureStorage();
 
   Future<String?> getValue(String key) async {
     return await storage.read(key: key);

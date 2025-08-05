@@ -7,11 +7,11 @@ import 'package:wts_task/core/entities/base_api_response.dart';
 class ApiResponseParser {
   /// Парсинг списка объектов из результата выполненного запроса к API.
   static ApiResponse<List<T>> parseListFromResponse<T>(
-    BaseApiResponse response, {
-    required String key,
-    required T Function(Map<String, dynamic>) fromJson,
-    String? emptyError,
-  }) {
+      BaseApiResponse response, {
+        required String key,
+        required T Function(Map<String, dynamic>) fromJson,
+        String? emptyError,
+      }) {
     try {
       if (response.isError) {
         return ApiResponse.error(
@@ -52,11 +52,11 @@ class ApiResponseParser {
 
   /// Парсинг одного объекта из результата выполненного запроса к API.
   static ApiResponse<T> parseObjectFromResponse<T>(
-    BaseApiResponse response, {
-    required T Function(Map<String, dynamic>) fromJson,
-    String? key,
-    String? emptyError,
-  }) {
+      BaseApiResponse response, {
+        required T Function(Map<String, dynamic>) fromJson,
+        String? key,
+        String? emptyError,
+      }) {
     try {
       if (response.isError) {
         return ApiResponse.error(
