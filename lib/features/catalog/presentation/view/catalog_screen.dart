@@ -32,15 +32,23 @@ class _CatalogScreenState
 
   @override
   Widget buildListHeaderImpl(BuildContext context) {
-    return const CatalogCard(item: Constants.allProductCategory);
+    return GestureDetector(
+      onTap: () {
+        context.push(
+          Uri(
+            path: '/catalog/category/products',
+            queryParameters: {'categoryId': '0', 'catalogName': 'Все товары'},
+          ).toString(),
+        );
+      },
+      child: const CatalogCard(item: Constants.allProductCategory),
+    );
   }
 
   @override
   void onListItemTap(BuildContext context, int index) {
     final item = model.items[index];
-    final routePath = widget.isRootCatalog && index == 0
-        ? '/catalog/category/products'
-        : !item.hasSubcategories
+    final routePath = !item.hasSubcategories
         ? '/catalog/category/products'
         : '/catalog/category';
 
@@ -48,9 +56,7 @@ class _CatalogScreenState
       Uri(
         path: routePath,
         queryParameters: {
-          'categoryId': widget.isRootCatalog && index == 0
-              ? '0' // ID для "Все товары"
-              : item.categoryId.toString(),
+          'categoryId': item.categoryId.toString(),
           'catalogName': item.title,
         },
       ).toString(),
