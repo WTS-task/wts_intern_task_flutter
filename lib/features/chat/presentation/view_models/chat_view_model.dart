@@ -95,7 +95,14 @@ class ChatViewModel extends ChangeNotifier {
   Future<void> sendMessage(MessageModel message, {int chatId = 2}) async {
     try {
       await _repository.addMessage(message);
-      await loadMessages(chatId: chatId);
+
+      final currentMessages = List<MessageModel>.from(_state.messages);
+      currentMessages.add(message);
+      _state = _state.copyWith(
+        messages: currentMessages,
+        loadState: ChatLoadState.loaded,
+      );
+      notifyListeners();
 
       final apiResponse = await _repository.sendMessage(
         chatId: chatId,
@@ -111,6 +118,46 @@ class ChatViewModel extends ChangeNotifier {
       } else {
         _lastApiUpdate = DateTime.now();
       }
+    } catch (e) {
+      _state = _state.copyWith(
+        loadState: ChatLoadState.error,
+        errorMessage: e.toString(),
+      );
+      notifyListeners();
+    }
+  }
+
+  Future<void> sendFileMessage({
+    required String filePath,
+    required String fileName,
+    required String fileType,
+    int chatId = 2,
+  }) async {
+    try {
+      final message = MessageModel(
+        text: null,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+        user: UserModel(name: 'Me', avatar: null, userId: 1),
+        isIncoming: 0,
+        file: FileModel(
+          url: filePath,
+          type: fileType,
+          originalName: fileName,
+          createdAt: DateTime.now().millisecondsSinceEpoch,
+        ),
+      );
+
+      await _repository.addMessage(message);
+
+      final currentMessages = List<MessageModel>.from(_state.messages);
+      currentMessages.add(message);
+      _state = _state.copyWith(
+        messages: currentMessages,
+        loadState: ChatLoadState.loaded,
+      );
+      notifyListeners();
+
+      _lastApiUpdate = DateTime.now();
     } catch (e) {
       _state = _state.copyWith(
         loadState: ChatLoadState.error,

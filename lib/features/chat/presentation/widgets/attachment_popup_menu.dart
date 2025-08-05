@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wts_task/features/chat/presentation/widgets/voice_record_dialog.dart';
 
 class AttachmentPopupMenu extends StatelessWidget {
   const AttachmentPopupMenu({required this.onAttachmentSelected, super.key});
@@ -10,7 +11,17 @@ class AttachmentPopupMenu extends StatelessWidget {
     return PopupMenuButton<String>(
       icon: Icon(Icons.attach_file, color: Colors.grey[600]),
       onSelected: (value) async {
-        onAttachmentSelected(value);
+        if (value == 'audio') {
+          final path = await showDialog<String>(
+            context: context,
+            builder: (context) => const VoiceRecordDialog(),
+          );
+          if (path != null) {
+            onAttachmentSelected('voice_file:$path');
+          }
+        } else {
+          onAttachmentSelected(value);
+        }
       },
       color: Colors.white,
       itemBuilder: (context) => [
@@ -51,6 +62,16 @@ class AttachmentPopupMenu extends StatelessWidget {
               Icon(Icons.videocam, color: Colors.black54),
               SizedBox(width: 8),
               Text('Видео'),
+            ],
+          ),
+        ),
+        const PopupMenuItem(
+          value: 'audio',
+          child: Row(
+            children: [
+              Icon(Icons.mic, color: Colors.black54),
+              SizedBox(width: 8),
+              Text('Голосовое сообщение'),
             ],
           ),
         ),
