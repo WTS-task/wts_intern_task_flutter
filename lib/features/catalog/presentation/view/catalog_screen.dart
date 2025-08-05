@@ -22,17 +22,17 @@ class CatalogScreen extends BasePage {
 class _CatalogScreenState
     extends BaseListViewPageState<CatalogScreen, CatalogModel> {
   @override
+  bool get hasListHeader => widget.isRootCatalog;
+
+  @override
   CatalogModel createModel() => CatalogModel(
     authLocalDataSource: context.read<AuthLocalDataSource>(),
     categoryId: widget.categoryId,
   );
 
   @override
-  void initState() {
-    if (widget.isRootCatalog) {
-      model.addItem(Constants.allProductCategory, position: 0);
-    }
-    super.initState();
+  Widget buildListHeaderImpl(BuildContext context) {
+    return const CatalogCard(item: Constants.allProductCategory);
   }
 
   @override

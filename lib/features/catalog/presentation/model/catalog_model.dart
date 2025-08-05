@@ -5,6 +5,7 @@ import 'package:wts_task/features/catalog/data/repositories/catalog_repository.d
 
 class CatalogModel extends ListModel<Category> {
   CatalogModel({required this.authLocalDataSource, this.categoryId});
+
   final String? categoryId;
   final AuthLocalDataSource authLocalDataSource;
   late final CatalogRepository _catalogRepository = CatalogRepository(
@@ -24,4 +25,7 @@ class CatalogModel extends ListModel<Category> {
 
     await onNextItemsLoaded(response.result!, loadingUuid);
   }
+
+  @override
+  bool checkAllLoaded(List<Category> nextItems) => true;
 }
