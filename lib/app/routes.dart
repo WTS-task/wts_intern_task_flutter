@@ -11,7 +11,6 @@ import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dar
 import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/product_detail_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_reviews_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
@@ -38,7 +37,7 @@ class AppRouter {
     initialLocation: '/catalog',
     observers: [BotToastNavigatorObserver()],
     routes: [
-      //Авторизация
+      // Авторизация
       GoRoute(
         path: '/auth/phone',
         builder: (context, state) => const PhoneAuthScreen(),
@@ -51,12 +50,13 @@ class AppRouter {
         },
       ),
 
-      //Главный интерфейс
+      // Главный интерфейс
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
           return AppBottomNavBar(navigationShell: navigationShell);
         },
         branches: [
+          // Каталог
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -64,20 +64,50 @@ class AppRouter {
                 builder: (context, state) => const CatalogScreen(),
                 routes: [
                   GoRoute(
-                    path: 'category/:categoryId',
-                    builder: (context, state) => const ProductListScreen(),
+                    path: 'category',
+                    builder: (context, state) {
+                      final categoryId =
+                          state.uri.queryParameters['categoryId'];
+                      final catalogName =
+                          state.uri.queryParameters['catalogName'];
+
+                      if (categoryId == null || catalogName == null) {
+                        throw Exception("Missing query parameters");
+                      }
+
+                      return CatalogScreen(
+                        categoryId: categoryId,
+                        catalogName: catalogName,
+                      );
+                    },
                     routes: [
                       GoRoute(
-                        path: 'product/:productId',
-                        builder: (context, state) => const ProductDetailScreen(),
+                        path: 'products',
+                        builder: (context, state) {
+                          final categoryId =
+                              state.uri.queryParameters['categoryId'];
+                          final catalogName =
+                              state.uri.queryParameters['catalogName'];
+
+                          if (categoryId == null || catalogName == null) {
+                            throw Exception("Missing query parameters");
+                          }
+
+                          return ProductListScreen(
+                            categoryId: categoryId,
+                            catalogName: catalogName,
+                          );
+                        },
                         routes: [
                           GoRoute(
                             path: 'reviews',
-                            builder: (context, state) => const ProductReviewsScreen(),
+                            builder: (context, state) =>
+                                const ProductReviewsScreen(),
                             routes: [
                               GoRoute(
                                 path: 'add',
-                                builder: (context, state) => const AddReviewScreen(),
+                                builder: (context, state) =>
+                                    const AddReviewScreen(),
                               ),
                             ],
                           ),
@@ -107,7 +137,7 @@ class AppRouter {
             ],
           ),
 
-          //Профиль
+          // Профиль
           StatefulShellBranch(
             routes: [
               GoRoute(
@@ -139,7 +169,8 @@ class AppRouter {
           ),
         ],
       ),
-      //Поддержка
+
+      // Поддержка
       GoRoute(
         path: '/support',
         builder: (context, state) => const SupportChatScreen(),
@@ -149,10 +180,12 @@ class AppRouter {
     redirect: (BuildContext context, GoRouterState state) async {
       final path = state.uri.path;
       final userSource = context.read<AuthLocalDataSource>();
+
       if (!await userSource.isAuthenticated() && !path.startsWith('/auth')) {
         return '/auth/phone';
       }
-      return state.fullPath;
+
+      return null;
     },
   );
 }
