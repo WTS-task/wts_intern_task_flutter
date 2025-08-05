@@ -57,13 +57,6 @@ class ProductItemCard extends StatelessWidget {
   }
 
   void _openProductDetail(BuildContext context) {
-    if (item.productId == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ошибка: у товара отсутствует ID')),
-      );
-      return;
-    }
-
     context.push('/catalog/category/products/${item.productId}');
   }
 
