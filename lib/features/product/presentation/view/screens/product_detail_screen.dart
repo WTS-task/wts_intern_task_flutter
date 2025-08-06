@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
+import 'package:wts_task/core/page/base_item_details_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_button.dart';
 import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
@@ -12,7 +13,6 @@ import 'package:wts_task/features/product/data/view_models/product_detail_view_m
 import 'package:wts_task/features/product/presentation/view/screens/add_review_dialog.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/price_widget.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/review_item.dart';
-
 import 'package:wts_task/features/product/data/models/product/product.dart';
 
 class ProductDetailScreen extends BasePage {
@@ -29,15 +29,14 @@ class ProductDetailScreen extends BasePage {
   State<ProductDetailScreen> createState() => _ProductDetailScreenState();
 }
 
-class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
-  ProductDetailViewModel? _vm;
+class _ProductDetailScreenState
+    extends
+        BaseItemDetailsPageState<ProductDetailScreen, ProductDetailViewModel> {
   late int parsedProductId;
   late bool isValidProductId;
 
   @override
-  void initState() {
-    super.initState();
-
+  ProductDetailViewModel createModel() {
     isValidProductId = false;
     parsedProductId = -1;
 
@@ -58,23 +57,27 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
       parsedProductId = int.parse(cleanedProductId);
       isValidProductId = parsedProductId > 0;
 
-      if (isValidProductId) {
-        _vm = ProductDetailViewModel(
-          context.read<ProductRepository>(),
-          parsedProductId,
-          context.read<CartRepository>(),
-          context.read<CartViewModel>(),
-        )..loadProduct();
-      }
+      return ProductDetailViewModel(
+        context.read<ProductRepository>(),
+        parsedProductId,
+        context.read<CartRepository>(),
+        context.read<CartViewModel>(),
+      );
     } catch (e) {
       isValidProductId = false;
       debugPrint('Failed to parse product ID: ${widget.productId}. Error: $e');
+      return ProductDetailViewModel(
+        context.read<ProductRepository>(),
+        -1,
+        context.read<CartRepository>(),
+        context.read<CartViewModel>(),
+      );
     }
   }
 
   @override
-  Widget buildBody(BuildContext context) {
-    if (!isValidProductId || _vm == null) {
+  Widget buildItemDetails(BuildContext context) {
+    if (!isValidProductId) {
       return Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -90,60 +93,86 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
       );
     }
 
-    return ChangeNotifierProvider.value(
-      value: _vm,
-      child: Consumer<ProductDetailViewModel>(
-        builder: (context, vm, child) {
-          if (vm.isLoading && vm.product == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
-
-          if (vm.error != null) {
-            return Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(vm.error!, style: const TextStyle(color: Colors.red)),
-                  const SizedBox(height: 16),
-                  ElevatedButton(
-                    onPressed: vm.loadProduct,
-                    child: const Text('Повторить попытку'),
-                  ),
-                ],
-              ),
-            );
-          }
-
-          return SingleChildScrollView(
-            child: Column(
-              children: [
-                _buildProductImage(context, vm.product),
-                _buildProductInfo(vm),
-                _buildReviewsSection(context, vm),
-                _buildReviewsList(vm),
-                _buildCartButton(vm),
-              ],
-            ),
-          );
-        },
+    return SingleChildScrollView(
+      child: Column(
+        children: [
+          _buildProductImage(context, model.item),
+          _buildProductInfo(model),
+          _buildReviewsSection(context, model),
+          _buildReviewsList(model),
+          _buildCartButton(model),
+        ],
       ),
     );
   }
 
   Widget _buildProductImage(BuildContext context, Product? product) {
-    final imageUrl = product?.imageUrl ?? product?.images?.firstOrNull;
+    final images = product?.images ?? [];
+    final screenWidth = MediaQuery.of(context).size.width;
+    int currentIndex = 0; // Track current image index
 
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.width,
-      child: imageUrl != null
-          ? Image.network(
-              imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  _buildErrorPlaceholder(),
-            )
-          : _buildErrorPlaceholder(),
+    if (images.isEmpty) {
+      return SizedBox(
+        width: screenWidth,
+        height: screenWidth,
+        child: _buildErrorPlaceholder(),
+      );
+    }
+
+    return StatefulBuilder(
+      builder: (context, setState) {
+        return Column(
+          children: [
+            SizedBox(
+              width: screenWidth,
+              height: screenWidth,
+              child: CarouselSlider(
+                options: CarouselOptions(
+                  height: screenWidth,
+                  viewportFraction: 1.0,
+                  initialPage: 0,
+                  enableInfiniteScroll: images.length > 1,
+                  autoPlay: images.length > 1,
+                  autoPlayInterval: const Duration(seconds: 3),
+                  autoPlayAnimationDuration: const Duration(milliseconds: 800),
+                  autoPlayCurve: Curves.fastOutSlowIn,
+                  enlargeCenterPage: false,
+                  scrollDirection: Axis.horizontal,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      currentIndex = index;
+                    });
+                  },
+                ),
+                items: images.map((imageUrl) {
+                  return Container(
+                    width: screenWidth,
+                    height: screenWidth,
+                    alignment: Alignment.center,
+                    child: Image.network(
+                      imageUrl,
+                      fit: BoxFit.contain,
+                      width: screenWidth,
+                      errorBuilder: (context, error, stackTrace) =>
+                          _buildErrorPlaceholder(),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ),
+            if (images.length > 1)
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: Text(
+                  '${currentIndex + 1}/${images.length}',
+                  style: AppTextStyles.subtitleProductMedium.copyWith(
+                    color: Colors.grey[600],
+                  ),
+                ),
+              ),
+          ],
+        );
+      },
     );
   }
 
@@ -165,14 +194,14 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
             bottom: 8,
           ),
           child: Text(
-            vm.product?.name ?? 'Название товара',
+            vm.item?.name ?? 'Название товара',
             style: AppTextStyles.titleProductLarge,
           ),
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Text(
-            vm.product?.productDescription ?? 'Описание товара',
+            vm.item?.productDescription ?? 'Описание товара',
             style: AppTextStyles.subtitleProductMedium,
           ),
         ),
@@ -181,7 +210,7 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
           child: Align(
             alignment: Alignment.centerRight,
             child: PriceWidget(
-              amount: vm.product?.price ?? 0,
+              amount: vm.item?.price ?? 0,
               style: AppTextStyles.productPrice,
             ),
           ),
@@ -345,8 +374,8 @@ class _ProductDetailScreenState extends BasePageState<ProductDetailScreen> {
       context: context,
       builder: (context) => AddReviewDialog(
         productId: parsedProductId.toString(),
-        productName: vm.product?.name ?? 'Товар',
-        productImageUrl: vm.product?.imageUrl,
+        productName: vm.item?.name ?? 'Товар',
+        productImageUrl: vm.item?.imageUrl,
       ),
     );
   }

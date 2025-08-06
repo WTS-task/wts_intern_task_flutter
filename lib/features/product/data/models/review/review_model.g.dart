@@ -46,22 +46,3 @@ Map<String, dynamic> _$ReviewUserToJson(_ReviewUser instance) =>
       'toRelationStatus': instance.toRelationStatus,
       'fromRelationStatus': instance.fromRelationStatus,
     };
-
-_CreateReviewRequest _$CreateReviewRequestFromJson(Map<String, dynamic> json) =>
-    _CreateReviewRequest(
-      relatedItemId: (json['relatedItemId'] as num).toInt(),
-      objectType: json['objectType'] as String,
-      text: json['text'] as String,
-      rating: (json['rating'] as num).toInt(),
-      updatedAt: (json['updatedAt'] as num?)?.toInt(),
-    );
-
-Map<String, dynamic> _$CreateReviewRequestToJson(
-  _CreateReviewRequest instance,
-) => <String, dynamic>{
-  'relatedItemId': instance.relatedItemId,
-  'objectType': instance.objectType,
-  'text': instance.text,
-  'rating': instance.rating,
-  'updatedAt': instance.updatedAt,
-};

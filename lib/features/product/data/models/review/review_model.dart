@@ -35,16 +35,3 @@ abstract class ReviewUser with _$ReviewUser {
       _$ReviewUserFromJson(json);
 }
 
-@freezed
-abstract class CreateReviewRequest with _$CreateReviewRequest {
-  const factory CreateReviewRequest({
-    required int relatedItemId,
-    required String objectType,
-    required String text,
-    required int rating,
-    int? updatedAt,
-  }) = _CreateReviewRequest;
-
-  factory CreateReviewRequest.fromJson(Map<String, dynamic> json) =>
-      _$CreateReviewRequestFromJson(json);
-}

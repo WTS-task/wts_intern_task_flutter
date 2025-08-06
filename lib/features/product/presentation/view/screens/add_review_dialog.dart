@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
+import 'package:wts_task/core/widgets/custom_button.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 import 'package:wts_task/features/product/data/view_models/add_review_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/rating_stars.dart';
-import 'package:wts_task/core/widgets/custom_button.dart';
 
 class AddReviewDialog extends StatefulWidget {
   const AddReviewDialog({
@@ -24,84 +24,113 @@ class AddReviewDialog extends StatefulWidget {
 }
 
 class _AddReviewDialogState extends State<AddReviewDialog> {
-  late final AddReviewViewModel _vm;
-  late final int parsedProductId;
-  late final bool isValidProductId;
+  late final AddReviewViewModel vm;
+  int parsedProductId = -1;
+  bool isValidProductId = false;
+  AutovalidateMode autovalidateMode = AutovalidateMode.disabled;
 
   @override
   void initState() {
     super.initState();
+    _initializeViewModel();
+  }
+
+  void _initializeViewModel() {
+    isValidProductId = false;
+    parsedProductId = -1;
 
     try {
-      parsedProductId = int.parse(
-        widget.productId.replaceAll(RegExp(r'[^0-9]'), ''),
-      );
-      isValidProductId = parsedProductId > 0;
-      if (!isValidProductId) {
-        throw FormatException('Invalid productId: ${widget.productId}');
+      if (widget.productId.isEmpty) {
+        throw const FormatException('Product ID is empty');
       }
+
+      final String cleanedProductId = widget.productId.replaceAll(
+        RegExp(r'[^0-9]'),
+        '',
+      );
+
+      if (cleanedProductId.isEmpty) {
+        throw const FormatException('Product ID contains no digits');
+      }
+
+      parsedProductId = int.parse(cleanedProductId);
+      isValidProductId = parsedProductId > 0;
+
+      vm = AddReviewViewModel(
+        Provider.of<ProductRepository>(context, listen: false),
+        parsedProductId,
+      );
     } catch (e) {
       isValidProductId = false;
       debugPrint('Failed to parse product ID: ${widget.productId}. Error: $e');
-      return;
-    }
-
-    if (isValidProductId) {
-      _vm = AddReviewViewModel(
-        context.read<ProductRepository>(),
-        parsedProductId,
+      vm = AddReviewViewModel(
+        Provider.of<ProductRepository>(context, listen: false),
+        -1,
       );
     }
   }
 
+  Future<void> _submitForm() async {
+    final result = await vm.submitReview(context);
+    if (result && mounted) {
+      Navigator.pop(context, true);
+    }
+  }
+
+  void _trySubmitForm(BuildContext context) {
+    setState(() {
+      autovalidateMode = AutovalidateMode.always;
+    });
+    _submitForm();
+  }
+
   @override
   Widget build(BuildContext context) {
-    if (!isValidProductId) {
-      return const Center(child: Text('Ошибка: некорректный ID товара'));
-    }
-
     return ChangeNotifierProvider.value(
-      value: _vm,
-      child: Consumer<AddReviewViewModel>(
-        builder: (context, vm, child) {
-          return Material(
-            color: Theme.of(context).scaffoldBackgroundColor,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
-            child: SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: SingleChildScrollView(
-                  controller: ModalScrollController.of(context),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      _buildHeader(),
-                      const SizedBox(height: 18),
-                      _buildProductInfoRow(),
-                      if (vm.error != null) ...[
-                        const SizedBox(height: 8),
-                        Text(
-                          vm.error!,
-                          style: const TextStyle(color: Colors.red),
-                        ),
-                      ],
-                      const SizedBox(height: 12),
-                      _buildHelpText(),
-                      const SizedBox(height: 12),
-                      _buildRatingSection(vm),
-                      const SizedBox(height: 18),
-                      _buildReviewTextField(vm),
-                      const SizedBox(height: 12),
-                      _buildSubmitButton(vm, context),
-                      const SizedBox(height: 16),
-                    ],
-                  ),
-                ),
+      value: vm,
+      child: Material(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+        child: SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: SingleChildScrollView(
+              controller: ModalScrollController.of(context),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildHeader(),
+                  if (!isValidProductId)
+                    const Center(child: Text('Ошибка: некорректный ID товара')),
+                  if (isValidProductId) ...[
+                    const SizedBox(height: 18),
+                    _buildProductInfoRow(),
+                    Consumer<AddReviewViewModel>(
+                      builder: (context, viewModel, _) => Column(
+                        children: [
+                          if (viewModel.error != null) ...[
+                            const SizedBox(height: 8),
+                            Text(viewModel.error!, style: const TextStyle(color: Colors.red)),
+                          ],
+                          const SizedBox(height: 12),
+                          _buildHelpText(),
+                          const SizedBox(height: 12),
+                          _buildRatingSection(viewModel),
+                          const SizedBox(height: 18),
+                          _buildReviewTextField(viewModel),
+                          const SizedBox(height: 12),
+                          _buildSubmitButton(viewModel),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                  ],
+                ],
               ),
             ),
-          );
-        },
+          ),
+        ),
       ),
     );
   }
@@ -148,9 +177,9 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
             borderRadius: BorderRadius.circular(12),
             image: widget.productImageUrl != null
                 ? DecorationImage(
-                    image: NetworkImage(widget.productImageUrl!),
-                    fit: BoxFit.cover,
-                  )
+              image: NetworkImage(widget.productImageUrl!),
+              fit: BoxFit.cover,
+            )
                 : null,
           ),
         ),
@@ -174,21 +203,24 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
     );
   }
 
-  Widget _buildRatingSection(AddReviewViewModel vm) {
+  Widget _buildRatingSection(AddReviewViewModel viewModel) {
     return RatingStars(
-      rating: vm.rating,
+      rating: viewModel.rating,
       size: 21,
       interactive: true,
-      onRatingChanged: vm.setRating,
+      onRatingChanged: (rating) {
+        debugPrint('Tapped star: $rating');
+        viewModel.setRating(rating);
+      },
     );
   }
 
-  Widget _buildReviewTextField(AddReviewViewModel vm) {
+  Widget _buildReviewTextField(AddReviewViewModel viewModel) {
     return Container(
       constraints: const BoxConstraints(minHeight: 120),
-      child: TextField(
-        controller: vm.reviewController,
-        focusNode: vm.reviewFocusNode,
+      child: TextFormField(
+        controller: viewModel.reviewController,
+        focusNode: viewModel.reviewFocusNode,
         decoration: InputDecoration(
           hintText: 'Напишите ваш отзыв...',
           border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -200,37 +232,39 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
         maxLines: null,
         minLines: 4,
         keyboardType: TextInputType.multiline,
+        autovalidateMode: autovalidateMode,
+        onChanged: (value) {
+          if (viewModel.error != null && value.isNotEmpty) {
+            viewModel.clearError();
+          }
+        },
       ),
     );
   }
 
-  Widget _buildSubmitButton(AddReviewViewModel vm, BuildContext context) {
-    return vm.isLoading
+  Widget _buildSubmitButton(AddReviewViewModel viewModel) {
+    return viewModel.isLoading
         ? const Center(child: CircularProgressIndicator())
         : SizedBox(
-            width: 358,
-            height: 48,
-            child: Builder(
-              builder: (context) {
-                return Theme(
-                  data: Theme.of(context).copyWith(
-                    elevatedButtonTheme: ElevatedButtonThemeData(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF4A2C2A),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        foregroundColor: Colors.white,
-                      ),
-                    ),
-                  ),
-                  child: CustomButton(
-                    title: 'Отправить',
-                    onPressed: () => vm.submitReview(context),
-                  ),
-                );
-              },
+      width: 358,
+      height: 48,
+      child: Theme(
+        data: Theme.of(context).copyWith(
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: const Color(0xFF4A2C2A),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(8),
+              ),
+              foregroundColor: Colors.white,
             ),
-          );
+          ),
+        ),
+        child: CustomButton(
+          title: 'Отправить',
+          onPressed: () => _trySubmitForm(context),
+        ),
+      ),
+    );
   }
 }
