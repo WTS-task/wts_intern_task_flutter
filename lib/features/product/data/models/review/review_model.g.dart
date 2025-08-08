@@ -9,7 +9,7 @@ part of 'review_model.dart';
 _Review _$ReviewFromJson(Map<String, dynamic> json) => _Review(
   reviewId: (json['reviewId'] as num).toInt(),
   relatedItemId: (json['relatedItemId'] as num).toInt(),
-  objectType: json['objectType'] as String,
+  objectType: (json['objectType'] as num).toInt(),
   rating: (json['rating'] as num).toInt(),
   text: json['text'] as String,
   moderationStatus: (json['moderationStatus'] as num).toInt(),

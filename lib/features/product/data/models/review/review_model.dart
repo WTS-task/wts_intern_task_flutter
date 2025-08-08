@@ -9,7 +9,7 @@ abstract class Review with _$Review {
   const factory Review({
     required int reviewId,
     required int relatedItemId,
-    required String objectType,
+    required int objectType,
     required int rating,
     required String text,
     required int moderationStatus,

@@ -52,7 +52,7 @@ class ProductRepository extends PrivateApi {
       '/review/list',
       queryParameters: {
         'relatedItemId': productId,
-        'objectType': 1,
+        'objectType': 2,
         'offset': offset,
         if (limit != null) 'limit': limit,
       },
@@ -61,7 +61,6 @@ class ProductRepository extends PrivateApi {
     return ApiResponseParser.parseListFromResponse(
       response,
       fromJson: Review.fromJson,
-      emptyError: null,
       key: 'reviews',
     );
   }
@@ -77,7 +76,7 @@ class ProductRepository extends PrivateApi {
       '/review/create',
       data: {
         'relatedItemId': relatedItemId,
-        'objectType': objectType,
+        'objectType': 2,
         'text': text,
         'rating': rating,
         if (updatedAt != null) 'updatedAt': updatedAt,

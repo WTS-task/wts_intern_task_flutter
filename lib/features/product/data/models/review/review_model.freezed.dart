@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Review {
 
- int get reviewId; int get relatedItemId; String get objectType; int get rating; String get text; int get moderationStatus; ReviewUser get user; int get createdAt; int? get updatedAt;
+ int get reviewId; int get relatedItemId; int get objectType; int get rating; String get text; int get moderationStatus; ReviewUser get user; int get createdAt; int? get updatedAt;
 /// Create a copy of Review
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ReviewCopyWith<$Res>  {
   factory $ReviewCopyWith(Review value, $Res Function(Review) _then) = _$ReviewCopyWithImpl;
 @useResult
 $Res call({
- int reviewId, int relatedItemId, String objectType, int rating, String text, int moderationStatus, ReviewUser user, int createdAt, int? updatedAt
+ int reviewId, int relatedItemId, int objectType, int rating, String text, int moderationStatus, ReviewUser user, int createdAt, int? updatedAt
 });
 
 
@@ -70,7 +70,7 @@ class _$ReviewCopyWithImpl<$Res>
 reviewId: null == reviewId ? _self.reviewId : reviewId // ignore: cast_nullable_to_non_nullable
 as int,relatedItemId: null == relatedItemId ? _self.relatedItemId : relatedItemId // ignore: cast_nullable_to_non_nullable
 as int,objectType: null == objectType ? _self.objectType : objectType // ignore: cast_nullable_to_non_nullable
-as String,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as int,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,moderationStatus: null == moderationStatus ? _self.moderationStatus : moderationStatus // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
@@ -170,7 +170,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int reviewId,  int relatedItemId,  String objectType,  int rating,  String text,  int moderationStatus,  ReviewUser user,  int createdAt,  int? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int reviewId,  int relatedItemId,  int objectType,  int rating,  String text,  int moderationStatus,  ReviewUser user,  int createdAt,  int? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Review() when $default != null:
 return $default(_that.reviewId,_that.relatedItemId,_that.objectType,_that.rating,_that.text,_that.moderationStatus,_that.user,_that.createdAt,_that.updatedAt);case _:
@@ -191,7 +191,7 @@ return $default(_that.reviewId,_that.relatedItemId,_that.objectType,_that.rating
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int reviewId,  int relatedItemId,  String objectType,  int rating,  String text,  int moderationStatus,  ReviewUser user,  int createdAt,  int? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int reviewId,  int relatedItemId,  int objectType,  int rating,  String text,  int moderationStatus,  ReviewUser user,  int createdAt,  int? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _Review():
 return $default(_that.reviewId,_that.relatedItemId,_that.objectType,_that.rating,_that.text,_that.moderationStatus,_that.user,_that.createdAt,_that.updatedAt);case _:
@@ -211,7 +211,7 @@ return $default(_that.reviewId,_that.relatedItemId,_that.objectType,_that.rating
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int reviewId,  int relatedItemId,  String objectType,  int rating,  String text,  int moderationStatus,  ReviewUser user,  int createdAt,  int? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int reviewId,  int relatedItemId,  int objectType,  int rating,  String text,  int moderationStatus,  ReviewUser user,  int createdAt,  int? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _Review() when $default != null:
 return $default(_that.reviewId,_that.relatedItemId,_that.objectType,_that.rating,_that.text,_that.moderationStatus,_that.user,_that.createdAt,_that.updatedAt);case _:
@@ -231,7 +231,7 @@ class _Review implements Review {
 
 @override final  int reviewId;
 @override final  int relatedItemId;
-@override final  String objectType;
+@override final  int objectType;
 @override final  int rating;
 @override final  String text;
 @override final  int moderationStatus;
@@ -272,7 +272,7 @@ abstract mixin class _$ReviewCopyWith<$Res> implements $ReviewCopyWith<$Res> {
   factory _$ReviewCopyWith(_Review value, $Res Function(_Review) _then) = __$ReviewCopyWithImpl;
 @override @useResult
 $Res call({
- int reviewId, int relatedItemId, String objectType, int rating, String text, int moderationStatus, ReviewUser user, int createdAt, int? updatedAt
+ int reviewId, int relatedItemId, int objectType, int rating, String text, int moderationStatus, ReviewUser user, int createdAt, int? updatedAt
 });
 
 
@@ -294,7 +294,7 @@ class __$ReviewCopyWithImpl<$Res>
 reviewId: null == reviewId ? _self.reviewId : reviewId // ignore: cast_nullable_to_non_nullable
 as int,relatedItemId: null == relatedItemId ? _self.relatedItemId : relatedItemId // ignore: cast_nullable_to_non_nullable
 as int,objectType: null == objectType ? _self.objectType : objectType // ignore: cast_nullable_to_non_nullable
-as String,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
+as int,rating: null == rating ? _self.rating : rating // ignore: cast_nullable_to_non_nullable
 as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,moderationStatus: null == moderationStatus ? _self.moderationStatus : moderationStatus // ignore: cast_nullable_to_non_nullable
 as int,user: null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable

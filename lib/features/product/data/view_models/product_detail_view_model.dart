@@ -9,75 +9,58 @@ import 'package:wts_task/features/product/data/repositories/product_repositories
 class ProductDetailViewModel extends ItemModel<Product> {
   ProductDetailViewModel(
     this._repository,
-    this.productId,
+    this._productId,
     this._cartRepository,
     this._cartViewModel,
-  ) : super();
+  );
 
   final ProductRepository _repository;
   final CartRepository _cartRepository;
   final CartViewModel _cartViewModel;
-  final int productId;
+  final String _productId;
 
   List<Review> _reviews = [];
-  String? _error;
 
   List<Review> get reviews => _reviews;
-
-  String? get error => _error;
 
   @override
   Future<void> loadItemData() async {
     try {
-      _error = null;
-      isLoading = true;
-      notifyModelListeners();
-
-      final productResponse = await _repository.getProductDetails(productId);
+      final productResponse = await _repository.getProductDetails(
+        int.parse(_productId),
+      );
       if (productResponse.isError || productResponse.result == null) {
-        throw Exception(productResponse.error ?? 'Ошибка загрузки товара');
+        addError(productResponse.error ?? 'Ошибка загрузки товара');
       }
-      await onItemLoaded(productResponse.result!);
 
-      try {
-        final reviewsResponse = await _repository.getProductReviews(
-          productId: productId,
-          limit: 3,
-        );
-        _reviews = reviewsResponse.result ?? [];
-      } catch (e) {
-        _reviews = [];
-      }
+      final reviewsResponse = await _repository.getProductReviews(
+        productId: int.parse(_productId),
+        limit: 3,
+      );
+      _reviews = reviewsResponse.result ?? [];
+
+      await onItemLoaded(productResponse.result!);
     } catch (e) {
-      _error = e.toString();
-      onLoadingError(_error!);
-    } finally {
-      isLoading = false;
-      notifyModelListeners();
+      addError(e.toString());
+      rethrow;
     }
   }
 
   Future<void> addToCart() async {
-    if (item == null) {
-      _error = 'Товар не загружен';
-      notifyModelListeners();
-      return;
-    }
-
     try {
       final cartProduct = CartProductModel(
         count: 1,
         isSelected: false,
-        product: item,
+        product: item!,
       );
 
       await _cartRepository.addProductToCart(cartProduct);
       await _cartViewModel.loadNextItems(null);
-
+      _cartViewModel.notifyModelListeners();
       notifyModelListeners();
     } catch (e) {
-      _error = 'Ошибка при добавлении в корзину: $e';
-      notifyModelListeners();
+      addError('Ошибка при добавлении в корзину: $e');
+      rethrow;
     }
   }
 }
