@@ -67,7 +67,7 @@ class ProductRepository extends PrivateApi {
 
   Future<ApiResponse<void>> submitReview({
     required int relatedItemId,
-    required String objectType,
+    required int objectType,
     required String text,
     required int rating,
     int? updatedAt,
@@ -76,7 +76,7 @@ class ProductRepository extends PrivateApi {
       '/review/create',
       data: {
         'relatedItemId': relatedItemId,
-        'objectType': 2,
+        'objectType': objectType,
         'text': text,
         'rating': rating,
         if (updatedAt != null) 'updatedAt': updatedAt,

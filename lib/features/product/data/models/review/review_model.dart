@@ -25,13 +25,12 @@ abstract class Review with _$Review {
 abstract class ReviewUser with _$ReviewUser {
   const factory ReviewUser({
     required int userId,
-    required String name,
+    String? name,
     String? avatar,
-    required int toRelationStatus,
-    required int fromRelationStatus,
+    int? toRelationStatus,
+    int? fromRelationStatus,
   }) = _ReviewUser;
 
   factory ReviewUser.fromJson(Map<String, dynamic> json) =>
       _$ReviewUserFromJson(json);
 }
-

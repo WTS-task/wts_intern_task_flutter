@@ -320,7 +320,7 @@ $ReviewUserCopyWith<$Res> get user {
 /// @nodoc
 mixin _$ReviewUser {
 
- int get userId; String get name; String? get avatar; int get toRelationStatus; int get fromRelationStatus;
+ int get userId; String? get name; String? get avatar; int? get toRelationStatus; int? get fromRelationStatus;
 /// Create a copy of ReviewUser
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -353,7 +353,7 @@ abstract mixin class $ReviewUserCopyWith<$Res>  {
   factory $ReviewUserCopyWith(ReviewUser value, $Res Function(ReviewUser) _then) = _$ReviewUserCopyWithImpl;
 @useResult
 $Res call({
- int userId, String name, String? avatar, int toRelationStatus, int fromRelationStatus
+ int userId, String? name, String? avatar, int? toRelationStatus, int? fromRelationStatus
 });
 
 
@@ -370,14 +370,14 @@ class _$ReviewUserCopyWithImpl<$Res>
 
 /// Create a copy of ReviewUser
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? name = null,Object? avatar = freezed,Object? toRelationStatus = null,Object? fromRelationStatus = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? userId = null,Object? name = freezed,Object? avatar = freezed,Object? toRelationStatus = freezed,Object? fromRelationStatus = freezed,}) {
   return _then(_self.copyWith(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as String?,toRelationStatus: null == toRelationStatus ? _self.toRelationStatus : toRelationStatus // ignore: cast_nullable_to_non_nullable
-as int,fromRelationStatus: null == fromRelationStatus ? _self.fromRelationStatus : fromRelationStatus // ignore: cast_nullable_to_non_nullable
-as int,
+as int,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
+as String?,toRelationStatus: freezed == toRelationStatus ? _self.toRelationStatus : toRelationStatus // ignore: cast_nullable_to_non_nullable
+as int?,fromRelationStatus: freezed == fromRelationStatus ? _self.fromRelationStatus : fromRelationStatus // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -462,7 +462,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int userId,  String name,  String? avatar,  int toRelationStatus,  int fromRelationStatus)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int userId,  String? name,  String? avatar,  int? toRelationStatus,  int? fromRelationStatus)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ReviewUser() when $default != null:
 return $default(_that.userId,_that.name,_that.avatar,_that.toRelationStatus,_that.fromRelationStatus);case _:
@@ -483,7 +483,7 @@ return $default(_that.userId,_that.name,_that.avatar,_that.toRelationStatus,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int userId,  String name,  String? avatar,  int toRelationStatus,  int fromRelationStatus)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int userId,  String? name,  String? avatar,  int? toRelationStatus,  int? fromRelationStatus)  $default,) {final _that = this;
 switch (_that) {
 case _ReviewUser():
 return $default(_that.userId,_that.name,_that.avatar,_that.toRelationStatus,_that.fromRelationStatus);case _:
@@ -503,7 +503,7 @@ return $default(_that.userId,_that.name,_that.avatar,_that.toRelationStatus,_tha
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int userId,  String name,  String? avatar,  int toRelationStatus,  int fromRelationStatus)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int userId,  String? name,  String? avatar,  int? toRelationStatus,  int? fromRelationStatus)?  $default,) {final _that = this;
 switch (_that) {
 case _ReviewUser() when $default != null:
 return $default(_that.userId,_that.name,_that.avatar,_that.toRelationStatus,_that.fromRelationStatus);case _:
@@ -518,14 +518,14 @@ return $default(_that.userId,_that.name,_that.avatar,_that.toRelationStatus,_tha
 @JsonSerializable()
 
 class _ReviewUser implements ReviewUser {
-  const _ReviewUser({required this.userId, required this.name, this.avatar, required this.toRelationStatus, required this.fromRelationStatus});
+  const _ReviewUser({required this.userId, this.name, this.avatar, this.toRelationStatus, this.fromRelationStatus});
   factory _ReviewUser.fromJson(Map<String, dynamic> json) => _$ReviewUserFromJson(json);
 
 @override final  int userId;
-@override final  String name;
+@override final  String? name;
 @override final  String? avatar;
-@override final  int toRelationStatus;
-@override final  int fromRelationStatus;
+@override final  int? toRelationStatus;
+@override final  int? fromRelationStatus;
 
 /// Create a copy of ReviewUser
 /// with the given fields replaced by the non-null parameter values.
@@ -560,7 +560,7 @@ abstract mixin class _$ReviewUserCopyWith<$Res> implements $ReviewUserCopyWith<$
   factory _$ReviewUserCopyWith(_ReviewUser value, $Res Function(_ReviewUser) _then) = __$ReviewUserCopyWithImpl;
 @override @useResult
 $Res call({
- int userId, String name, String? avatar, int toRelationStatus, int fromRelationStatus
+ int userId, String? name, String? avatar, int? toRelationStatus, int? fromRelationStatus
 });
 
 
@@ -577,14 +577,14 @@ class __$ReviewUserCopyWithImpl<$Res>
 
 /// Create a copy of ReviewUser
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? name = null,Object? avatar = freezed,Object? toRelationStatus = null,Object? fromRelationStatus = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? userId = null,Object? name = freezed,Object? avatar = freezed,Object? toRelationStatus = freezed,Object? fromRelationStatus = freezed,}) {
   return _then(_ReviewUser(
 userId: null == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as int,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
-as String,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
-as String?,toRelationStatus: null == toRelationStatus ? _self.toRelationStatus : toRelationStatus // ignore: cast_nullable_to_non_nullable
-as int,fromRelationStatus: null == fromRelationStatus ? _self.fromRelationStatus : fromRelationStatus // ignore: cast_nullable_to_non_nullable
-as int,
+as int,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
+as String?,toRelationStatus: freezed == toRelationStatus ? _self.toRelationStatus : toRelationStatus // ignore: cast_nullable_to_non_nullable
+as int?,fromRelationStatus: freezed == fromRelationStatus ? _self.fromRelationStatus : fromRelationStatus // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

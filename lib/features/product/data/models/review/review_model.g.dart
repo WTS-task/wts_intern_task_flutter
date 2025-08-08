@@ -32,10 +32,10 @@ Map<String, dynamic> _$ReviewToJson(_Review instance) => <String, dynamic>{
 
 _ReviewUser _$ReviewUserFromJson(Map<String, dynamic> json) => _ReviewUser(
   userId: (json['userId'] as num).toInt(),
-  name: json['name'] as String,
+  name: json['name'] as String?,
   avatar: json['avatar'] as String?,
-  toRelationStatus: (json['toRelationStatus'] as num).toInt(),
-  fromRelationStatus: (json['fromRelationStatus'] as num).toInt(),
+  toRelationStatus: (json['toRelationStatus'] as num?)?.toInt(),
+  fromRelationStatus: (json['fromRelationStatus'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$ReviewUserToJson(_ReviewUser instance) =>

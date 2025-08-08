@@ -16,19 +16,30 @@ class UserAvatar extends StatelessWidget {
   Widget build(BuildContext context) {
     return CircleAvatar(
       radius: radius,
-      backgroundImage: avatarUrl != null ? AssetImage(avatarUrl!) : null,
-      backgroundColor: avatarUrl == null ? _getAvatarColor(userName) : null,
-      child: avatarUrl == null && userName.isNotEmpty
+      backgroundImage: avatarUrl != null && avatarUrl!.isNotEmpty
+          ? NetworkImage(avatarUrl!)
+          : null,
+      backgroundColor: avatarUrl == null || avatarUrl!.isEmpty
+          ? _getAvatarColor(userName)
+          : null,
+      child: _buildAvatarContent(),
+    );
+  }
+
+  Widget? _buildAvatarContent() {
+    if (avatarUrl == null || avatarUrl!.isEmpty) {
+      return userName.isNotEmpty
           ? Text(
-              userName.isNotEmpty ? userName[0].toUpperCase() : '',
+              userName[0].toUpperCase(),
               style: TextStyle(
                 fontSize: radius * 0.6,
                 color: Colors.white,
                 fontWeight: FontWeight.bold,
               ),
             )
-          : null,
-    );
+          : Icon(Icons.person, size: radius * 0.8);
+    }
+    return null;
   }
 
   Color _getAvatarColor(String userId) {

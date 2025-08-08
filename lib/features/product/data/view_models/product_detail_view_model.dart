@@ -25,42 +25,33 @@ class ProductDetailViewModel extends ItemModel<Product> {
 
   @override
   Future<void> loadItemData() async {
-    try {
-      final productResponse = await _repository.getProductDetails(
-        int.parse(_productId),
-      );
-      if (productResponse.isError || productResponse.result == null) {
-        addError(productResponse.error ?? 'Ошибка загрузки товара');
-      }
+    final productResponse = await _repository.getProductDetails(
+      int.parse(_productId),
+    );
 
-      final reviewsResponse = await _repository.getProductReviews(
-        productId: int.parse(_productId),
-        limit: 3,
-      );
-      _reviews = reviewsResponse.result ?? [];
-
-      await onItemLoaded(productResponse.result!);
-    } catch (e) {
-      addError(e.toString());
-      rethrow;
+    if (productResponse.isError || productResponse.result == null) {
+      return onLoadingError(productResponse.error ?? 'Ошибка загрузки товара');
     }
+
+    final reviewsResponse = await _repository.getProductReviews(
+      productId: int.parse(_productId),
+      limit: 5,
+    );
+
+    _reviews = reviewsResponse.result ?? [];
+    await onItemLoaded(productResponse.result!);
   }
 
   Future<void> addToCart() async {
-    try {
-      final cartProduct = CartProductModel(
-        count: 1,
-        isSelected: false,
-        product: item!,
-      );
+    final cartProduct = CartProductModel(
+      count: 1,
+      isSelected: false,
+      product: item!,
+    );
 
-      await _cartRepository.addProductToCart(cartProduct);
-      await _cartViewModel.loadNextItems(null);
-      _cartViewModel.notifyModelListeners();
-      notifyModelListeners();
-    } catch (e) {
-      addError('Ошибка при добавлении в корзину: $e');
-      rethrow;
-    }
+    await _cartRepository.addProductToCart(cartProduct);
+    await _cartViewModel.loadNextItems(null);
+    _cartViewModel.notifyModelListeners();
+    notifyModelListeners();
   }
 }

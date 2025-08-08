@@ -25,7 +25,7 @@ class AddReviewViewModel extends BaseModel {
 
     final response = await repository.submitReview(
       relatedItemId: int.tryParse(productId)!,
-      objectType: 'product',
+      objectType: 2,
       text: reviewController.text,
       rating: rating,
     );
@@ -34,7 +34,11 @@ class AddReviewViewModel extends BaseModel {
     notifyListeners();
 
     if (response.isError) {
-      addError(response.error ?? 'Ошибка при отправке отзыва');
+      if (response.error?.contains('уже существует') ?? false) {
+        addError('Вы уже оставляли отзыв на этот товар');
+      } else {
+        addError(response.error ?? 'Ошибка при отправке отзыва');
+      }
       return false;
     }
 
