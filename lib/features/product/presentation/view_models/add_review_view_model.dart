@@ -19,6 +19,13 @@ class AddReviewViewModel extends BaseModel {
     notifyListeners();
   }
 
+  String? validateComment(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Введите текст отзыва';
+    }
+    return null;
+  }
+
   Future<bool> submitReview() async {
     _isLoading = true;
     notifyListeners();
@@ -34,11 +41,7 @@ class AddReviewViewModel extends BaseModel {
     notifyListeners();
 
     if (response.isError) {
-      if (response.error?.contains('уже существует') ?? false) {
-        addError('Вы уже оставляли отзыв на этот товар');
-      } else {
-        addError(response.error ?? 'Ошибка при отправке отзыва');
-      }
+      addError(response.error);
       return false;
     }
 

@@ -1,13 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
 
 class ProductImageCarousel extends StatefulWidget {
   const ProductImageCarousel({
-    super.key,
     required this.images,
+    super.key,
     this.width,
     this.height,
   });
@@ -25,14 +24,15 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
 
   @override
   Widget build(BuildContext context) {
-    final width = widget.width ?? MediaQuery.of(context).size.width;
+    final width = widget.width ?? MediaQuery.sizeOf(context).width;
     final height = widget.height ?? width;
+    final hasMultipleImages = widget.images.length > 1;
 
     if (widget.images.isEmpty) {
       return SizedBox(
-        width: width,
-        height: height,
         child: Container(
+          width: width,
+          height: height,
           color: Colors.grey[200],
           child: const Center(child: Icon(Icons.error_outline)),
         ),
@@ -48,36 +48,27 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
             options: CarouselOptions(
               height: height,
               viewportFraction: 1.0,
-              initialPage: 0,
-              enableInfiniteScroll: widget.images.length > 1,
-              autoPlay: widget.images.length > 1,
-              autoPlayInterval: const Duration(seconds: 3),
-              autoPlayAnimationDuration: const Duration(milliseconds: 800),
-              autoPlayCurve: Curves.fastOutSlowIn,
-              enlargeCenterPage: false,
-              scrollDirection: Axis.horizontal,
+              enableInfiniteScroll: hasMultipleImages,
+              autoPlay: hasMultipleImages,
               onPageChanged: (index, reason) {
                 setState(() {
                   currentIndex = index;
                 });
               },
             ),
-            items: widget.images.map((imageUrl) {
-              return Container(
-                width: width,
-                height: height,
-                alignment: Alignment.center,
-                child: CustomCachedImage(
-                  imageUrl: imageUrl,
-                  width: width,
-                  height: height,
-                  fit: BoxFit.contain,
-                ),
-              );
-            }).toList(),
+            items: widget.images
+                .map(
+                  (imageUrl) => CustomCachedImage(
+                    imageUrl: imageUrl,
+                    width: width,
+                    height: height,
+                    fit: BoxFit.contain,
+                  ),
+                )
+                .toList(),
           ),
         ),
-        if (widget.images.length > 1)
+        if (hasMultipleImages)
           Padding(
             padding: const EdgeInsets.only(top: 8.0),
             child: Text(

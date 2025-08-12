@@ -3,15 +3,15 @@ import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
-import 'package:wts_task/features/product/data/view_models/product_review_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/screens/add_review_dialog.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/full_review_item.dart';
+import 'package:wts_task/features/product/presentation/view_models/product_review_view_model.dart';
 
 class ProductReviewsScreen extends BasePage {
   const ProductReviewsScreen({
-    super.key,
     required this.productId,
     required this.repository,
+    super.key,
     this.skipReviews = 0,
   }) : super(title: 'Отзывы');
 
@@ -51,7 +51,6 @@ class _ProductReviewsScreenState
     );
   }
 
-
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
     final review = model.items[index];
@@ -77,7 +76,6 @@ class _ProductReviewsScreenState
       ),
     );
   }
-
 
   void _showAddReviewDialog(BuildContext context) {
     showDialog(

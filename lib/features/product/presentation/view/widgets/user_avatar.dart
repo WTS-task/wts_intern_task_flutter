@@ -1,45 +1,48 @@
 import 'package:flutter/material.dart';
+import 'package:wts_task/core/widgets/custom_cached_image.dart';
 
 class UserAvatar extends StatelessWidget {
+  const UserAvatar({
+    required this.avatarUrl,
+    required this.userName,
+    super.key,
+    this.radius = 20,
+  });
+
   final String? avatarUrl;
   final String userName;
   final double radius;
 
-  const UserAvatar({
-    super.key,
-    required this.avatarUrl,
-    required this.userName,
-    this.radius = 20,
-  });
-
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      radius: radius,
-      backgroundImage: avatarUrl != null && avatarUrl!.isNotEmpty
-          ? NetworkImage(avatarUrl!)
-          : null,
-      backgroundColor: avatarUrl == null || avatarUrl!.isEmpty
-          ? _getAvatarColor(userName)
-          : null,
-      child: _buildAvatarContent(),
-    );
-  }
+    final hasAvatar = avatarUrl != null && avatarUrl!.isNotEmpty;
 
-  Widget? _buildAvatarContent() {
-    if (avatarUrl == null || avatarUrl!.isEmpty) {
-      return userName.isNotEmpty
-          ? Text(
-              userName[0].toUpperCase(),
-              style: TextStyle(
-                fontSize: radius * 0.6,
-                color: Colors.white,
-                fontWeight: FontWeight.bold,
+    return ClipOval(
+      child: Container(
+        width: radius * 2,
+        height: radius * 2,
+        color: hasAvatar ? null : _getAvatarColor(userName),
+        child: hasAvatar
+            ? CustomCachedImage(
+                imageUrl: avatarUrl!,
+                width: radius * 2,
+                height: radius * 2,
+                fit: BoxFit.cover,
+              )
+            : Center(
+                child: userName.isNotEmpty
+                    ? Text(
+                        userName[0].toUpperCase(),
+                        style: TextStyle(
+                          fontSize: radius * 0.6,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    : Icon(Icons.person, size: radius * 0.8),
               ),
-            )
-          : Icon(Icons.person, size: radius * 0.8);
-    }
-    return null;
+      ),
+    );
   }
 
   Color _getAvatarColor(String userId) {

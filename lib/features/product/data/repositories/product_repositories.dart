@@ -29,7 +29,7 @@ class ProductRepository extends PrivateApi {
     );
   }
 
-  Future<ApiResponse<Product>> getProductDetails(int productId) async {
+  Future<ApiResponse<Product>> getProductDetails(String productId) async {
     final response = await get(
       '/shop/product/details',
       queryParameters: {'productId': productId},
@@ -44,9 +44,9 @@ class ProductRepository extends PrivateApi {
   }
 
   Future<ApiResponse<List<Review>>> getProductReviews({
-    required int productId,
+    required String productId,
     int offset = 0,
-    int? limit,
+    int? limit = 10,
   }) async {
     final response = await get(
       '/review/list',
@@ -54,7 +54,7 @@ class ProductRepository extends PrivateApi {
         'relatedItemId': productId,
         'objectType': 2,
         'offset': offset,
-        if (limit != null) 'limit': limit,
+        'limit': limit,
       },
     );
 

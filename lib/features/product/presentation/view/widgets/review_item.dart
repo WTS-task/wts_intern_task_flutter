@@ -4,12 +4,11 @@ import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/features/product/data/models/review/review_model.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/time_formatter.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/user_avatar.dart';
-import 'package:intl/intl.dart';
 
 class ReviewItem extends StatelessWidget {
   const ReviewItem({
-    super.key,
     required this.review,
+    super.key,
     this.maxLines = 2,
     this.showFullDate = false,
   });

@@ -10,27 +10,13 @@ class ProductReviewsViewModel extends ListModel<Review> {
 
   @override
   Future<void> loadNextItems(String? loadingUuid) async {
-    isLoading = true;
-    notifyModelListeners();
-
-    final productIdInt = int.tryParse(productId);
-    if (productIdInt == null) {
-      addError('Неверный ID продукта');
-      return;
-    }
-
     final response = await repository.getProductReviews(
-      productId: productIdInt,
-      limit: 10,
+      productId: productId,
       offset: offset,
     );
 
     if (response.isError) {
-      if (response.error?.contains('не найдены') ?? false) {
-        await onNextItemsLoaded([], loadingUuid);
-        return;
-      }
-      addError(response.error ?? 'Ошибка загрузки отзывов');
+      onLoadingError(response.error!);
       return;
     }
 

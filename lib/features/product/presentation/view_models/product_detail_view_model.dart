@@ -25,16 +25,14 @@ class ProductDetailViewModel extends ItemModel<Product> {
 
   @override
   Future<void> loadItemData() async {
-    final productResponse = await _repository.getProductDetails(
-      int.parse(_productId),
-    );
+    final productResponse = await _repository.getProductDetails(_productId);
 
     if (productResponse.isError || productResponse.result == null) {
       return onLoadingError(productResponse.error ?? 'Ошибка загрузки товара');
     }
 
     final reviewsResponse = await _repository.getProductReviews(
-      productId: int.parse(_productId),
+      productId: _productId,
       limit: 5,
     );
 

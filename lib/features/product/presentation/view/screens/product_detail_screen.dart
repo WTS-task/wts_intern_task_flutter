@@ -9,7 +9,7 @@ import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 import 'package:wts_task/features/product/data/models/product/product.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
-import 'package:wts_task/features/product/data/view_models/product_detail_view_model.dart';
+import 'package:wts_task/features/product/presentation/view_models/product_detail_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/screens/add_review_dialog.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/price_widget.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/product_image_carousel.dart';
@@ -139,7 +139,6 @@ class _ProductDetailScreenState
     );
   }
 
-
   Widget _buildCartButton() {
     return Padding(
       padding: const EdgeInsets.all(16),
@@ -148,13 +147,9 @@ class _ProductDetailScreenState
         onPressed: () async {
           try {
             await model.addToCart();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Товар добавлен в корзину')),
-            );
+            showMessage('Товар добавлен в корзину');
           } catch (e) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('Ошибка: $e')),
-            );
+            showMessage('Ошибка: $e');
           }
         },
       ),
@@ -165,8 +160,17 @@ class _ProductDetailScreenState
     BuildContext context,
     ProductDetailViewModel model,
   ) {
-    showDialog(
+    showModalBottomSheet(
       context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.8,
+        minHeight: MediaQuery.of(context).size.height * 0.5,
+      ),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
+      ),
       builder: (context) => AddReviewDialog(
         productId: widget.productId,
         productName: model.item?.name ?? 'Товар',
