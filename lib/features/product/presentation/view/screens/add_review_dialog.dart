@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
+import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/page/base_form_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_button.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
-import 'package:wts_task/features/product/presentation/view_models/add_review_view_model.dart';
+import 'package:wts_task/features/product/presentation/model/add_review_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/product_info_card.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/rating_stars.dart';
 
@@ -29,33 +30,28 @@ class AddReviewDialog extends BasePage {
 class _AddReviewDialogState
     extends BaseFormPageState<AddReviewDialog, AddReviewViewModel> {
   @override
-  AddReviewViewModel createModel() {
-    return AddReviewViewModel(
-      context.read<ProductRepository>(),
-      widget.productId,
-    );
-  }
+  bool get shouldBuildScaffold => false;
 
   @override
-  Future<void> submitForm() async {
-    if (vm.rating > 0) {
-      final result = await vm.submitReview();
-      if (result && mounted) {
-        Navigator.pop(context, true);
-      }
-    }
-  }
+  StackFit get bodyStackFix => StackFit.loose;
+
+  @override
+  AddReviewViewModel createModel() =>
+      AddReviewViewModel(context.read<ProductRepository>(), widget.productId);
 
   @override
   Widget buildForm(BuildContext context) {
     return Material(
-      color: Theme.of(context).scaffoldBackgroundColor,
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
+      color: AppColors.background,
       child: SingleChildScrollView(
         controller: ModalScrollController.of(context),
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.fromLTRB(
+          16,
+          16,
+          16,
+          16 + MediaQuery.viewInsetsOf(context).bottom,
+        ),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ProductInfoCard(
@@ -65,10 +61,7 @@ class _AddReviewDialogState
             const SizedBox(height: 12),
             _buildHelpText(),
             const SizedBox(height: 12),
-            Consumer<AddReviewViewModel>(
-              builder: (context, viewModel, _) =>
-                  _buildRatingSection(viewModel),
-            ),
+            _buildRatingSection(),
             const SizedBox(height: 18),
             _buildReviewTextField(),
             const SizedBox(height: 12),
@@ -87,17 +80,16 @@ class _AddReviewDialogState
     );
   }
 
-  Widget _buildRatingSection(AddReviewViewModel viewModel) {
+  Widget _buildRatingSection() {
     return Column(
       children: [
         RatingStars(
-          rating: viewModel.rating,
+          rating: vm.rating,
           size: 21,
           interactive: true,
-          onRatingChanged: viewModel.setRating,
+          onRatingChanged: vm.setRating,
         ),
-        if (viewModel.rating == 0 &&
-            autovalidateMode == AutovalidateMode.always)
+        if (vm.rating == 0 && autovalidateMode == AutovalidateMode.always)
           const Padding(
             padding: EdgeInsets.only(top: 8),
             child: Text('Выберите оценку', style: TextStyle(color: Colors.red)),
@@ -128,20 +120,24 @@ class _AddReviewDialogState
   }
 
   Widget _buildSubmitButton() {
-    return vm.isLoading
-        ? const Center(child: CircularProgressIndicator())
-        : SizedBox(
-            width: 358,
-            height: 48,
-            child: CustomButton(
-              title: 'Отправить',
-              onPressed: () {
-                setState(() {
-                  autovalidateMode = AutovalidateMode.always;
-                });
-                trySubmitForm(context);
-              },
-            ),
-          );
+    return CustomButton(
+      title: 'Отправить',
+      onPressed: () {
+        setState(() {
+          autovalidateMode = AutovalidateMode.always;
+        });
+        trySubmitForm(context);
+      },
+    );
+  }
+
+  @override
+  Future<void> submitForm() async {
+    if (vm.rating > 0) {
+      final result = await vm.submitReview();
+      if (result && mounted) {
+        Navigator.pop(context, true);
+      }
+    }
   }
 }

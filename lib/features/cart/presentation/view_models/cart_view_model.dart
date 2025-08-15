@@ -1,13 +1,24 @@
+import 'dart:math';
+
+import 'package:collection/collection.dart';
+import 'package:wts_task/core/exceptions/app_exception.dart';
 import 'package:wts_task/core/models/list_model.dart';
 import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
 import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
-import 'package:wts_task/core/exceptions/app_exception.dart';
-import 'package:wts_task/features/cart/data/fake_cart_items.dart';
+import 'package:wts_task/features/product/data/models/product/product.dart';
 
 class CartViewModel extends ListModel<CartProductModel> {
   CartViewModel();
 
   final CartRepository _cartRepository = CartRepository();
+
+  @override
+  bool get isAllLoaded => true;
+
+  List<CartProductModel> _items = [];
+
+  @override
+  List<CartProductModel> get items => _items;
 
   bool get hasSelectedProducts {
     return items.any((product) => product.isSelected);
@@ -19,54 +30,94 @@ class CartViewModel extends ListModel<CartProductModel> {
 
   @override
   Future<void> loadNextItems(String? loadingUuid) async {
-    try {
-      final allProducts = await _cartRepository.getAllCartProducts();
-      await onNextItemsLoaded(allProducts, loadingUuid);
-      isAllLoaded = true;
-    } catch (e) {
-      onLoadingError(e is AppException ? e.errorMessage : e.toString());
-    }
+    notifyModelListeners();
   }
 
-  Future<void> onChangeCountPressed(int index, int delta) async {
-    try {
-      final oldProduct = items[index];
-      final newProduct = oldProduct.copyWith(count: oldProduct.count + delta);
-      replaceItemAtIndex(newProduct, index);
-      await _cartRepository.saveAllCartProducts(items);
-    } catch (e) {
-      addError(e is AppException ? e.errorMessage : e.toString());
-    }
+  @override
+  Future<void> reloadData({bool soft = false}) async {
+    _items = await _cartRepository.getAllCartProducts();
+    notifyModelListeners();
+  }
+
+  @override
+  Future<void> loadData() async {
+    _items = await _cartRepository.getAllCartProducts();
+    isLoading = false;
+    notifyModelListeners();
   }
 
   Future<void> onCheckboxPressed(int index) async {
-    try {
-      final oldProduct = items[index];
-      final newProduct = oldProduct.copyWith(
-        isSelected: !oldProduct.isSelected,
-      );
-      replaceItemAtIndex(newProduct, index);
-      await _cartRepository.saveAllCartProducts(items);
-    } catch (e) {
-      addError(e is AppException ? e.errorMessage : e.toString());
-    }
+    final oldProduct = items[index];
+    final newProduct = oldProduct.copyWith(isSelected: !oldProduct.isSelected);
+    _items[index] = newProduct;
+    await save();
   }
 
-  Future<void> removeProductAt(int index) async {
-    try {
-      final item = items[index];
-      final isDeleted = await deleteItem(item);
-      if (isDeleted) {
-        await _cartRepository.saveAllCartProducts(items);
-      }
-    } catch (e) {
-      addError(e is AppException ? e.errorMessage : e.toString());
+  Future<bool> removeProduct({
+    required Product product,
+    bool all = false,
+  }) async {
+    final item = getItemForProduct(product: product);
+    if (item == null) {
+      return true;
     }
+    final newCount = all ? 0 : max(item.count - 1, 0);
+    return await setProductCount(product: product, count: newCount);
+  }
+
+  Future<bool> setProductCount({
+    required Product product,
+    required int count,
+    bool showMessage = true,
+  }) async {
+    final item = getItemForProduct(product: product);
+    if (count == 0) {
+      if (item == null) {
+        return true;
+      }
+
+      _items.remove(item);
+      await save();
+      return true;
+    }
+
+    if (item == null) {
+      final shoppingCartItem = CartProductModel.fromProduct(
+        product,
+        count: count,
+      );
+      _items.add(shoppingCartItem);
+    } else {
+      final newItem = item.copyWith(count: count);
+      final index = _items.indexWhere(
+        (e) => e.product?.productId == product.productId,
+      );
+      _items[index] = newItem;
+    }
+    await save();
+    if (showMessage) {
+      addMessage('Товар добавлен в корзину ${product.name}');
+    }
+    return true;
+  }
+
+  CartProductModel? getItemForProduct({
+    required Product product,
+    bool autoCreate = false,
+  }) {
+    var shoppingCartItem = _items.firstWhereOrNull(
+      (item) => item.product?.productId == product.productId,
+    );
+    if ((shoppingCartItem == null) && autoCreate) {
+      shoppingCartItem = CartProductModel.fromProduct(product);
+      items.add(shoppingCartItem);
+    }
+    return shoppingCartItem;
   }
 
   Future<void> removeAllProducts() async {
     try {
-      replaceItems([]);
+      _items.clear();
       await _cartRepository.clearCart();
     } catch (e) {
       addError(e is AppException ? e.errorMessage : e.toString());
@@ -75,7 +126,7 @@ class CartViewModel extends ListModel<CartProductModel> {
 
   double get totalPrice {
     double total = 0.0;
-    for (final item in items) {
+    for (final item in _items) {
       if (item.isSelected) total += (item.product?.price ?? 0.0) * item.count;
     }
     return total;
@@ -88,10 +139,28 @@ class CartViewModel extends ListModel<CartProductModel> {
     return getSelectedProducts();
   }
 
-  // Очищает корзину и добавляет туда тестовые товары из подготовленного массива
-  Future<void> addFakeCartItems() async {
-    replaceItems(fakeCartItems);
-    await _cartRepository.clearCart();
-    await _cartRepository.saveAllCartProducts(fakeCartItems);
+  Future<bool> addProduct({
+    required Product product,
+    bool showMessage = true,
+  }) async {
+    final item = getItemForProduct(product: product, autoCreate: true);
+    final newCount = (item?.count ?? 0) + 1;
+    return await setProductCount(
+      product: product,
+      count: newCount,
+      showMessage: showMessage,
+    );
   }
+
+  Future<void> save() async {
+    try {
+      await _cartRepository.saveAllCartProducts(items);
+      notifyModelListeners();
+    } catch (e, s) {
+      addError(e is AppException ? e.errorMessage : e.toString());
+    }
+  }
+
+  @override
+  bool checkAllLoaded(List<CartProductModel> nextItems) => true;
 }

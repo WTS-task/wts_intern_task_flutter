@@ -9,7 +9,6 @@ import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
-import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
@@ -107,18 +106,20 @@ class AppRouter {
                               final productId =
                                   state.pathParameters['productId']!;
                               final categoryId =
-                              state.uri.queryParameters['categoryId'] ?? '';
-                              return ProductDetailScreen(productId: productId, categoryId: categoryId);
+                                  state.uri.queryParameters['categoryId'] ?? '';
+                              return ProductDetailScreen(
+                                productId: productId,
+                                categoryId: categoryId,
+                              );
                             },
                             routes: [
                               GoRoute(
                                 path: 'reviews',
                                 builder: (context, state) {
-                                  final productId = state.pathParameters['productId']!;
-                                  final repository = context.read<ProductRepository>();
+                                  final productId =
+                                      state.pathParameters['productId']!;
                                   return ProductReviewsScreen(
                                     productId: productId,
-                                    repository: repository,
                                   );
                                 },
                                 routes: [

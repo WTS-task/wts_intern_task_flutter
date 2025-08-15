@@ -2,18 +2,24 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:wts_task/features/product/data/models/product/product.dart';
 
 part 'cart_product_model.freezed.dart';
+
 part 'cart_product_model.g.dart';
 
 @freezed
 abstract class CartProductModel with _$CartProductModel {
   const factory CartProductModel({
     required int count,
-    required bool isSelected,
     required Product? product,
+    @Default(false) bool isSelected,
   }) = _CartProductModel;
 
   const CartProductModel._();
 
   factory CartProductModel.fromJson(Map<String, dynamic> json) =>
       _$CartProductModelFromJson(json);
+
+  factory CartProductModel.fromProduct(Product product, {int count = 0}) {
+    final shoppingCartItem = CartProductModel(product: product, count: count);
+    return shoppingCartItem;
+  }
 }

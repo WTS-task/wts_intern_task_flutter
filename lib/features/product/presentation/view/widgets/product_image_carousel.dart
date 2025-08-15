@@ -29,13 +29,11 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
     final hasMultipleImages = widget.images.length > 1;
 
     if (widget.images.isEmpty) {
-      return SizedBox(
-        child: Container(
-          width: width,
-          height: height,
-          color: Colors.grey[200],
-          child: const Center(child: Icon(Icons.error_outline)),
-        ),
+      return Container(
+        width: width,
+        height: height,
+        color: Colors.grey[200],
+        child: const Center(child: Icon(Icons.error_outline)),
       );
     }
 
@@ -62,7 +60,6 @@ class _ProductImageCarouselState extends State<ProductImageCarousel> {
                     imageUrl: imageUrl,
                     width: width,
                     height: height,
-                    fit: BoxFit.contain,
                   ),
                 )
                 .toList(),

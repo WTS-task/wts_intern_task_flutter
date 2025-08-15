@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
+import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 import 'package:wts_task/features/product/data/models/product/product.dart';
 
 class ProductItemCard extends StatelessWidget {
@@ -61,6 +63,6 @@ class ProductItemCard extends StatelessWidget {
   }
 
   void _openCartScreen(BuildContext context) {
-    context.push('/cart');
+    context.read<CartViewModel>().addProduct(product: item, showMessage: true);
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_alert_dialog.dart';
@@ -20,7 +21,10 @@ class CartScreen extends BasePage {
 class _CartScreenState
     extends BaseListViewPageState<CartScreen, CartViewModel> {
   @override
-  CartViewModel createModel() => CartViewModel();
+  bool get shouldDisposeModel => false;
+
+  @override
+  CartViewModel createModel() => context.read();
 
   @override
   bool get hasFixedFooter => true;
@@ -58,13 +62,6 @@ class _CartScreenState
   @override
   List<Widget>? buildAppBarActions(BuildContext context) {
     return [
-      IconButton(
-        onPressed: () async {
-          await model.addFakeCartItems();
-          showToast(message: 'Тестовые товары добавлены');
-        },
-        icon: const Icon(Icons.add),
-      ),
       IconButton(
         onPressed: () {
           CustomAlertDialog.show(

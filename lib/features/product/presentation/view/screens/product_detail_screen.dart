@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:modal_bottom_sheet/modal_bottom_sheet.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/page/base_item_details_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/core/widgets/custom_button.dart';
-import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 import 'package:wts_task/features/product/data/models/product/product.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
-import 'package:wts_task/features/product/presentation/view_models/product_detail_view_model.dart';
+import 'package:wts_task/features/product/presentation/model/product_detail_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/screens/add_review_dialog.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/price_widget.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/product_image_carousel.dart';
@@ -37,7 +37,6 @@ class _ProductDetailScreenState
     return ProductDetailViewModel(
       context.read<ProductRepository>(),
       widget.productId,
-      context.read<CartRepository>(),
       context.read<CartViewModel>(),
     );
   }
@@ -108,7 +107,7 @@ class _ProductDetailScreenState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               OutlinedButton(
-                onPressed: () => _showAddReviewDialog(context, model),
+                onPressed: _showAddReviewDialog,
                 child: const Text(
                   'Оставить отзыв',
                   style: AppTextStyles.reviewButtonText,
@@ -118,7 +117,6 @@ class _ProductDetailScreenState
                 onTap: () {
                   context.push(
                     '/catalog/category/products/${widget.productId}/reviews',
-                    extra: context.read<ProductRepository>(),
                   );
                 },
                 borderRadius: BorderRadius.circular(8),
@@ -144,30 +142,17 @@ class _ProductDetailScreenState
       padding: const EdgeInsets.all(16),
       child: CustomButton(
         title: 'Добавить в корзину',
-        onPressed: () async {
-          try {
-            await model.addToCart();
-            showMessage('Товар добавлен в корзину');
-          } catch (e) {
-            showMessage('Ошибка: $e');
-          }
-        },
+        onPressed: model.addToCart,
       ),
     );
   }
 
-  void _showAddReviewDialog(
-    BuildContext context,
-    ProductDetailViewModel model,
-  ) {
-    showModalBottomSheet(
+  void _showAddReviewDialog() {
+    showCupertinoModalBottomSheet(
       context: context,
-      isScrollControlled: true,
+      useRootNavigator: true,
+      barrierColor: Colors.black.withValues(alpha: 0.6),
       backgroundColor: Colors.transparent,
-      constraints: BoxConstraints(
-        maxHeight: MediaQuery.of(context).size.height * 0.8,
-        minHeight: MediaQuery.of(context).size.height * 0.5,
-      ),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
       ),

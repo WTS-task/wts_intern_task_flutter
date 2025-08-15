@@ -1,22 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
+import 'package:wts_task/features/product/presentation/model/product_review_view_model.dart';
 import 'package:wts_task/features/product/presentation/view/screens/add_review_dialog.dart';
 import 'package:wts_task/features/product/presentation/view/widgets/full_review_item.dart';
-import 'package:wts_task/features/product/presentation/view_models/product_review_view_model.dart';
 
 class ProductReviewsScreen extends BasePage {
   const ProductReviewsScreen({
     required this.productId,
-    required this.repository,
+
     super.key,
     this.skipReviews = 0,
   }) : super(title: 'Отзывы');
 
   final String productId;
-  final ProductRepository repository;
+
   final int skipReviews;
 
   @override
@@ -27,9 +28,12 @@ class _ProductReviewsScreenState
     extends
         BaseListViewPageState<ProductReviewsScreen, ProductReviewsViewModel> {
   @override
+  EdgeInsets listPadding() => const EdgeInsets.fromLTRB(16, 0, 16, 16);
+
+  @override
   ProductReviewsViewModel createModel() {
     return ProductReviewsViewModel(
-      repository: widget.repository,
+      repository: context.read<ProductRepository>(),
       productId: widget.productId,
     );
   }
@@ -87,7 +91,4 @@ class _ProductReviewsScreenState
       ),
     );
   }
-
-  @override
-  EdgeInsets listPadding() => const EdgeInsets.fromLTRB(16, 0, 16, 16);
 }

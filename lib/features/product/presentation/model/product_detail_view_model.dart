@@ -1,6 +1,4 @@
 import 'package:wts_task/core/models/item_model.dart';
-import 'package:wts_task/features/cart/data/models/cart_product_model.dart';
-import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 import 'package:wts_task/features/product/data/models/product/product.dart';
 import 'package:wts_task/features/product/data/models/review/review_model.dart';
@@ -10,12 +8,11 @@ class ProductDetailViewModel extends ItemModel<Product> {
   ProductDetailViewModel(
     this._repository,
     this._productId,
-    this._cartRepository,
     this._cartViewModel,
   );
 
   final ProductRepository _repository;
-  final CartRepository _cartRepository;
+
   final CartViewModel _cartViewModel;
   final String _productId;
 
@@ -41,15 +38,6 @@ class ProductDetailViewModel extends ItemModel<Product> {
   }
 
   Future<void> addToCart() async {
-    final cartProduct = CartProductModel(
-      count: 1,
-      isSelected: false,
-      product: item!,
-    );
-
-    await _cartRepository.addProductToCart(cartProduct);
-    await _cartViewModel.loadNextItems(null);
-    _cartViewModel.notifyModelListeners();
-    notifyModelListeners();
+    _cartViewModel.addProduct(product: item!);
   }
 }

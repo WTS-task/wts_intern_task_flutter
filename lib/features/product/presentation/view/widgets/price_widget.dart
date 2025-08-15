@@ -22,7 +22,7 @@ class PriceWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final formattedAmount = compact
         ? amount.toStringAsFixed(0)
-        : _formatAmount(amount);
+        : _formatter.format(amount);
 
     return Text.rich(
       TextSpan(
@@ -39,9 +39,5 @@ class PriceWidget extends StatelessWidget {
       ),
       textAlign: TextAlign.right,
     );
-  }
-
-  String _formatAmount(double value) {
-    return _formatter.format(value);
   }
 }
