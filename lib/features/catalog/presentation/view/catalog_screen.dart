@@ -69,3 +69,4 @@ class _CatalogScreenState
     return CatalogCard(item: item);
   }
 }
+

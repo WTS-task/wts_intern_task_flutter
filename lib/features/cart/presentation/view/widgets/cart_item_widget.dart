@@ -26,7 +26,7 @@ class CartItemWidget extends StatelessWidget {
       key: ValueKey(product.product?.productId),
       background: const ItemCardDismissBackground(),
       onDismissed: (direction) {
-        vm.removeProductAt(index);
+        vm.removeProduct(product: product.product!, all: true);
         showToast(message: 'Товар "${product.product?.name}" удалён');
       },
       child: Card(
@@ -52,8 +52,8 @@ class CartItemWidget extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: ProductCountWidget(
                 count: product.count,
-                onIncrement: () => vm.onChangeCountPressed(index, 1),
-                onDecrement: () => vm.onChangeCountPressed(index, -1),
+                onIncrement: () => vm.addProduct(product: product.product!),
+                onDecrement: () => vm.removeProduct(product: product.product!),
               ),
             ),
           ],
