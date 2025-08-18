@@ -9,7 +9,6 @@ import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
@@ -122,13 +121,6 @@ class AppRouter {
                                     productId: productId,
                                   );
                                 },
-                                routes: [
-                                  GoRoute(
-                                    path: 'add',
-                                    builder: (context, state) =>
-                                        const AddReviewScreen(),
-                                  ),
-                                ],
                               ),
                             ],
                           ),

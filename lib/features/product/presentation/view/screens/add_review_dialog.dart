@@ -99,23 +99,13 @@ class _AddReviewDialogState
   }
 
   Widget _buildReviewTextField() {
-    return Container(
-      constraints: const BoxConstraints(minHeight: 120),
-      child: TextFormField(
-        controller: vm.reviewController,
-        decoration: InputDecoration(
-          hintText: 'Напишите ваш отзыв...',
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-          contentPadding: const EdgeInsets.symmetric(
-            horizontal: 16,
-            vertical: 12,
-          ),
-        ),
-        maxLines: null,
-        minLines: 4,
-        keyboardType: TextInputType.multiline,
-        validator: vm.validateComment,
-      ),
+    return TextFormField(
+      controller: vm.reviewController,
+      decoration: const InputDecoration(hintText: 'Напишите ваш отзыв...'),
+      maxLines: null,
+      minLines: 4,
+      keyboardType: TextInputType.multiline,
+      validator: vm.validateComment,
     );
   }
 

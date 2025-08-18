@@ -9,16 +9,10 @@ import 'package:wts_task/features/product/presentation/view/screens/add_review_d
 import 'package:wts_task/features/product/presentation/view/widgets/full_review_item.dart';
 
 class ProductReviewsScreen extends BasePage {
-  const ProductReviewsScreen({
-    required this.productId,
-
-    super.key,
-    this.skipReviews = 0,
-  }) : super(title: 'Отзывы');
+  const ProductReviewsScreen({required this.productId, super.key})
+    : super(title: 'Отзывы');
 
   final String productId;
-
-  final int skipReviews;
 
   @override
   State<ProductReviewsScreen> createState() => _ProductReviewsScreenState();

@@ -7,8 +7,8 @@ import 'package:wts_task/features/product/presentation/view/widgets/user_avatar.
 
 class FullReviewItem extends StatelessWidget {
   const FullReviewItem({
-    super.key,
     required this.review,
+    super.key,
     this.showFullDate = false,
   });
 
@@ -50,12 +50,10 @@ class FullReviewItem extends StatelessWidget {
                     style: AppTextStyles.reviewUserName,
                   ),
                   Text(
-                    showFullDate
-                        ? TimeFormatter.formatReviewTime(
-                            review.createdAt,
-                            fullDate: true,
-                          )
-                        : TimeFormatter.formatReviewTime(review.createdAt),
+                    TimeFormatter.formatReviewTime(
+                      review.createdAt,
+                      fullDate: showFullDate,
+                    ),
                     style: AppTextStyles.reviewData,
                   ),
                 ],

@@ -153,9 +153,6 @@ class _ProductDetailScreenState
       useRootNavigator: true,
       barrierColor: Colors.black.withValues(alpha: 0.6),
       backgroundColor: Colors.transparent,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(12)),
-      ),
       builder: (context) => AddReviewDialog(
         productId: widget.productId,
         productName: model.item?.name ?? 'Товар',

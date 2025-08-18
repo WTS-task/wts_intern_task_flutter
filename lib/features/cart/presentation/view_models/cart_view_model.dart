@@ -68,7 +68,7 @@ class CartViewModel extends ListModel<CartProductModel> {
   Future<bool> setProductCount({
     required Product product,
     required int count,
-    bool showMessage = true,
+    bool showMessage = false,
   }) async {
     final item = getItemForProduct(product: product);
     if (count == 0) {
@@ -141,7 +141,7 @@ class CartViewModel extends ListModel<CartProductModel> {
 
   Future<bool> addProduct({
     required Product product,
-    bool showMessage = true,
+    bool showMessage = false,
   }) async {
     final item = getItemForProduct(product: product, autoCreate: true);
     final newCount = (item?.count ?? 0) + 1;
