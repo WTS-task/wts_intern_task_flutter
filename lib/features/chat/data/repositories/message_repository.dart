@@ -1,15 +1,10 @@
 import 'package:wts_task/features/chat/data/models/message_model.dart';
-import 'package:wts_task/core/exceptions/app_exception.dart';
-import 'package:wts_task/core/exceptions/repo_exception.dart';
-import 'package:wts_task/features/chat/data/services/message_service.dart';
 import 'package:wts_task/core/entities/api_response.dart';
 import 'package:wts_task/core/services/api/api_response_parser.dart';
 import 'package:wts_task/core/services/api/private_api.dart';
 
 class MessageRepository extends PrivateApi {
   MessageRepository(super.authRepository);
-
-  final MessageService _localService = MessageService.instance;
 
   Future<ApiResponse<List<MessageModel>>> fetchMessages({
     required int chatId,
@@ -78,43 +73,4 @@ class MessageRepository extends PrivateApi {
     );
   }
 
-  Future<List<MessageModel>> getAllMessages() async {
-    try {
-      return await _localService.readMessages();
-    } on AppException catch (e) {
-      throw RepositoryException(errorMsg: e.errorMessage);
-    } catch (e) {
-      throw RepositoryException(errorMsg: e.toString());
-    }
-  }
-
-  Future<void> saveAllMessages(List<MessageModel> messages) async {
-    try {
-      await _localService.saveMessages(messages);
-    } on AppException catch (e) {
-      throw RepositoryException(errorMsg: e.errorMessage);
-    } catch (e) {
-      throw RepositoryException(errorMsg: e.toString());
-    }
-  }
-
-  Future<void> addMessage(MessageModel newMessage) async {
-    try {
-      await _localService.addMessage(newMessage);
-    } on AppException catch (e) {
-      throw RepositoryException(errorMsg: e.errorMessage);
-    } catch (e) {
-      throw RepositoryException(errorMsg: e.toString());
-    }
-  }
-
-  Future<void> clearMessages() async {
-    try {
-      await _localService.clearMessages();
-    } on AppException catch (e) {
-      throw RepositoryException(errorMsg: e.errorMessage);
-    } catch (e) {
-      throw RepositoryException(errorMsg: e.toString());
-    }
-  }
 }
