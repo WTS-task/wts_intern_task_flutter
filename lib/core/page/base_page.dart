@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bot_toast/bot_toast.dart';
 import 'package:flutter/material.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
+import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/widgets/base_error_widget.dart';
 import 'package:wts_task/core/widgets/loading_indicator.dart';
 
@@ -31,6 +32,8 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
   bool _shouldHideContentWithLoadingIndicator = false;
   bool shouldDecorateToAbsorbPointer = false;
 
+  StackFit get bodyStackFix => StackFit.expand;
+
   bool get canPop => ModalRoute.of(context)?.canPop ?? false;
 
   /// Включить, чтобы расположить title в центре Appbar
@@ -51,8 +54,9 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
     if (isSafeAreaEnabled) {
       body = SafeArea(child: body);
     }
-    final scaffold = buildScaffold(context, body);
-    return decorateScaffold(context, scaffold);
+    var scaffold = buildScaffold(context, body);
+    scaffold = decorateScaffold(context, scaffold);
+    return decorateKeyboardUnfocusing(scaffold);
   }
 
   @protected
@@ -69,6 +73,11 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
       floatingActionButton: buildFloatingActionButton(context),
       resizeToAvoidBottomInset: shouldResizeFromOpenKeyBoard,
     );
+  }
+
+  @protected
+  Widget decorateKeyboardUnfocusing(Widget child) {
+    return GestureDetector(onTap: primaryFocus?.unfocus, child: child);
   }
 
   @protected
@@ -89,13 +98,18 @@ abstract class BasePageState<T extends BasePage> extends State<T> {
     if (widget.title == null) {
       return null;
     }
-    return Text(widget.title ?? '', maxLines: 2);
+    return Text(
+      widget.title ?? '',
+      maxLines: 2,
+      style: AppTextStyles.appBarText,
+    );
   }
 
   @protected
   Widget decorateBody(BuildContext context, Widget body) {
     return Stack(
-      fit: StackFit.expand,
+      fit: bodyStackFix,
+      alignment: Alignment.center,
       children: <Widget>[
         if (!_isLoadingIndicatorVisible ||
             !_shouldHideContentWithLoadingIndicator)

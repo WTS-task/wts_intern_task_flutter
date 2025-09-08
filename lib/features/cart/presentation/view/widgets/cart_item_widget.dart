@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
 import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
@@ -9,22 +8,29 @@ import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.
 import 'package:wts_task/features/cart/presentation/view/widgets/product_count_widget.dart';
 
 class CartItemWidget extends StatelessWidget {
-  const CartItemWidget({required this.product, required this.index, super.key});
+  const CartItemWidget({
+    required this.vm,
+    required this.product,
+    required this.index,
+    super.key,
+  });
+
+  final CartViewModel vm;
   final CartProductModel product;
   final int index;
 
   @override
   Widget build(BuildContext context) {
-    final vm = context.read<CartViewModel>();
     return Dismissible(
       direction: DismissDirection.endToStart,
       key: ValueKey(product.product?.productId),
-      background: ItemCardDismissBackground(),
+      background: const ItemCardDismissBackground(),
       onDismissed: (direction) {
-        vm.removeProductAt(index);
+        vm.removeProduct(product: product.product!, all: true);
         showToast(message: 'Товар "${product.product?.name}" удалён');
       },
       child: Card(
+        margin: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
         elevation: 0.4,
         color: Colors.white,
@@ -35,7 +41,7 @@ class CartItemWidget extends StatelessWidget {
               isSelected: product.isSelected,
               onCheckboxPressed: () => vm.onCheckboxPressed(index),
             ),
-            SizedBox(width: 20),
+            const SizedBox(width: 20),
             Expanded(
               child: _CartItemDetails(
                 name: product.product?.name ?? 'empty',
@@ -46,8 +52,8 @@ class CartItemWidget extends StatelessWidget {
               padding: const EdgeInsets.only(right: 8.0),
               child: ProductCountWidget(
                 count: product.count,
-                onIncrement: () => vm.onIncrementButtonPressed(index),
-                onDecrement: () => vm.onDecrementButtonPressed(index),
+                onIncrement: () => vm.addProduct(product: product.product!),
+                onDecrement: () => vm.removeProduct(product: product.product!),
               ),
             ),
           ],
@@ -125,7 +131,7 @@ class _CartItemDetails extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(name, style: AppTextStyles.bodyMedium, maxLines: 1),
-        SizedBox(height: 3),
+        const SizedBox(height: 3),
         Text(
           '${price.toString()} \$',
           style: AppTextStyles.bodySmall,

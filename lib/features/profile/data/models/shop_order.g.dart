@@ -13,10 +13,9 @@ _ShopOrder _$ShopOrderFromJson(Map<String, dynamic> json) => _ShopOrder(
   address: json['address'] as String?,
   phoneNumber: json['phoneNumber'] as String?,
   comment: json['comment'] as String?,
-  shopOrderItems:
-      (json['shopOrderItems'] as List<dynamic>?)
-          ?.map((e) => ShopOrderItem.fromJson(e as Map<String, dynamic>))
-          .toList(),
+  shopOrderItems: (json['shopOrderItems'] as List<dynamic>?)
+      ?.map((e) => ShopOrderItem.fromJson(e as Map<String, dynamic>))
+      .toList(),
   totalPrice: (json['totalPrice'] as num?)?.toInt(),
   createdAt: (json['createdAt'] as num?)?.toInt(),
   updatedAt: (json['updatedAt'] as num?)?.toInt(),

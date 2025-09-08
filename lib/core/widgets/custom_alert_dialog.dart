@@ -26,7 +26,7 @@ class CustomAlertDialog extends StatelessWidget {
       title: Text(title, style: AppTextStyles.bodyLarge),
       content: Text(
         content,
-        style: TextStyle(color: AppColors.secondaryText, fontSize: 14),
+        style: const TextStyle(color: AppColors.secondaryText, fontSize: 14),
       ),
       actions: [
         TextButton(
@@ -38,7 +38,7 @@ class CustomAlertDialog extends StatelessWidget {
           },
           child: Text(
             cancelText,
-            style: TextStyle(color: AppColors.buttonBgPrimary, fontSize: 16),
+            style: const TextStyle(color: AppColors.buttonBgPrimary, fontSize: 16),
           ),
         ),
         TextButton(
@@ -50,7 +50,7 @@ class CustomAlertDialog extends StatelessWidget {
           },
           child: Text(
             confirmText,
-            style: TextStyle(color: AppColors.buttonBgPrimary, fontSize: 16),
+            style: const TextStyle(color: AppColors.buttonBgPrimary, fontSize: 16),
           ),
         ),
       ],

@@ -1,61 +1,86 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
-import 'package:wts_task/core/constants/app_colors.dart';
-import 'package:wts_task/core/widgets/loading_indicator.dart';
-import 'package:wts_task/features/cart/presentation/view/widgets/cart_appbar.dart';
-import 'package:wts_task/features/cart/presentation/view/widgets/cart_body_loaded.dart';
+import 'package:wts_task/core/page/base_list_view_page_state.dart';
+import 'package:wts_task/core/page/base_page.dart';
+import 'package:wts_task/core/widgets/custom_alert_dialog.dart';
+import 'package:wts_task/core/widgets/custom_button.dart';
+import 'package:wts_task/core/widgets/show_toast.dart';
+import 'package:wts_task/features/cart/presentation/view/widgets/cart_item_widget.dart';
+import 'package:wts_task/features/cart/presentation/view/widgets/total_price_widget.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
-import 'package:wts_task/features/cart/presentation/view_models/cart_view_model_state.dart';
+import 'package:wts_task/core/constants/app_colors.dart';
 
-class CartScreen extends StatefulWidget {
-  const CartScreen({super.key});
+class CartScreen extends BasePage {
+  const CartScreen({super.key, super.title = "Корзина"});
 
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
 
-class _CartScreenState extends State<CartScreen> {
+class _CartScreenState
+    extends BaseListViewPageState<CartScreen, CartViewModel> {
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<CartViewModel>().getCartProducts();
-    });
-  }
+  bool get shouldDisposeModel => false;
 
   @override
-  Widget build(BuildContext context) {
-    final vm = context.watch<CartViewModel>();
-    final state = vm.state;
+  CartViewModel createModel() => context.read();
 
-    Widget body;
-    switch (state.loadState) {
-      case LoadState.loading:
-        body = AppLoadingIndicator();
-        break;
-      case LoadState.empty:
-        body = CartEmpty();
-        break;
-      case LoadState.error:
-        body = CartError(message: state.errorMessage);
-        break;
-      case LoadState.loaded:
-        body = state.products.isEmpty ? CartEmpty() : CartBodyLoaded(vm: vm);
-        break;
-    }
+  @override
+  bool get hasFixedFooter => true;
 
-    return Scaffold(
-      appBar: cartAppbar(context),
-      body: body,
+  @override
+  Widget? buildFixedFooterImpl(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(12),
+      child: Column(
+        children: [
+          TotalPriceWidget(vm: model),
+          const SizedBox(height: 25),
+          CustomButton(
+            title: 'Оформить заказ',
+            onPressed: () {
+              final selectedProducts = model.prepareOrder();
+              if (selectedProducts == null) {
+                showToast(message: 'Выберите хотя бы один товар!');
+                return;
+              }
+              context.pushNamed('checkout', extra: selectedProducts);
+            },
+          ),
+        ],
+      ),
     );
   }
-}
-
-class CartEmpty extends StatelessWidget {
-  const CartEmpty({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildListItemImpl(BuildContext context, int index) {
+    final item = model.items[index];
+    return CartItemWidget(vm: model, product: item, index: index);
+  }
+
+  @override
+  List<Widget>? buildAppBarActions(BuildContext context) {
+    return [
+      IconButton(
+        onPressed: () {
+          CustomAlertDialog.show(
+            context,
+            title: 'Очистка корзины',
+            content: 'Все товары из корзины будут удалены, продолжить?',
+            onConfirm: () {
+              model.removeAllProducts();
+              showToast(message: 'Корзина очищена!');
+            },
+          );
+        },
+        icon: const Icon(Icons.delete),
+      ),
+    ];
+  }
+
+  @override
+  Widget buildEmptyListPlaceholder(BuildContext context) {
     return const Center(
       child: Text(
         'Корзина пуста',
@@ -64,19 +89,3 @@ class CartEmpty extends StatelessWidget {
     );
   }
 }
-
-class CartError extends StatelessWidget {
-  const CartError({super.key, this.message});
-
-  final String? message;
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        message ?? 'Ошибка при обработке товаров в корзине!',
-        style: TextStyle(fontSize: 18, color: AppColors.error),
-      ),
-    );
-  }
-}
-

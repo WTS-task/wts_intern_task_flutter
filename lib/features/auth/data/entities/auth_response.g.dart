@@ -9,10 +9,9 @@ part of 'auth_response.dart';
 _AuthResponse _$AuthResponseFromJson(Map<String, dynamic> json) =>
     _AuthResponse(
       accessToken: json['accessToken'] as String?,
-      isAlreadyRegistered:
-          json['isAlreadyRegistered'] == null
-              ? false
-              : const BoolJsonConverter().fromJson(json['isAlreadyRegistered']),
+      isAlreadyRegistered: json['isAlreadyRegistered'] == null
+          ? false
+          : const BoolJsonConverter().fromJson(json['isAlreadyRegistered']),
     );
 
 Map<String, dynamic> _$AuthResponseToJson(_AuthResponse instance) =>

@@ -6,6 +6,11 @@ class ThemeBuilder {
   static ThemeData buildThemeData() {
     return ThemeData(
       fontFamily: 'PublicSans',
+
+      outlinedButtonTheme: OutlinedButtonThemeData(
+        style: _outlinedButtonStyle(),
+      ),
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           foregroundColor: AppColors.onBackgroundText,
@@ -24,6 +29,37 @@ class ThemeBuilder {
     );
   }
 
+  static ButtonStyle _outlinedButtonStyle() {
+    return OutlinedButton.styleFrom(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      minimumSize: const Size(123, 40),
+      side: const BorderSide(
+        width: 1,
+        color: AppColors.buttonBgPrimary,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      foregroundColor: AppColors.buttonBgPrimary,
+      textStyle: AppTextStyles.bodyMedium.copyWith(
+        fontWeight: FontWeight.w500,
+      ),
+    ).copyWith(
+      overlayColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.pressed)) {
+          return AppColors.buttonBgSecondary.withOpacity(0.1);
+        }
+        return Colors.transparent;
+      }),
+      backgroundColor: WidgetStateProperty.resolveWith((states) {
+        if (states.contains(WidgetState.hovered)) {
+          return AppColors.buttonBgSecondary.withOpacity(0.05);
+        }
+        return Colors.transparent;
+      }),
+    );
+  }
+
   static InputDecorationTheme _inputDecorationThemeData() {
     return InputDecorationTheme(
       labelStyle: AppTextStyles.bodyMedium.copyWith(
@@ -34,7 +70,7 @@ class ThemeBuilder {
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(8),
-        borderSide: BorderSide(color: AppColors.dividerBorder),
+        borderSide: const BorderSide(color: AppColors.dividerBorder),
       ),
       filled: true,
       fillColor: AppColors.background,
