@@ -35,7 +35,7 @@ class _CartScreenState
       padding: const EdgeInsets.all(12),
       child: Column(
         children: [
-          TotalPriceWidget(vm: model),
+          TotalPriceWidget(totalPrice: model.totalPrice),
           const SizedBox(height: 25),
           CustomButton(
             title: 'Оформить заказ',
@@ -45,7 +45,7 @@ class _CartScreenState
                 showToast(message: 'Выберите хотя бы один товар!');
                 return;
               }
-              context.pushNamed('checkout', extra: selectedProducts);
+              context.pushNamed('place_order');
             },
           ),
         ],

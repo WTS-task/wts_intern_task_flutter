@@ -23,6 +23,11 @@ abstract class BaseFormPageState<
 
   TFormModel get vm => pageModel!;
 
+  bool hasFixedFooter = false;
+
+  /// Переопределить, чтобы задать "фиксированнный нижний колонтитул".
+  Widget? buildFixedFooterImpl(BuildContext context) => null;
+
   /// Переопределить и реализовать отправку формы
   @protected
   Future<void> submitForm();
@@ -38,13 +43,43 @@ abstract class BaseFormPageState<
 
   @protected
   Widget buildDefaultFormBody(BuildContext context) {
-    return AutofillGroup(
+    if (!hasFixedFooter) {
+      return AutofillGroup(
       child: Form(
         autovalidateMode: autovalidateMode,
         key: formKey,
         child: SafeArea(child: buildForm(context)),
       ),
     );
+    }
+
+    return SafeArea(
+      child: Column(
+        children: [
+          Expanded(
+            child: AutofillGroup(
+              child: Form(
+                autovalidateMode: autovalidateMode,
+                key: formKey,
+                child: SingleChildScrollView(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: buildForm(context),
+                ),
+              ),
+            ),
+          ),
+          buildFixedFooter(context),
+        ],
+      ),
+    );
+  }
+
+  @protected
+  Widget buildFixedFooter(BuildContext context) {
+    final fixedFooter = buildFixedFooterImpl(context);
+    return fixedFooter ?? const SizedBox.shrink();
   }
 
   @protected

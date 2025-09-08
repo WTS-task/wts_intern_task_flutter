@@ -94,6 +94,13 @@ class AppTextStyles {
     color: AppColors.primaryText,
   );
 
+  static const TextStyle textFieldText = TextStyle(
+    fontFamily: 'Public Sans',
+    fontSize: 16,
+    fontWeight: FontWeight.w400,
+    color: AppColors.secondaryText,
+  );
+
   // Кнопки
   static const TextStyle button = TextStyle(
     fontFamily: 'Public Sans',
