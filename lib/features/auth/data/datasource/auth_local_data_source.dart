@@ -21,4 +21,8 @@ class AuthLocalDataSource {
   Future<void> saveAccessToken({required String accessToken}) async {
     await _storage.setValue(_accessTokenKey, accessToken);
   }
+
+  Future<void> clearTokens() async {
+    await deleteAccessToken();
+  }
 }

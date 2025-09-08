@@ -15,4 +15,14 @@ class ProfileRepository extends PrivateApi {
       fromJson: User.fromJson,
     );
   }
+
+  Future<ApiResponse<void>> updateProfile(Map<String, dynamic> data) async {
+    // либо put, либо post в зависимости от бек‑энда
+    final response = await post('user/change-profile', data: data);
+    // если успеха нет — ApiResponse.error
+    return ApiResponseParser.parseObjectFromResponse<void>(
+      response,
+      fromJson: (_) => null,
+    );
+  }
 }

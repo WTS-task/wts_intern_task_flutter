@@ -19,6 +19,9 @@ import 'package:wts_task/features/profile/presentation/view/screens/edit_profile
 import 'package:wts_task/features/profile/presentation/view/screens/order_detail_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_history_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/profile_screen.dart';
+import 'package:wts_task/features/profile/presentation/view_models/profile_view_model.dart';
+import 'package:wts_task/features/profile/presentation/view_models/edit_profile_view_model.dart';
+import 'package:wts_task/core/entities/user.dart';
 
 extension GoRouterExtension on BuildContext {
   Future<void> clearStackAndNavigate(String location) async {
@@ -35,7 +38,7 @@ class AppRouter {
   final AppUser appUser;
 
   late final GoRouter appRouter = GoRouter(
-    initialLocation: '/catalog',
+    initialLocation: '/profile',
     observers: [BotToastNavigatorObserver()],
     routes: [
       //Авторизация
@@ -110,22 +113,42 @@ class AppRouter {
           //Профиль
           StatefulShellBranch(
             routes: [
-              GoRoute(
-                path: '/profile',
-                builder: (context, state) => const ProfileScreen(),
+              // оборачиваем все profile-маршруты в ShellRoute
+              ShellRoute(
+                builder: (context, state, child) {
+                  return ChangeNotifierProvider<ProfileViewModel>(
+                    create: (_) => ProfileViewModel(context.read<AuthLocalDataSource>()),
+                    child: child,
+                  );
+                },
                 routes: [
+                  // 1) просмотр профиля
                   GoRoute(
-                    path: 'edit',
-                    builder: (context, state) => const EditProfileScreen(),
+                    path: '/profile',
+                    builder: (context, state) => const ProfileScreen(),
                   ),
+                  // 2) редактирование профиля
                   GoRoute(
-                    path: 'orders',
-                    name: 'orders',
+                    path: '/profile/edit',
+                    builder: (context, state) {
+                      // передаём User через extra
+                      final user = state.extra as User;
+                      return ChangeNotifierProvider<EditProfileViewModel>(
+                        create: (_) => EditProfileViewModel(
+                          context.read<AuthLocalDataSource>(),
+                          user,
+                        ),
+                        child: const EditProfileScreen(),
+                      );
+                    },
+                  ),
+                  // 3) история заказов
+                  GoRoute(
+                    path: '/profile/orders',
                     builder: (context, state) => const OrderHistoryScreen(),
                     routes: [
                       GoRoute(
                         path: ':id',
-                        name: 'order_detail',
                         builder: (context, state) => const OrderDetailScreen(),
                       ),
                     ],
