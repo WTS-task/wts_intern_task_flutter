@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/presentation/widgets/attachment_popup_menu.dart';
+import 'package:wts_task/features/chat/utils/attachment_type.dart';
 
 class ChatInput extends StatefulWidget {
   const ChatInput({
@@ -9,7 +10,7 @@ class ChatInput extends StatefulWidget {
   });
 
   final Function(String) onSend;
-  final Function(String) onAttachmentSelected;
+  final Function(AttachmentType, {String? payload}) onAttachmentSelected;
 
   @override
   State<ChatInput> createState() => _ChatInputState();

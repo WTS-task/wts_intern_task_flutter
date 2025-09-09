@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/presentation/view/image_viewer_screen.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_time_label.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/base_message_bubble.dart';
+import 'package:wts_task/core/widgets/custom_cached_image.dart';
 
 class ImageMessageBubble extends BaseMessageBubble {
   const ImageMessageBubble({required super.message, super.key});
@@ -20,33 +21,7 @@ class ImageMessageBubble extends BaseMessageBubble {
     Widget imageWidget;
 
     if (isNetworkImage) {
-      imageWidget = Image.network(
-        imagePath,
-        fit: BoxFit.cover,
-        cacheWidth: 400,
-        errorBuilder: (context, error, stackTrace) => Container(
-          constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
-          height: 120,
-          color: Colors.grey[300],
-          child: const Icon(Icons.broken_image, color: Colors.red),
-        ),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
-            height: 120,
-            color: Colors.grey[200],
-            child: Center(
-              child: CircularProgressIndicator(
-                value: loadingProgress.expectedTotalBytes != null
-                    ? loadingProgress.cumulativeBytesLoaded /
-                          loadingProgress.expectedTotalBytes!
-                    : null,
-              ),
-            ),
-          );
-        },
-      );
+      imageWidget = const SizedBox();
     } else {
       imageWidget = Image.file(
         File(imagePath),
@@ -82,7 +57,17 @@ class ImageMessageBubble extends BaseMessageBubble {
           borderRadius: BorderRadius.circular(8),
           child: Stack(
             children: [
-              imageWidget,
+              if (isNetworkImage)
+                const SizedBox.shrink()
+              else
+                imageWidget,
+              if (isNetworkImage)
+                CustomCachedImage(
+                  imageUrl: imagePath,
+                  width: double.infinity,
+                  height: 120,
+                  fit: BoxFit.cover,
+                ),
               if (createdAt != null)
                 Positioned(
                   bottom: 0,

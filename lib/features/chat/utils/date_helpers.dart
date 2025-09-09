@@ -1,9 +1,9 @@
-bool isSameDay(int? ms1, int? ms2) {
-    if (ms1 == null || ms2 == null) return false;
-    final date1 = DateTime.fromMillisecondsSinceEpoch(ms1);
-    final date2 = DateTime.fromMillisecondsSinceEpoch(ms2);
-    return date1.year == date2.year && date1.month == date2.month && date1.day == date2.day;
+extension DateTimeHelper on DateTime {
+  bool isSameDay(DateTime sameDate) {
+    return DateTime(year, month, day) ==
+        DateTime(sameDate.year, sameDate.month, sameDate.day);
   }
+}
 
 String formatDateSeparator(int? ms) {
   if (ms == null) return '';

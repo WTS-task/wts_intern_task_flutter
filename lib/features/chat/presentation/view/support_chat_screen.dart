@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:wts_task/core/page/base_list_view_page_state.dart';
 import 'package:wts_task/core/page/base_page.dart';
-import 'package:wts_task/features/chat/data/models/message_model.dart';
 import 'package:wts_task/features/chat/data/repositories/message_repository.dart';
 import 'package:wts_task/features/chat/presentation/view_models/chat_view_model.dart';
 import 'package:wts_task/features/chat/presentation/widgets/chat_input.dart';
@@ -11,6 +9,7 @@ import 'package:wts_task/features/chat/presentation/widgets/date_separator_widge
 import 'package:wts_task/features/chat/presentation/widgets/message_bubble.dart';
 import 'package:wts_task/features/chat/utils/attachment_handler.dart';
 import 'package:wts_task/features/chat/utils/date_helpers.dart';
+import 'package:wts_task/features/chat/utils/attachment_type.dart';
 
 class SupportChatScreen extends BasePage {
   const SupportChatScreen({super.key}) : super(title: 'Чат с поддержкой');
@@ -32,18 +31,17 @@ class _SupportChatScreenState
         repository: context.read<MessageRepository>(),
       );
 
-  Future<void> _handleAttachmentSelected(BuildContext innerContext, String type) async {
-    await AttachmentHandler.handle(innerContext, type);
+  Future<void> _handleAttachmentSelected(
+      BuildContext innerContext, AttachmentType type,
+      {String? payload}) async {
+    final file = await AttachmentHandler.handle(innerContext, type, payload: payload);
+    if (file != null) {
+      model.sendMessage(file: file);
+    }
   }
 
   void _handleSend(String text) {
-    final message = MessageModel(
-      text: text,
-      createdAt: DateTime.now().millisecondsSinceEpoch,
-      user: UserModel(name: 'Me', avatar: null, userId: 1),
-      isIncoming: 0,
-    );
-    model.sendMessage(message);
+    model.sendMessage(text: text);
   }
 
   @override
@@ -54,7 +52,9 @@ class _SupportChatScreenState
       showDateSeparator = true;
     } else {
       final previousMessage = model.items[index - 1];
-      if (!isSameDay(message.createdAt, previousMessage.createdAt)) {
+      final current = DateTime.fromMillisecondsSinceEpoch(message.createdAt ?? 0);
+      final prev = DateTime.fromMillisecondsSinceEpoch(previousMessage.createdAt ?? 0);
+      if (!current.isSameDay(prev)) {
         showDateSeparator = true;
       }
     }
@@ -79,29 +79,11 @@ class _SupportChatScreenState
         Builder(
           builder: (innerContext) => ChatInput(
             onSend: _handleSend,
-            onAttachmentSelected: (type) => _handleAttachmentSelected(innerContext, type),
+            onAttachmentSelected: (type, {payload}) =>
+                _handleAttachmentSelected(innerContext, type, payload: payload),
           ),
         ),
       ],
-    );
-  }
-
-  @override
-  PreferredSizeWidget? buildAppBar(BuildContext context) {
-    return AppBar(
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back),
-        onPressed: () {
-          if (Navigator.of(context).canPop()) {
-            Navigator.of(context).pop();
-          } else {
-            context.go('/profile');
-          }
-        },
-      ),
-      title: Text(widget.title ?? 'Чат с поддержкой'),
-      centerTitle: true,
-      actions: null,
     );
   }
 }

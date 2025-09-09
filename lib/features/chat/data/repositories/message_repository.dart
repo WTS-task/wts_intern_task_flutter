@@ -2,6 +2,7 @@ import 'package:wts_task/features/chat/data/models/message_model.dart';
 import 'package:wts_task/core/entities/api_response.dart';
 import 'package:wts_task/core/services/api/api_response_parser.dart';
 import 'package:wts_task/core/services/api/private_api.dart';
+import 'package:dio/dio.dart';
 
 class MessageRepository extends PrivateApi {
   MessageRepository(super.authRepository);
@@ -37,6 +38,29 @@ class MessageRepository extends PrivateApi {
     final data = {'chatId': chatId, 'text': text};
 
     final response = await post('/messenger/message/send', data: data);
+
+    return ApiResponseParser.parseObjectFromResponse(
+      response,
+      key: 'message',
+      fromJson: MessageModel.fromJson,
+    );
+  }
+
+  Future<ApiResponse<MessageModel>> sendFileMessage({
+    required int chatId,
+    required String filePath,
+    required String fileName,
+    required String fileType,
+    String? text,
+  }) async {
+    final formData = FormData.fromMap({
+      'chatId': chatId,
+      if (text != null && text.trim().isNotEmpty) 'text': text.trim(),
+      'file': await MultipartFile.fromFile(filePath, filename: fileName),
+      'type': fileType,
+    });
+
+    final response = await postWithFile('/messenger/message/send-file', data: formData);
 
     return ApiResponseParser.parseObjectFromResponse(
       response,

@@ -10,28 +10,54 @@ class VoiceRecordDialog extends StatefulWidget {
   State<VoiceRecordDialog> createState() => _VoiceRecordDialogState();
 }
 
-class _VoiceRecordDialogState extends State<VoiceRecordDialog> {
-  bool _isRecording = false;
+class VoiceRecordViewModel {
+  VoiceRecordViewModel();
 
-  FlutterSoundRecorder? _recorder;
-  String? _audioPath;
-  bool _isInited = false;
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  bool isInitialized = false;
+  bool isRecording = false;
+  String? audioPath;
+
+  Future<void> initialize() async {
+    var status = await Permission.microphone.request();
+    print('Microphone permission status: $status');
+    await _recorder.openRecorder();
+    isInitialized = true;
+  }
+
+  Future<void> startRecording() async {
+    final dir = await getTemporaryDirectory();
+    final path = '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.aac';
+    await _recorder.startRecorder(toFile: path, codec: Codec.aacADTS);
+    isRecording = true;
+    audioPath = path;
+  }
+
+  Future<void> stopRecording() async {
+    await _recorder.stopRecorder();
+    isRecording = false;
+  }
+
+  Future<void> dispose() async {
+    await _recorder.closeRecorder();
+  }
+}
+
+class _VoiceRecordDialogState extends State<VoiceRecordDialog> {
+  late final VoiceRecordViewModel _vm;
 
   @override
   void initState() {
     super.initState();
-    _recorder = FlutterSoundRecorder();
+    _vm = VoiceRecordViewModel();
     _init();
   }
 
   Future<void> _init() async {
     try {
-      var status = await Permission.microphone.request();
-      print('Microphone permission status: $status');
-      await _recorder!.openRecorder();
-      setState(() {
-        _isInited = true;
-      });
+      await _vm.initialize();
+      if (!mounted) return;
+      setState(() {});
     } catch (e) {
       print('Recorder init error: $e');
     }
@@ -39,29 +65,20 @@ class _VoiceRecordDialogState extends State<VoiceRecordDialog> {
 
   @override
   void dispose() {
-    _recorder?.closeRecorder();
-    _recorder = null;
+    _vm.dispose();
     super.dispose();
   }
 
   Future<void> _startRecording() async {
-    final dir = await getTemporaryDirectory();
-    final path =
-        '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.aac';
-    await _recorder!.startRecorder(toFile: path, codec: Codec.aacADTS);
-    setState(() {
-      _isRecording = true;
-      _audioPath = path;
-    });
+    await _vm.startRecording();
+    setState(() {});
   }
 
   Future<void> _stopRecording() async {
-    await _recorder!.stopRecorder();
-    setState(() {
-      _isRecording = false;
-    });
-    if (_audioPath != null) {
-      Navigator.of(context).pop(_audioPath);
+    await _vm.stopRecording();
+    setState(() {});
+    if (_vm.audioPath != null) {
+      Navigator.of(context).pop(_vm.audioPath);
     }
   }
 
@@ -73,12 +90,12 @@ class _VoiceRecordDialogState extends State<VoiceRecordDialog> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Icon(
-            _isRecording ? Icons.mic : Icons.mic_none,
+            _vm.isRecording ? Icons.mic : Icons.mic_none,
             size: 48,
             color: Colors.red,
           ),
           const SizedBox(height: 16),
-          Text(_isRecording ? 'Идет запись...' : 'Нажмите для начала записи'),
+          Text(_vm.isRecording ? 'Идет запись...' : 'Нажмите для начала записи'),
         ],
       ),
       actions: [
@@ -87,16 +104,16 @@ class _VoiceRecordDialogState extends State<VoiceRecordDialog> {
           child: const Text('Отмена'),
         ),
         ElevatedButton(
-          onPressed: !_isInited
+          onPressed: !_vm.isInitialized
               ? null
               : () async {
-                  if (_isRecording) {
+                  if (_vm.isRecording) {
                     await _stopRecording();
                   } else {
                     await _startRecording();
                   }
                 },
-          child: Text(_isRecording ? 'Стоп' : 'Записать'),
+          child: Text(_vm.isRecording ? 'Стоп' : 'Записать'),
         ),
       ],
     );

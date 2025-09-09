@@ -5,6 +5,7 @@ import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/docu
 import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/image_message_bubble.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/text_message_bubble.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/video_message_bubble.dart';
+import 'package:wts_task/features/chat/utils/attachment_type.dart';
 
 class MessageBubble extends StatelessWidget {
   const MessageBubble({required this.message, super.key});
@@ -17,21 +18,41 @@ class MessageBubble extends StatelessWidget {
     final text = message.text;
 
     if (file != null && file.url != null) {
-      if (file.type == 'image') {
-        return ImageMessageBubble(message: message);
-      } else if (file.type == 'video') {
-        return VideoMessageBubble(message: message);
-      } else if (file.type == 'audio') {
-        return AudioMessageBubble(message: message);
-      } else if (file.type == 'file' || file.type == 'document') {
-        return DocumentMessageBubble(message: message);
-      } else {
-        return DocumentMessageBubble(message: message);
+      final AttachmentType? type = _parseAttachmentType(file.type);
+      switch (type) {
+        case AttachmentType.image:
+          return ImageMessageBubble(message: message);
+        case AttachmentType.video:
+          return VideoMessageBubble(message: message);
+        case AttachmentType.audio:
+          return AudioMessageBubble(message: message);
+        case AttachmentType.document:
+          return DocumentMessageBubble(message: message);
+        case AttachmentType.camera:
+          return ImageMessageBubble(message: message);
+        default:
+          return DocumentMessageBubble(message: message);
       }
     } else if (text != null && text.isNotEmpty) {
       return TextMessageBubble(message: message);
     } else {
       return const SizedBox.shrink();
+    }
+  }
+
+  AttachmentType? _parseAttachmentType(String? raw) {
+    switch (raw) {
+      case 'image':
+        return AttachmentType.image;
+      case 'video':
+        return AttachmentType.video;
+      case 'audio':
+        return AttachmentType.audio;
+      case 'document':
+      case 'file':
+        return AttachmentType.document;
+      default:
+        return null;
     }
   }
 }

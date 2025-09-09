@@ -1,23 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/presentation/widgets/voice_record_dialog.dart';
+import 'package:wts_task/features/chat/utils/attachment_type.dart';
 
 class AttachmentPopupMenu extends StatelessWidget {
   const AttachmentPopupMenu({required this.onAttachmentSelected, super.key});
 
-  final Function(String) onAttachmentSelected;
+  final Function(AttachmentType, {String? payload}) onAttachmentSelected;
 
   @override
   Widget build(BuildContext context) {
-    return PopupMenuButton<String>(
+    return PopupMenuButton<AttachmentType>(
       icon: Icon(Icons.attach_file, color: Colors.grey[600]),
       onSelected: (value) async {
-        if (value == 'audio') {
+        if (value == AttachmentType.audio) {
           final path = await showDialog<String>(
             context: context,
             builder: (context) => const VoiceRecordDialog(),
           );
           if (path != null) {
-            onAttachmentSelected('voice_file:$path');
+            onAttachmentSelected(AttachmentType.audio, payload: path);
           }
         } else {
           onAttachmentSelected(value);
@@ -26,7 +27,7 @@ class AttachmentPopupMenu extends StatelessWidget {
       color: Colors.white,
       itemBuilder: (context) => [
         const PopupMenuItem(
-          value: 'image',
+          value: AttachmentType.image,
           child: Row(
             children: [
               Icon(Icons.image, color: Colors.black54),
@@ -36,7 +37,7 @@ class AttachmentPopupMenu extends StatelessWidget {
           ),
         ),
         const PopupMenuItem(
-          value: 'camera',
+          value: AttachmentType.camera,
           child: Row(
             children: [
               Icon(Icons.camera_alt, color: Colors.black54),
@@ -46,7 +47,7 @@ class AttachmentPopupMenu extends StatelessWidget {
           ),
         ),
         const PopupMenuItem(
-          value: 'document',
+          value: AttachmentType.document,
           child: Row(
             children: [
               Icon(Icons.insert_drive_file, color: Colors.black54),
@@ -56,7 +57,7 @@ class AttachmentPopupMenu extends StatelessWidget {
           ),
         ),
         const PopupMenuItem(
-          value: 'video',
+          value: AttachmentType.video,
           child: Row(
             children: [
               Icon(Icons.videocam, color: Colors.black54),
@@ -66,7 +67,7 @@ class AttachmentPopupMenu extends StatelessWidget {
           ),
         ),
         const PopupMenuItem(
-          value: 'audio',
+          value: AttachmentType.audio,
           child: Row(
             children: [
               Icon(Icons.mic, color: Colors.black54),

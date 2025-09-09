@@ -8,9 +8,7 @@ class TextMessageBubble extends BaseMessageBubble {
 
   @override
   Widget buildBubble(BuildContext context) {
-    final isMe = this.isMe;
     final text = message.text ?? '';
-    final createdAt = this.createdAt;
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
       decoration: bubbleDecoration(context, isMe: isMe),

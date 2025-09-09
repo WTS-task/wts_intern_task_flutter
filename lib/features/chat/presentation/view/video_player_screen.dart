@@ -11,40 +11,27 @@ class VideoPlayerScreen extends StatefulWidget {
   State<VideoPlayerScreen> createState() => _VideoPlayerScreenState();
 }
 
-class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  late VideoPlayerController _controller;
-  bool _isInitialized = false;
-  bool _isError = false;
-  String _errorMessage = '';
+class VideoPlayerViewModel {
+  late VideoPlayerController controller;
+  bool isInitialized = false;
+  bool isError = false;
+  String errorMessage = '';
 
-  @override
-  void initState() {
-    super.initState();
-    print('VideoPlayerScreen: Инициализация с путем: ${widget.videoPath}');
-    _initializeController();
-  }
-
-  void _initializeController() {
+  Future<void> initialize(String videoPath) async {
     final isNetworkVideo =
-        widget.videoPath.startsWith('http://') ||
-        widget.videoPath.startsWith('https://');
-
-    print('VideoPlayerScreen: isNetworkVideo = $isNetworkVideo');
-
+        videoPath.startsWith('http://') || videoPath.startsWith('https://');
     try {
       if (isNetworkVideo) {
-        print('VideoPlayerScreen: Создаю VideoPlayerController.networkUrl');
-        _controller = VideoPlayerController.networkUrl(
-          Uri.parse(widget.videoPath),
+        controller = VideoPlayerController.networkUrl(
+          Uri.parse(videoPath),
           videoPlayerOptions: VideoPlayerOptions(
             mixWithOthers: true,
             allowBackgroundPlayback: false,
           ),
         );
       } else {
-        print('VideoPlayerScreen: Создаю VideoPlayerController.file');
-        _controller = VideoPlayerController.file(
-          File(widget.videoPath),
+        controller = VideoPlayerController.file(
+          File(videoPath),
           videoPlayerOptions: VideoPlayerOptions(
             mixWithOthers: true,
             allowBackgroundPlayback: false,
@@ -52,34 +39,12 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
         );
       }
 
-      _controller
-          .initialize()
-          .then((_) {
-            print('VideoPlayerScreen: Видео успешно инициализировано');
-            if (mounted) {
-              setState(() {
-                _isInitialized = true;
-              });
-              _controller.play();
-            }
-          })
-          .catchError((error) {
-            print('VideoPlayerScreen: Ошибка инициализации: $error');
-            if (mounted) {
-              setState(() {
-                _isError = true;
-                _errorMessage = _formatErrorMessage(error.toString());
-              });
-            }
-          });
+      await controller.initialize();
+      isInitialized = true;
+      await controller.play();
     } catch (e) {
-      print('VideoPlayerScreen: Ошибка создания контроллера: $e');
-      if (mounted) {
-        setState(() {
-          _isError = true;
-          _errorMessage = _formatErrorMessage(e.toString());
-        });
-      }
+      isError = true;
+      errorMessage = _formatErrorMessage(e.toString());
     }
   }
 
@@ -95,10 +60,177 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
     }
   }
 
+  void togglePlayPause() {
+    if (!isInitialized || isError) return;
+    if (controller.value.isPlaying) {
+      controller.pause();
+    } else {
+      controller.play();
+    }
+  }
+
+  void seekRelative(Duration offset) {
+    if (!isInitialized || isError) return;
+    final current = controller.value.position;
+    final duration = controller.value.duration;
+    final target = current + offset;
+    final clamped = target < Duration.zero
+        ? Duration.zero
+        : (target > duration ? duration : target);
+    controller.seekTo(clamped);
+  }
+
+  Future<void> retry(String videoPath) async {
+    isError = false;
+    isInitialized = false;
+    errorMessage = '';
+    await initialize(videoPath);
+  }
+
+  void dispose() {
+    controller.dispose();
+  }
+}
+
+class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
+  late final VideoPlayerViewModel _vm;
+
+  @override
+  void initState() {
+    super.initState();
+    _vm = VideoPlayerViewModel();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    await _vm.initialize(widget.videoPath);
+    if (!mounted) return;
+    setState(() {});
+  }
+
   @override
   void dispose() {
-    _controller.dispose();
+    _vm.dispose();
     super.dispose();
+  }
+
+  Widget _buildCenterContent() {
+    if (_vm.isError) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const Icon(
+            Icons.error_outline,
+            color: Colors.white,
+            size: 64,
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Ошибка загрузки видео',
+            style: TextStyle(color: Colors.white, fontSize: 16),
+          ),
+          const SizedBox(height: 8),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 32),
+            child: Text(
+              _vm.errorMessage,
+              style: const TextStyle(
+                color: Colors.white70,
+                fontSize: 12,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ),
+          const SizedBox(height: 16),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ElevatedButton(
+                onPressed: () async {
+                  await _vm.retry(widget.videoPath);
+                  if (!mounted) return;
+                  setState(() {});
+                },
+                child: const Text('Повторить'),
+              ),
+              const SizedBox(width: 16),
+              ElevatedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Закрыть'),
+              ),
+            ],
+          ),
+        ],
+      );
+    }
+    if (_vm.isInitialized) {
+      return AspectRatio(
+        aspectRatio: _vm.controller.value.aspectRatio,
+        child: VideoPlayer(_vm.controller),
+      );
+    }
+    return const CircularProgressIndicator();
+  }
+
+  Widget _buildControls() {
+    if (!_vm.isInitialized) return const SizedBox.shrink();
+    return Positioned(
+      left: 0,
+      right: 0,
+      bottom: 0,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 16,
+          vertical: 12,
+        ),
+        decoration: const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.55)),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            IconButton(
+              icon: const Icon(
+                Icons.replay_5,
+                color: Colors.white,
+                size: 32,
+              ),
+              onPressed: () {
+                setState(() {
+                  _vm.seekRelative(const Duration(seconds: -5));
+                });
+              },
+            ),
+            const SizedBox(width: 16),
+            IconButton(
+              icon: Icon(
+                _vm.controller.value.isPlaying
+                    ? Icons.pause_circle_filled
+                    : Icons.play_circle_filled,
+                color: Colors.white,
+                size: 48,
+              ),
+              onPressed: () {
+                setState(() {
+                  _vm.togglePlayPause();
+                });
+              },
+            ),
+            const SizedBox(width: 16),
+            IconButton(
+              icon: const Icon(
+                Icons.forward_5,
+                color: Colors.white,
+                size: 32,
+              ),
+              onPressed: () {
+                setState(() {
+                  _vm.seekRelative(const Duration(seconds: 5));
+                });
+              },
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -107,68 +239,9 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          Center(
-            child: _isError
-                ? Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.error_outline,
-                        color: Colors.white,
-                        size: 64,
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Ошибка загрузки видео',
-                        style: TextStyle(color: Colors.white, fontSize: 16),
-                      ),
-                      const SizedBox(height: 8),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32),
-                        child: Text(
-                          _errorMessage,
-                          style: const TextStyle(
-                            color: Colors.white70,
-                            fontSize: 12,
-                          ),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          ElevatedButton(
-                            onPressed: () {
-                              setState(() {
-                                _isError = false;
-                                _isInitialized = false;
-                                _errorMessage = '';
-                              });
-                              _initializeController();
-                            },
-                            child: const Text('Повторить'),
-                          ),
-                          const SizedBox(width: 16),
-                          ElevatedButton(
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                            child: const Text('Закрыть'),
-                          ),
-                        ],
-                      ),
-                    ],
-                  )
-                : _isInitialized
-                ? AspectRatio(
-                    aspectRatio: _controller.value.aspectRatio,
-                    child: VideoPlayer(_controller),
-                  )
-                : const CircularProgressIndicator(),
-          ),
+          Center(child: _buildCenterContent()),
           Positioned(
-            top: MediaQuery.of(context).padding.top + 10,
+            top: MediaQuery.paddingOf(context).top + 10,
             left: 10,
             child: Container(
               decoration: BoxDecoration(
@@ -185,75 +258,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               ),
             ),
           ),
-          if (_isInitialized)
-            Positioned(
-              left: 0,
-              right: 0,
-              bottom: 0,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                  vertical: 12,
-                ),
-                decoration: BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.55)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    IconButton(
-                      icon: const Icon(
-                        Icons.replay_5,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                      onPressed: () {
-                        final newPosition =
-                            _controller.value.position -
-                            const Duration(seconds: 5);
-                        _controller.seekTo(
-                          newPosition > Duration.zero
-                              ? newPosition
-                              : Duration.zero,
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 16),
-                    IconButton(
-                      icon: Icon(
-                        _controller.value.isPlaying
-                            ? Icons.pause_circle_filled
-                            : Icons.play_circle_filled,
-                        color: Colors.white,
-                        size: 48,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _controller.value.isPlaying
-                              ? _controller.pause()
-                              : _controller.play();
-                        });
-                      },
-                    ),
-                    const SizedBox(width: 16),
-                    IconButton(
-                      icon: const Icon(
-                        Icons.forward_5,
-                        color: Colors.white,
-                        size: 32,
-                      ),
-                      onPressed: () {
-                        final max = _controller.value.duration;
-                        final newPosition =
-                            _controller.value.position +
-                            const Duration(seconds: 5);
-                        _controller.seekTo(
-                          newPosition < max ? newPosition : max,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ),
-            ),
+          _buildControls(),
         ],
       ),
     );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:wts_task/features/chat/presentation/view/video_player_screen.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_time_label.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/base_message_bubble.dart';
+import 'package:wts_task/core/widgets/custom_cached_image.dart';
 
 class VideoMessageBubble extends BaseMessageBubble {
   const VideoMessageBubble({required super.message, super.key});
@@ -25,22 +26,9 @@ class VideoMessageBubble extends BaseMessageBubble {
 
     final duration = file.videoFile?.duration;
 
-    Widget previewWidget;
-
-    if (previewUrl != null && isNetworkVideo) {
-      previewWidget = Image.network(
-        previewUrl,
-        fit: BoxFit.cover,
-        cacheWidth: 400,
-        errorBuilder: (context, error, stackTrace) => _buildFallbackPreview(),
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return _buildLoadingPreview();
-        },
-      );
-    } else {
-      previewWidget = _buildLocalVideoPreview();
-    }
+    Widget previewWidget = previewUrl != null && isNetworkVideo
+        ? const SizedBox()
+        : _buildLocalVideoPreview();
 
     return GestureDetector(
       onTap: () {
@@ -63,7 +51,15 @@ class VideoMessageBubble extends BaseMessageBubble {
           borderRadius: BorderRadius.circular(8),
           child: Stack(
             children: [
-              previewWidget,
+              if (previewUrl != null && isNetworkVideo)
+                CustomCachedImage(
+                  imageUrl: previewUrl,
+                  width: double.infinity,
+                  height: null,
+                  fit: BoxFit.cover,
+                )
+              else
+                previewWidget,
               // Иконка воспроизведения
               const Positioned.fill(
                 child: Center(
@@ -156,29 +152,7 @@ class VideoMessageBubble extends BaseMessageBubble {
     );
   }
 
-  Widget _buildFallbackPreview() {
-    return Container(
-      constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
-      color: Colors.grey[300],
-      child: const AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Center(
-          child: Icon(Icons.videocam, color: Colors.white70, size: 48),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildLoadingPreview() {
-    return Container(
-      constraints: const BoxConstraints(minWidth: 150, maxWidth: 250),
-      color: Colors.grey[200],
-      child: const AspectRatio(
-        aspectRatio: 16 / 9,
-        child: Center(child: CircularProgressIndicator()),
-      ),
-    );
-  }
+  // Fallback/Loading отдельные виджеты не требуются: CustomCachedImage сам справится
 
   String _formatDuration(double seconds) {
     final minutes = (seconds / 60).floor();

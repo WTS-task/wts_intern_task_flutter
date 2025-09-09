@@ -10,82 +10,62 @@ class ChatViewModel extends ListModel<MessageModel> {
 
   final MessageRepository _repository;
   final int chatId;
-
-  DateTime? _lastApiUpdate;
-  static const Duration _cacheValidDuration = Duration(minutes: 5);
+  
 
   @override
   Future<void> loadNextItems(String? loadingUuid) async {
-    try {
-      final apiResponse = await _repository.fetchMessages(
-        chatId: chatId,
-        offset: offset,
-      );
-      if (apiResponse.isError) {
-        onLoadingError(apiResponse.error ?? 'Ошибка загрузки');
-        return;
-      }
-      final next = apiResponse.result ?? [];
-      _lastApiUpdate = DateTime.now();
-      await onNextItemsLoaded(next, loadingUuid);
-    } catch (e) {
-      onLoadingError(e.toString());
+    final apiResponse = await _repository.fetchMessages(
+      chatId: chatId,
+      offset: offset,
+    );
+    if (apiResponse.isError) {
+      onLoadingError(apiResponse.error ?? 'Ошибка загрузки');
+      return;
     }
+    final next = apiResponse.result ?? [];
+    await onNextItemsLoaded(next, loadingUuid);
   }
+  
+  Future<void> sendMessage({String? text, FileModel? file}) async {
+    final hasText = (text != null && text.trim().isNotEmpty);
+    final hasFile = file != null;
+    if (!hasText && !hasFile) return;
 
-  Future<void> refreshMessages() async {
-    reset();
-    await loadData();
-  }
-
-  bool get needsRefresh {
-    return _lastApiUpdate == null ||
-        DateTime.now().difference(_lastApiUpdate!) > _cacheValidDuration;
-  }
-
-  Future<void> sendMessage(MessageModel message) async {
-    try {
-      addItem(message);
-      notifyListeners();
+    if (hasText && !hasFile) {
       final apiResponse = await _repository.sendMessage(
         chatId: chatId,
-        text: message.text ?? '',
+        text: text.trim(),
       );
       if (apiResponse.isError) {
         debugPrint('Error sending message: ${apiResponse.error}');
-      } else {
-        _lastApiUpdate = DateTime.now();
+        return;
       }
-    } catch (e) {
-      onLoadingError(e.toString());
+      final created = apiResponse.result;
+      if (created != null) {
+        addItem(created);
+        notifyListeners();
+      }
+    } else if (hasFile) {
+      final apiResponse = await _repository.sendFileMessage(
+        chatId: chatId,
+        filePath: file.url ?? '',
+        fileName: file.originalName ?? 'file',
+        fileType: file.type ?? 'document',
+        text: text,
+      );
+      if (apiResponse.isError) {
+        debugPrint('Error sending file message: ${apiResponse.error}');
+        return;
+      }
+      final created = apiResponse.result;
+      if (created != null) {
+        addItem(created);
+        notifyListeners();
+      }
     }
   }
 
-  Future<void> sendFileMessage({
-    required String filePath,
-    required String fileName,
-    required String fileType,
-  }) async {
-    try {
-      final message = MessageModel(
-        text: null,
-        createdAt: DateTime.now().millisecondsSinceEpoch,
-        user: UserModel(name: 'Me', avatar: null, userId: 1),
-        isIncoming: 0,
-        file: FileModel(
-          url: filePath,
-          type: fileType,
-          originalName: fileName,
-          createdAt: DateTime.now().millisecondsSinceEpoch,
-        ),
-      );
-      addItem(message);
-      notifyListeners();
-      _lastApiUpdate = DateTime.now();
-    } catch (e) {
-      onLoadingError(e.toString());
-    }
-  }
+  // Removed sendFileMessage in favor of unified sendMessage
 
   Future<void> clearChat() async {
     try {
@@ -93,30 +73,6 @@ class ChatViewModel extends ListModel<MessageModel> {
       notifyListeners();
     } catch (e) {
       onLoadingError(e.toString());
-    }
-  }
-
-  Future<void> markMessagesAsViewed({required List<int> messageIds}) async {
-    try {
-      final res = await _repository.markMessagesAsViewed(
-        chatId: chatId,
-        messageIds: messageIds,
-      );
-      if (res.isError) {
-        debugPrint('Error marking messages as viewed: ${res.error}');
-      }
-    } catch (e) {
-      debugPrint('Exception marking messages as viewed: $e');
-    }
-  }
-
-  Future<int> getUnreadCount() async {
-    try {
-      final res = await _repository.getUnreadCount();
-      if (res.isError) return 0;
-      return res.result ?? 0;
-    } catch (_) {
-      return 0;
     }
   }
 }
