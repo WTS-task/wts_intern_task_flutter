@@ -3,6 +3,7 @@ import 'package:wts_task/core/entities/api_response.dart';
 import 'package:wts_task/core/services/api/api_response_parser.dart';
 import 'package:wts_task/core/services/api/private_api.dart';
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 
 class MessageRepository extends PrivateApi {
   MessageRepository(super.authRepository);
@@ -33,34 +34,23 @@ class MessageRepository extends PrivateApi {
 
   Future<ApiResponse<MessageModel>> sendMessage({
     required int chatId,
-    required String text,
-  }) async {
-    final data = {'chatId': chatId, 'text': text};
-
-    final response = await post('/messenger/message/send', data: data);
-
-    return ApiResponseParser.parseObjectFromResponse(
-      response,
-      key: 'message',
-      fromJson: MessageModel.fromJson,
-    );
-  }
-
-  Future<ApiResponse<MessageModel>> sendFileMessage({
-    required int chatId,
-    required String filePath,
-    required String fileName,
-    required String fileType,
     String? text,
+    XFile? file,
   }) async {
     final formData = FormData.fromMap({
       'chatId': chatId,
       if (text != null && text.trim().isNotEmpty) 'text': text.trim(),
-      'file': await MultipartFile.fromFile(filePath, filename: fileName),
-      'type': fileType,
+      if (file != null)
+        'file': await MultipartFile.fromFile(
+          file.path,
+          filename: file.name,
+        ),
     });
 
-    final response = await postWithFile('/messenger/message/send-file', data: formData);
+    final response = await postWithFile(
+      '/messenger/message/send',
+      data: formData,
+    );
 
     return ApiResponseParser.parseObjectFromResponse(
       response,
@@ -68,33 +58,4 @@ class MessageRepository extends PrivateApi {
       fromJson: MessageModel.fromJson,
     );
   }
-
-  Future<ApiResponse<void>> markMessagesAsViewed({
-    required int chatId,
-    required List<int> messageIds,
-  }) async {
-    final data = {'chatId': chatId, 'messageIds': messageIds};
-
-    final response = await post('/messenger/message/mark-viewed', data: data);
-
-    if (response.isError) {
-      return ApiResponse.error(
-        error: response.error!,
-        baseApiResponse: response,
-      );
-    }
-
-    return ApiResponse(result: null, baseApiResponse: response);
-  }
-
-  Future<ApiResponse<int>> getUnreadCount() async {
-    final response = await get('/messenger/message/get-unread-count');
-
-    return ApiResponseParser.parseObjectFromResponse(
-      response,
-      key: 'unreadCount',
-      fromJson: (json) => json as int,
-    );
-  }
-
 }

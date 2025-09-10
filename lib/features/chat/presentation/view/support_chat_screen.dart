@@ -34,9 +34,9 @@ class _SupportChatScreenState
   Future<void> _handleAttachmentSelected(
       BuildContext innerContext, AttachmentType type,
       {String? payload}) async {
-    final file = await AttachmentHandler.handle(innerContext, type, payload: payload);
-    if (file != null) {
-      model.sendMessage(file: file);
+    final picked = await AttachmentHandler.handle(innerContext, type);
+    if (picked != null) {
+      model.sendMessage(file: picked);
     }
   }
 

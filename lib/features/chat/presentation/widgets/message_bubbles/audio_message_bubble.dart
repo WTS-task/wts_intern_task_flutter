@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:just_audio/just_audio.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/base_message_bubble.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_time_label.dart';
+import 'package:wts_task/features/chat/presentation/view_models/audio_player_view_model.dart';
 
 class AudioMessageBubble extends BaseMessageBubble {
   const AudioMessageBubble({required super.message, super.key});
@@ -58,6 +58,7 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
   void initState() {
     super.initState();
     _vm = AudioPlayerViewModel();
+    _vm.addListener(_onVmChanged);
     _init();
   }
 
@@ -68,20 +69,16 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
       initialDurationSeconds: widget.initialDuration,
     );
     if (!mounted) return;
-    _vm.isPlaying.addListener(_notify);
-    _vm.isLoading.addListener(_notify);
-    _vm.hasError.addListener(_notify);
-    _vm.duration.addListener(_notify);
-    _vm.position.addListener(_notify);
     setState(() {});
   }
 
-  void _notify() {
+  void _onVmChanged() {
     if (mounted) setState(() {});
   }
 
   @override
   void dispose() {
+    _vm.removeListener(_onVmChanged);
     _vm.dispose();
     super.dispose();
   }
@@ -136,7 +133,7 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
           shape: BoxShape.circle,
         ),
         child: Center(
-          child: _vm.isLoading.value
+          child: _vm.isLoading
               ? const SizedBox(
                   width: 16,
                   height: 16,
@@ -145,19 +142,19 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
                     color: Colors.white,
                   ),
                 )
-              : _vm.hasError.value
+              : _vm.hasError
                   ? Icon(
                       Icons.error,
                       color: widget.isMe ? Colors.white : Colors.red,
                       size: 20,
                     )
                   : Icon(
-                      _vm.isPlaying.value ? Icons.pause : Icons.play_arrow,
+                      _vm.isPlaying ? Icons.pause : Icons.play_arrow,
                       color: widget.isMe ? Colors.white : Colors.black87,
                     ),
         ),
       ),
-      onPressed: _vm.hasError.value || _vm.isLoading.value
+      onPressed: _vm.hasError || _vm.isLoading
           ? null
           : () async {
               _vm.togglePlayPause();
@@ -166,7 +163,7 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
   }
 
   Widget _buildSlider(BuildContext context) {
-    if (_vm.hasError.value) {
+    if (_vm.hasError) {
       return Center(
         child: Text(
           'Ошибка загрузки',
@@ -178,15 +175,15 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
       );
     }
     return Slider(
-      value: _vm.position.value.inMilliseconds.toDouble().clamp(
+      value: _vm.position.inMilliseconds.toDouble().clamp(
         0,
-        _vm.duration.value.inMilliseconds.toDouble(),
+        _vm.duration.inMilliseconds.toDouble(),
       ),
       min: 0,
-      max: _vm.duration.value.inMilliseconds.toDouble() > 0
-          ? _vm.duration.value.inMilliseconds.toDouble()
+      max: _vm.duration.inMilliseconds.toDouble() > 0
+          ? _vm.duration.inMilliseconds.toDouble()
           : 1,
-      onChanged: _vm.isLoading.value
+      onChanged: _vm.isLoading
           ? null
           : (value) async {
               await _vm.seekTo(
@@ -206,9 +203,9 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          _vm.isLoading.value
+          _vm.isLoading
               ? 'Загрузка...'
-              : _formatDuration(_vm.position.value),
+              : _formatDuration(_vm.position),
           style: TextStyle(
             fontSize: 12,
             color: widget.isMe ? Colors.white70 : Colors.black54,
@@ -220,69 +217,5 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
         ),
       ],
     );
-  }
-}
-
-class AudioPlayerViewModel {
-  AudioPlayerViewModel();
-
-  final AudioPlayer _player = AudioPlayer();
-
-  final ValueNotifier<bool> isPlaying = ValueNotifier<bool>(false);
-  final ValueNotifier<bool> isLoading = ValueNotifier<bool>(true);
-  final ValueNotifier<bool> hasError = ValueNotifier<bool>(false);
-  final ValueNotifier<Duration> duration = ValueNotifier<Duration>(Duration.zero);
-  final ValueNotifier<Duration> position = ValueNotifier<Duration>(Duration.zero);
-
-  Future<void> initialize({
-    required String path,
-    required bool isNetwork,
-    double? initialDurationSeconds,
-  }) async {
-    try {
-      isLoading.value = true;
-      hasError.value = false;
-
-      if (isNetwork) {
-        await _player.setUrl(path);
-      } else {
-        await _player.setFilePath(path);
-      }
-
-      if (initialDurationSeconds != null) {
-        duration.value = Duration(milliseconds: (initialDurationSeconds * 1000).round());
-      } else {
-        duration.value = _player.duration ?? Duration.zero;
-      }
-
-      _player.positionStream.listen((pos) {
-        position.value = pos;
-      });
-      _player.playerStateStream.listen((state) {
-        isPlaying.value = state.playing;
-      });
-
-      isLoading.value = false;
-    } catch (e) {
-      isLoading.value = false;
-      hasError.value = true;
-    }
-  }
-
-  Future<void> togglePlayPause() async {
-    if (hasError.value || isLoading.value) return;
-    if (isPlaying.value) {
-      await _player.pause();
-    } else {
-      await _player.play();
-    }
-  }
-
-  Future<void> seekTo(Duration target) async {
-    await _player.seek(target);
-  }
-
-  Future<void> dispose() async {
-    await _player.dispose();
   }
 }

@@ -1,6 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:wts_task/core/models/list_model.dart';
 import 'package:wts_task/features/chat/data/models/message_model.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:wts_task/features/chat/data/repositories/message_repository.dart';
 
 class ChatViewModel extends ListModel<MessageModel> {
@@ -26,42 +26,22 @@ class ChatViewModel extends ListModel<MessageModel> {
     await onNextItemsLoaded(next, loadingUuid);
   }
   
-  Future<void> sendMessage({String? text, FileModel? file}) async {
-    final hasText = (text != null && text.trim().isNotEmpty);
-    final hasFile = file != null;
-    if (!hasText && !hasFile) return;
+  Future<void> sendMessage({String? text, XFile? file}) async {
+    if (file == null && (text?.trim().isEmpty ?? true)) return;
 
-    if (hasText && !hasFile) {
-      final apiResponse = await _repository.sendMessage(
-        chatId: chatId,
-        text: text.trim(),
-      );
-      if (apiResponse.isError) {
-        debugPrint('Error sending message: ${apiResponse.error}');
-        return;
-      }
-      final created = apiResponse.result;
-      if (created != null) {
-        addItem(created);
-        notifyListeners();
-      }
-    } else if (hasFile) {
-      final apiResponse = await _repository.sendFileMessage(
-        chatId: chatId,
-        filePath: file.url ?? '',
-        fileName: file.originalName ?? 'file',
-        fileType: file.type ?? 'document',
-        text: text,
-      );
-      if (apiResponse.isError) {
-        debugPrint('Error sending file message: ${apiResponse.error}');
-        return;
-      }
-      final created = apiResponse.result;
-      if (created != null) {
-        addItem(created);
-        notifyListeners();
-      }
+    final response = await _repository.sendMessage(
+      chatId: chatId,
+      text: text?.trim(),
+      file: file,
+    );
+    if (response.isError) {
+      onLoadingError(response.error ?? 'Ошибка отправки');
+      return;
+    }
+    final created = response.result;
+    if (created != null) {
+      addItem(created);
+      notifyListeners();
     }
   }
 

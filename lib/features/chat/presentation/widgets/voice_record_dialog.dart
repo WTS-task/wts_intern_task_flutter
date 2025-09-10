@@ -1,46 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_sound/flutter_sound.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:wts_task/features/chat/presentation/view_models/voice_record_view_model.dart';
 
 class VoiceRecordDialog extends StatefulWidget {
   const VoiceRecordDialog({super.key});
 
   @override
   State<VoiceRecordDialog> createState() => _VoiceRecordDialogState();
-}
-
-class VoiceRecordViewModel {
-  VoiceRecordViewModel();
-
-  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
-  bool isInitialized = false;
-  bool isRecording = false;
-  String? audioPath;
-
-  Future<void> initialize() async {
-    var status = await Permission.microphone.request();
-    print('Microphone permission status: $status');
-    await _recorder.openRecorder();
-    isInitialized = true;
-  }
-
-  Future<void> startRecording() async {
-    final dir = await getTemporaryDirectory();
-    final path = '${dir.path}/voice_${DateTime.now().millisecondsSinceEpoch}.aac';
-    await _recorder.startRecorder(toFile: path, codec: Codec.aacADTS);
-    isRecording = true;
-    audioPath = path;
-  }
-
-  Future<void> stopRecording() async {
-    await _recorder.stopRecorder();
-    isRecording = false;
-  }
-
-  Future<void> dispose() async {
-    await _recorder.closeRecorder();
-  }
 }
 
 class _VoiceRecordDialogState extends State<VoiceRecordDialog> {
