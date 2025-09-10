@@ -104,7 +104,6 @@ class _PlaceOrderScreenState
               itemBuilder: (_, index) => PlaceOrderItem(
                 vm: vm,
                 product: vm.items[index],
-                index: index,
               ),
             ),
         ],
@@ -136,50 +135,29 @@ class AddressForm extends StatelessWidget {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            SizedBox(
-              width: 120,
-              child: CustomTextField(
-                controller: vm.cityController,
-                validator: vm.validateCity,
-                labelText: 'город',
-              ),
-            ),
-          ],
+        Flexible(
+          child: CustomTextField(
+            controller: vm.cityController,
+            validator: vm.validateCity,
+            labelText: 'город',
+          ),
         ),
         const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            SizedBox(
-              width: 120,
-              child: CustomTextField(
-                controller: vm.streetController,
-                validator: vm.validateStreet,
-                labelText: 'улица',
-              ),
-            ),
-          ],
+        Flexible(
+          child: CustomTextField(
+            controller: vm.streetController,
+            validator: vm.validateStreet,
+            labelText: 'улица',
+          ),
         ),
         const SizedBox(width: 8),
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const SizedBox(height: 4),
-            SizedBox(
-              width: 80,
-              child: CustomTextField(
-                controller: vm.houseController,
-                validator: vm.validateHouse,
-                inputType: TextInputType.number,
-                labelText: 'дом',
-              ),
-            ),
-          ],
+        Flexible(
+          child: CustomTextField(
+            controller: vm.houseController,
+            validator: vm.validateHouse,
+            inputType: TextInputType.number,
+            labelText: 'дом',
+          ),
         ),
       ],
     );

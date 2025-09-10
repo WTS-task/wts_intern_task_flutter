@@ -8,13 +8,11 @@ class PlaceOrderItem extends StatelessWidget {
   const PlaceOrderItem({
     required this.vm,
     required this.product,
-    required this.index,
     super.key,
   });
 
   final PlaceOrderViewModel vm;
   final CartProductModel product;
-  final int index;
 
   @override
   Widget build(BuildContext context) {

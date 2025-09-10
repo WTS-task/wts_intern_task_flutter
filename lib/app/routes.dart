@@ -8,7 +8,6 @@ import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.da
 import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
-import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
@@ -140,13 +139,6 @@ class AppRouter {
               GoRoute(
                 path: '/cart',
                 builder: (context, state) => const CartScreen(),
-                // routes: [
-                //   GoRoute(
-                //     path: 'place_order',
-                //     name: 'place_order',
-                //     builder: (context, state) => const PlaceOrderScreen(),
-                //   ),
-                // ],
               ),
             ],
           ),
