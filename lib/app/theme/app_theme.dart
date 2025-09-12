@@ -72,6 +72,17 @@ class ThemeBuilder {
         borderRadius: BorderRadius.circular(8),
         borderSide: const BorderSide(color: AppColors.dividerBorder),
       ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(color: AppColors.dividerBorder),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(8),
+        borderSide: const BorderSide(
+          color: AppColors.buttonBgPrimary,
+          width: 2,
+        ),
+      ),
       filled: true,
       fillColor: AppColors.background,
     );

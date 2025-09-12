@@ -3,9 +3,9 @@ import 'package:wts_task/core/constants/app_text_styles.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
 
 class TotalPriceWidget extends StatelessWidget {
-  const TotalPriceWidget({required this.vm, super.key});
+  const TotalPriceWidget({required this.totalPrice, super.key});
 
-  final CartViewModel vm;
+  final double totalPrice;
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class TotalPriceWidget extends StatelessWidget {
       children: [
         const Text('Итого', style: AppTextStyles.priceSmall),
         Text(
-          '\$${vm.totalPrice}',
+          '\$${totalPrice}',
           style: AppTextStyles.priceSmall,
         ),
       ],

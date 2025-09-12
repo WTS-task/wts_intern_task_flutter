@@ -8,10 +8,10 @@ import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.da
 import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
-import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
+import 'package:wts_task/features/place_order/presentation/view/screens/place_order_screen.dart';
 import 'package:wts_task/features/product/presentation/view/screens/product_detail_screen.dart';
 import 'package:wts_task/features/product/presentation/view/screens/product_reviews_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
@@ -139,13 +139,6 @@ class AppRouter {
               GoRoute(
                 path: '/cart',
                 builder: (context, state) => const CartScreen(),
-                routes: [
-                  GoRoute(
-                    path: 'checkout',
-                    name: 'checkout',
-                    builder: (context, state) => const CheckoutScreen(),
-                  ),
-                ],
               ),
             ],
           ),
@@ -189,6 +182,13 @@ class AppRouter {
         name: 'support',
         builder: (context, state) => const SupportChatScreen(),
       ),
+
+      GoRoute(
+        path: '/cart/place_order',
+        name: 'place_order',
+        builder: (context, state) => const PlaceOrderScreen(),
+      ),
+
     ],
     refreshListenable: appUser,
     redirect: (BuildContext context, GoRouterState state) async {
