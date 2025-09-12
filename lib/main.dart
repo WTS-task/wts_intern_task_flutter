@@ -9,6 +9,7 @@ import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.da
 import 'package:wts_task/features/cart/data/repositories/cart_repository.dart';
 import 'package:wts_task/features/cart/data/services/cart_service.dart';
 import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
+import 'package:wts_task/features/chat/data/repositories/message_repository.dart';
 import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 import 'package:wts_task/features/profile/data/repositories/profile_repository.dart';
 
@@ -24,6 +25,10 @@ void main() async {
         Provider(
           lazy: false,
           create: (context) => ProfileRepository(context.read()),
+        ),
+        Provider(
+          lazy: false,
+          create: (context) => MessageRepository(context.read()),
         ),
         ChangeNotifierProvider(
           lazy: false,
