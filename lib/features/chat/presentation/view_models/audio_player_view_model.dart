@@ -13,9 +13,13 @@ class AudioPlayerViewModel extends ChangeNotifier {
   Duration _position = Duration.zero;
 
   bool get isPlaying => _isPlaying;
+
   bool get isLoading => _isLoading;
+
   bool get hasError => _hasError;
+
   Duration get duration => _duration;
+
   Duration get position => _position;
 
   Future<void> initialize({
@@ -35,7 +39,9 @@ class AudioPlayerViewModel extends ChangeNotifier {
       }
 
       if (initialDurationSeconds != null) {
-        _duration = Duration(milliseconds: (initialDurationSeconds * 1000).round());
+        _duration = Duration(
+          milliseconds: (initialDurationSeconds * 1000).round(),
+        );
       } else {
         _duration = _player.duration ?? Duration.zero;
       }
@@ -77,5 +83,3 @@ class AudioPlayerViewModel extends ChangeNotifier {
     super.dispose();
   }
 }
-
-

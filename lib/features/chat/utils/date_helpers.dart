@@ -1,23 +1,24 @@
+import 'package:intl/intl.dart';
+
 extension DateTimeHelper on DateTime {
   bool isSameDay(DateTime sameDate) {
-    return DateTime(year, month, day) ==
-        DateTime(sameDate.year, sameDate.month, sameDate.day);
+    return DateTime(
+      year,
+      month,
+      day,
+    ).isAtSameMomentAs(DateTime(sameDate.year, sameDate.month, sameDate.day));
   }
-}
 
-String formatDateSeparator(int? ms) {
-  if (ms == null) return '';
-  final date = DateTime.fromMillisecondsSinceEpoch(ms);
-  final now = DateTime.now();
-  final today = DateTime(now.year, now.month, now.day);
-  final yesterday = today.subtract(const Duration(days: 1));
-  final dateToCompare = DateTime(date.year, date.month, date.day);
+  String formattedWithFormat(String format) {
+    final formatter = DateFormat(format);
+    return formatter.format(this);
+  }
 
-  if (dateToCompare == today) {
-    return 'Сегодня ${date.day}.${date.month}';
-  } else if (dateToCompare == yesterday) {
-    return 'Вчера ${date.day}.${date.month}';
-  } else {
-    return '${date.day}.${date.month}.${date.year}';
+  String formatTime() {
+    return formattedWithFormat('HH:mm');
+  }
+
+  String formatDate() {
+    return formattedWithFormat('dd.MM.yyyy');
   }
 }

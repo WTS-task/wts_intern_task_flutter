@@ -5,12 +5,10 @@ import 'package:wts_task/features/chat/data/repositories/message_repository.dart
 
 class ChatViewModel extends ListModel<MessageModel> {
   ChatViewModel({required MessageRepository repository, this.chatId = 2})
-      : _repository = repository,
-        super(items: []);
+    : _repository = repository;
 
   final MessageRepository _repository;
   final int chatId;
-  
 
   @override
   Future<void> loadNextItems(String? loadingUuid) async {
@@ -25,7 +23,7 @@ class ChatViewModel extends ListModel<MessageModel> {
     final next = apiResponse.result ?? [];
     await onNextItemsLoaded(next, loadingUuid);
   }
-  
+
   Future<void> sendMessage({String? text, XFile? file}) async {
     if (file == null && (text?.trim().isEmpty ?? true)) return;
 
@@ -40,17 +38,13 @@ class ChatViewModel extends ListModel<MessageModel> {
     }
     final created = response.result;
     if (created != null) {
-      addItem(created);
-      notifyListeners();
+      addItem(created, position: 0);
     }
   }
-
-  // Removed sendFileMessage in favor of unified sendMessage
 
   Future<void> clearChat() async {
     try {
       replaceItems([]);
-      notifyListeners();
     } catch (e) {
       onLoadingError(e.toString());
     }

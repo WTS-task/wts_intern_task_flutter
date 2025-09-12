@@ -13,17 +13,22 @@ _MessageModel _$MessageModelFromJson(Map<String, dynamic> json) =>
       chatId: (json['chatId'] as num?)?.toInt(),
       text: json['text'] as String?,
       isAutoMessage: (json['isAutoMessage'] as num?)?.toInt(),
-      createdAt: (json['createdAt'] as num?)?.toInt(),
+      createdAt: _$JsonConverterFromJson<int, DateTime>(
+        json['createdAt'],
+        const DateTimeJsonConverter().fromJson,
+      ),
       isIncoming: (json['isIncoming'] as num?)?.toInt(),
       isSystem: (json['isSystem'] as num?)?.toInt(),
       status: (json['status'] as num?)?.toInt(),
       isUpdated: (json['isUpdated'] as num?)?.toInt(),
-      file: json['file'] == null
-          ? null
-          : FileModel.fromJson(json['file'] as Map<String, dynamic>),
-      user: json['user'] == null
-          ? null
-          : UserModel.fromJson(json['user'] as Map<String, dynamic>),
+      file:
+          json['file'] == null
+              ? null
+              : FileModel.fromJson(json['file'] as Map<String, dynamic>),
+      user:
+          json['user'] == null
+              ? null
+              : UserModel.fromJson(json['user'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$MessageModelToJson(_MessageModel instance) =>
@@ -33,7 +38,10 @@ Map<String, dynamic> _$MessageModelToJson(_MessageModel instance) =>
       'chatId': instance.chatId,
       'text': instance.text,
       'isAutoMessage': instance.isAutoMessage,
-      'createdAt': instance.createdAt,
+      'createdAt': _$JsonConverterToJson<int, DateTime>(
+        instance.createdAt,
+        const DateTimeJsonConverter().toJson,
+      ),
       'isIncoming': instance.isIncoming,
       'isSystem': instance.isSystem,
       'status': instance.status,
@@ -42,19 +50,34 @@ Map<String, dynamic> _$MessageModelToJson(_MessageModel instance) =>
       'user': instance.user,
     };
 
+Value? _$JsonConverterFromJson<Json, Value>(
+  Object? json,
+  Value? Function(Json json) fromJson,
+) => json == null ? null : fromJson(json as Json);
+
+Json? _$JsonConverterToJson<Json, Value>(
+  Value? value,
+  Json? Function(Value value) toJson,
+) => value == null ? null : toJson(value);
+
 _FileModel _$FileModelFromJson(Map<String, dynamic> json) => _FileModel(
   fileId: (json['fileId'] as num?)?.toInt(),
   url: json['url'] as String?,
   type: json['type'] as String?,
   mimeType: json['mimeType'] as String?,
   originalName: json['originalName'] as String?,
-  createdAt: (json['createdAt'] as num?)?.toInt(),
-  videoFile: json['videoFile'] == null
-      ? null
-      : VideoFileModel.fromJson(json['videoFile'] as Map<String, dynamic>),
-  audioFile: json['audioFile'] == null
-      ? null
-      : AudioFileModel.fromJson(json['audioFile'] as Map<String, dynamic>),
+  createdAt: _$JsonConverterFromJson<int, DateTime>(
+    json['createdAt'],
+    const DateTimeJsonConverter().fromJson,
+  ),
+  videoFile:
+      json['videoFile'] == null
+          ? null
+          : VideoFileModel.fromJson(json['videoFile'] as Map<String, dynamic>),
+  audioFile:
+      json['audioFile'] == null
+          ? null
+          : AudioFileModel.fromJson(json['audioFile'] as Map<String, dynamic>),
 );
 
 Map<String, dynamic> _$FileModelToJson(_FileModel instance) =>
@@ -64,18 +87,22 @@ Map<String, dynamic> _$FileModelToJson(_FileModel instance) =>
       'type': instance.type,
       'mimeType': instance.mimeType,
       'originalName': instance.originalName,
-      'createdAt': instance.createdAt,
+      'createdAt': _$JsonConverterToJson<int, DateTime>(
+        instance.createdAt,
+        const DateTimeJsonConverter().toJson,
+      ),
       'videoFile': instance.videoFile,
       'audioFile': instance.audioFile,
     };
 
 _VideoFileModel _$VideoFileModelFromJson(Map<String, dynamic> json) =>
     _VideoFileModel(
-      videoPreviewImageFile: json['videoPreviewImageFile'] == null
-          ? null
-          : VideoPreviewImageFileModel.fromJson(
-              json['videoPreviewImageFile'] as Map<String, dynamic>,
-            ),
+      videoPreviewImageFile:
+          json['videoPreviewImageFile'] == null
+              ? null
+              : VideoPreviewImageFileModel.fromJson(
+                json['videoPreviewImageFile'] as Map<String, dynamic>,
+              ),
       width: (json['width'] as num?)?.toInt(),
       height: (json['height'] as num?)?.toInt(),
       duration: (json['duration'] as num?)?.toDouble(),

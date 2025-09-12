@@ -32,6 +32,7 @@ class VideoMessageBubble extends BaseMessageBubble {
 
     return GestureDetector(
       onTap: () {
+        primaryFocus?.unfocus();
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (_) => VideoPlayerScreen(videoPath: videoPath),

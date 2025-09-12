@@ -27,16 +27,17 @@ class _SupportChatScreenState
   bool get shouldWrapRefreshIndicator => false;
 
   @override
-  ChatViewModel createModel() => ChatViewModel(
-        repository: context.read<MessageRepository>(),
-      );
+  ChatViewModel createModel() =>
+      ChatViewModel(repository: context.read<MessageRepository>());
 
   Future<void> _handleAttachmentSelected(
-      BuildContext innerContext, AttachmentType type,
-      {String? payload}) async {
+    BuildContext innerContext,
+    AttachmentType type, {
+    String? payload,
+  }) async {
     final picked = await AttachmentHandler.handle(innerContext, type);
     if (picked != null) {
-      model.sendMessage(file: picked);
+      await model.sendMessage(file: picked);
     }
   }
 
@@ -47,22 +48,25 @@ class _SupportChatScreenState
   @override
   Widget buildListItemImpl(BuildContext context, int index) {
     final message = model.items[index];
-    bool showDateSeparator = false;
+    bool showDateSeparator = true;
+    var date = message.createdAt;
     if (index == 0) {
-      showDateSeparator = true;
+      final now = DateTime.now();
+      showDateSeparator = !DateUtils.isSameDay(message.createdAt, now);
     } else {
       final previousMessage = model.items[index - 1];
-      final current = DateTime.fromMillisecondsSinceEpoch(message.createdAt ?? 0);
-      final prev = DateTime.fromMillisecondsSinceEpoch(previousMessage.createdAt ?? 0);
-      if (!current.isSameDay(prev)) {
-        showDateSeparator = true;
-      }
+      final current = message.createdAt;
+      final prev = previousMessage.createdAt;
+      date = prev;
+      showDateSeparator = !DateUtils.isSameDay(current, prev);
     }
+
+
     if (showDateSeparator) {
       return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          DateSeparatorWidget(timestamp: message.createdAt),
+          DateSeparatorWidget(date: date),
           MessageBubble(message: message),
         ],
       );

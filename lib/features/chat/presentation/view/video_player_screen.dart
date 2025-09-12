@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 import 'package:wts_task/features/chat/presentation/view_models/video_player_view_model.dart';
 
@@ -12,25 +13,16 @@ class VideoPlayerScreen extends StatefulWidget {
 }
 
 class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
-  late final VideoPlayerViewModel _vm;
+  late final VideoPlayerViewModel _vm = VideoPlayerViewModel();
 
   @override
   void initState() {
     super.initState();
-    _vm = VideoPlayerViewModel();
     _initialize();
   }
 
   Future<void> _initialize() async {
     await _vm.initialize(widget.videoPath);
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _vm.dispose();
-    super.dispose();
   }
 
   Widget _buildCenterContent() {
@@ -38,11 +30,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
-            Icons.error_outline,
-            color: Colors.white,
-            size: 64,
-          ),
+          const Icon(Icons.error_outline, color: Colors.white, size: 64),
           const SizedBox(height: 16),
           const Text(
             'Ошибка загрузки видео',
@@ -53,10 +41,7 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 32),
             child: Text(
               _vm.errorMessage,
-              style: const TextStyle(
-                color: Colors.white70,
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
               textAlign: TextAlign.center,
             ),
           ),
@@ -67,8 +52,6 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
               ElevatedButton(
                 onPressed: () async {
                   await _vm.retry(widget.videoPath);
-                  if (!mounted) return;
-                  setState(() {});
                 },
                 child: const Text('Повторить'),
               ),
@@ -98,24 +81,15 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
       right: 0,
       bottom: 0,
       child: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 16,
-          vertical: 12,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: const BoxDecoration(color: Color.fromRGBO(0, 0, 0, 0.55)),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             IconButton(
-              icon: const Icon(
-                Icons.replay_5,
-                color: Colors.white,
-                size: 32,
-              ),
+              icon: const Icon(Icons.replay_5, color: Colors.white, size: 32),
               onPressed: () {
-                setState(() {
-                  _vm.seekRelative(const Duration(seconds: -5));
-                });
+                _vm.seekRelative(const Duration(seconds: -5));
               },
             ),
             const SizedBox(width: 16),
@@ -128,22 +102,14 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
                 size: 48,
               ),
               onPressed: () {
-                setState(() {
-                  _vm.togglePlayPause();
-                });
+                _vm.togglePlayPause();
               },
             ),
             const SizedBox(width: 16),
             IconButton(
-              icon: const Icon(
-                Icons.forward_5,
-                color: Colors.white,
-                size: 32,
-              ),
+              icon: const Icon(Icons.forward_5, color: Colors.white, size: 32),
               onPressed: () {
-                setState(() {
-                  _vm.seekRelative(const Duration(seconds: 5));
-                });
+                _vm.seekRelative(const Duration(seconds: 5));
               },
             ),
           ],
@@ -154,32 +120,45 @@ class _VideoPlayerScreenState extends State<VideoPlayerScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Stack(
-        children: [
-          Center(child: _buildCenterContent()),
-          Positioned(
-            top: MediaQuery.paddingOf(context).top + 10,
-            left: 10,
-            child: Container(
-              decoration: BoxDecoration(
-                color: const Color.fromRGBO(0, 0, 0, 0.55),
-                borderRadius: BorderRadius.circular(25),
-              ),
-              child: IconButton(
-                icon: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 24,
+    return ChangeNotifierProvider.value(
+      value: _vm,
+      child: Consumer<VideoPlayerViewModel>(
+        builder: (context, _, _) {
+          return Scaffold(
+            backgroundColor: Colors.black,
+            body: Stack(
+              children: [
+                Center(child: _buildCenterContent()),
+                Positioned(
+                  top: MediaQuery.paddingOf(context).top + 10,
+                  left: 10,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: const Color.fromRGBO(0, 0, 0, 0.55),
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: IconButton(
+                      icon: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                      onPressed: () => Navigator.of(context).pop(),
+                    ),
+                  ),
                 ),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
+                _buildControls(),
+              ],
             ),
-          ),
-          _buildControls(),
-        ],
+          );
+        },
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    _vm.dispose();
+    super.dispose();
   }
 }

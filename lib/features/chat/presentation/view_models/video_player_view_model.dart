@@ -15,18 +15,12 @@ class VideoPlayerViewModel extends ChangeNotifier {
       if (isNetworkVideo) {
         controller = VideoPlayerController.networkUrl(
           Uri.parse(videoPath),
-          videoPlayerOptions: VideoPlayerOptions(
-            mixWithOthers: true,
-            allowBackgroundPlayback: false,
-          ),
+          videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
         );
       } else {
         controller = VideoPlayerController.file(
           File(videoPath),
-          videoPlayerOptions: VideoPlayerOptions(
-            mixWithOthers: true,
-            allowBackgroundPlayback: false,
-          ),
+          videoPlayerOptions: VideoPlayerOptions(mixWithOthers: true),
         );
       }
 
@@ -49,7 +43,7 @@ class VideoPlayerViewModel extends ChangeNotifier {
     } else if (error.contains('NetworkException')) {
       return 'Ошибка сети. Проверьте интернет-соединение.';
     } else {
-      return 'Ошибка загрузки видео: ${error.length > 100 ? error.substring(0, 100) + '...' : error}';
+      return 'Ошибка загрузки видео: ${error.length > 100 ? '${error.substring(0, 100)}...' : error}';
     }
   }
 
@@ -89,5 +83,3 @@ class VideoPlayerViewModel extends ChangeNotifier {
     super.dispose();
   }
 }
-
-

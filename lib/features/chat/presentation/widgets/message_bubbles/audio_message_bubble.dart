@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_bubbles/base_message_bubble.dart';
 import 'package:wts_task/features/chat/presentation/widgets/message_time_label.dart';
 import 'package:wts_task/features/chat/presentation/view_models/audio_player_view_model.dart';
@@ -31,9 +32,9 @@ class AudioMessageBubble extends BaseMessageBubble {
 
 class AudioPlayerBubble extends StatefulWidget {
   const AudioPlayerBubble({
-    super.key,
     required this.filePath,
     required this.isMe,
+    super.key,
     this.createdAt,
     this.fileName,
     this.isNetworkAudio = false,
@@ -52,13 +53,11 @@ class AudioPlayerBubble extends StatefulWidget {
 }
 
 class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
-  late final AudioPlayerViewModel _vm;
+  late final AudioPlayerViewModel _vm = AudioPlayerViewModel();
 
   @override
   void initState() {
     super.initState();
-    _vm = AudioPlayerViewModel();
-    _vm.addListener(_onVmChanged);
     _init();
   }
 
@@ -68,19 +67,6 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
       isNetwork: widget.isNetworkAudio,
       initialDurationSeconds: widget.initialDuration,
     );
-    if (!mounted) return;
-    setState(() {});
-  }
-
-  void _onVmChanged() {
-    if (mounted) setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _vm.removeListener(_onVmChanged);
-    _vm.dispose();
-    super.dispose();
   }
 
   String _formatDuration(Duration d) {
@@ -92,29 +78,38 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 200,
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-      decoration: BoxDecoration(
-        color: widget.isMe ? Theme.of(context).primaryColor : Colors.grey[300],
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _buildPlayButton(),
-          const SizedBox(width: 2),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+    return ChangeNotifierProvider.value(
+      value: _vm,
+      child: Consumer<AudioPlayerViewModel>(
+        builder: (context, _, _) {
+          return Container(
+            width: 200,
+            padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 8),
+            decoration: BoxDecoration(
+              color: widget.isMe
+                  ? Theme.of(context).primaryColor
+                  : Colors.grey[300],
+              borderRadius: BorderRadius.circular(6),
+            ),
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SizedBox(height: 26, child: _buildSlider(context)),
-                _buildFooter(context),
+                _buildPlayButton(),
+                const SizedBox(width: 2),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      SizedBox(height: 26, child: _buildSlider(context)),
+                      _buildFooter(context),
+                    ],
+                  ),
+                ),
               ],
             ),
-          ),
-        ],
+          );
+        },
       ),
     );
   }
@@ -143,22 +138,18 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
                   ),
                 )
               : _vm.hasError
-                  ? Icon(
-                      Icons.error,
-                      color: widget.isMe ? Colors.white : Colors.red,
-                      size: 20,
-                    )
-                  : Icon(
-                      _vm.isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: widget.isMe ? Colors.white : Colors.black87,
-                    ),
+              ? Icon(
+                  Icons.error,
+                  color: widget.isMe ? Colors.white : Colors.red,
+                  size: 20,
+                )
+              : Icon(
+                  _vm.isPlaying ? Icons.pause : Icons.play_arrow,
+                  color: widget.isMe ? Colors.white : Colors.black87,
+                ),
         ),
       ),
-      onPressed: _vm.hasError || _vm.isLoading
-          ? null
-          : () async {
-              _vm.togglePlayPause();
-            },
+      onPressed: _vm.hasError || _vm.isLoading ? null : _vm.togglePlayPause,
     );
   }
 
@@ -179,22 +170,21 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
         0,
         _vm.duration.inMilliseconds.toDouble(),
       ),
-      min: 0,
       max: _vm.duration.inMilliseconds.toDouble() > 0
           ? _vm.duration.inMilliseconds.toDouble()
           : 1,
       onChanged: _vm.isLoading
           ? null
           : (value) async {
-              await _vm.seekTo(
-                Duration(milliseconds: value.toInt()),
-              );
+              await _vm.seekTo(Duration(milliseconds: value.toInt()));
             },
-      activeColor:
-          widget.isMe ? Colors.white : Theme.of(context).colorScheme.secondary,
+      activeColor: widget.isMe
+          ? Colors.white
+          : Theme.of(context).colorScheme.secondary,
       inactiveColor: widget.isMe ? Colors.white24 : Colors.black12,
-      thumbColor:
-          widget.isMe ? Colors.white : Theme.of(context).colorScheme.secondary,
+      thumbColor: widget.isMe
+          ? Colors.white
+          : Theme.of(context).colorScheme.secondary,
     );
   }
 
@@ -203,18 +193,13 @@ class _AudioPlayerBubbleState extends State<AudioPlayerBubble> {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Text(
-          _vm.isLoading
-              ? 'Загрузка...'
-              : _formatDuration(_vm.position),
+          _vm.isLoading ? 'Загрузка...' : _formatDuration(_vm.position),
           style: TextStyle(
             fontSize: 12,
             color: widget.isMe ? Colors.white70 : Colors.black54,
           ),
         ),
-        MessageTimeLabel(
-          createdAt: widget.createdAt,
-          isMe: widget.isMe,
-        ),
+        MessageTimeLabel(createdAt: widget.createdAt, isMe: widget.isMe),
       ],
     );
   }

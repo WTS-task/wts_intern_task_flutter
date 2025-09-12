@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wts_task/core/services/api/json_converters.dart';
 
 part 'message_model.freezed.dart';
 part 'message_model.g.dart';
@@ -11,7 +12,7 @@ abstract class MessageModel with _$MessageModel {
     int? chatId,
     String? text,
     int? isAutoMessage,
-    int? createdAt,
+    @DateTimeJsonConverter() DateTime? createdAt,
     int? isIncoming,
     int? isSystem,
     int? status,
@@ -31,7 +32,7 @@ abstract class FileModel with _$FileModel {
     String? type,
     String? mimeType,
     String? originalName,
-    int? createdAt,
+    @DateTimeJsonConverter() DateTime? createdAt,
     VideoFileModel? videoFile,
     AudioFileModel? audioFile,
   }) = _FileModel;

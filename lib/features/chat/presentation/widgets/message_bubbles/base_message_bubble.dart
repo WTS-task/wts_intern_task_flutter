@@ -8,12 +8,12 @@ abstract class BaseMessageBubble extends StatelessWidget {
 
   bool get isMe => message.isIncoming == 0;
 
-  DateTime? get createdAt => message.createdAt != null
-      ? DateTime.fromMillisecondsSinceEpoch(message.createdAt!)
-      : null;
+  DateTime? get createdAt => message.createdAt;
+
   FileModel? get file => message.file;
 
   Widget buildBubble(BuildContext context);
+
   @override
   Widget build(BuildContext context) {
     return Align(
