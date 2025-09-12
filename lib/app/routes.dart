@@ -179,6 +179,7 @@ class AppRouter {
       // Поддержка
       GoRoute(
         path: '/support',
+        name: 'support',
         builder: (context, state) => const SupportChatScreen(),
       ),
 
