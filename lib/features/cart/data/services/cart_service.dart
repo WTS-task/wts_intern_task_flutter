@@ -1,6 +1,7 @@
 import 'dart:convert';
 
-import 'package:hive/hive.dart';
+
+import 'package:hive_ce/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:wts_task/core/exceptions/app_exception.dart';
 import 'package:wts_task/features/cart/data/models/cart_product_model.dart';

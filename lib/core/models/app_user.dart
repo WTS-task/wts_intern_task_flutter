@@ -35,6 +35,7 @@ class AppUser extends ChangeNotifier {
       if (response.isError) {
         return response.error;
       }
+      user = response.result;
     } else {
       isAuthenticated = false;
     }

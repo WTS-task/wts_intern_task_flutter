@@ -1,7 +1,7 @@
 import 'package:wts_task/core/models/list_model.dart';
 import 'package:wts_task/features/auth/data/datasource/auth_local_data_source.dart';
-import 'package:wts_task/features/catalog/data/repositories/product_repository.dart';
-import 'package:wts_task/features/product/data/models/product.dart';
+import 'package:wts_task/features/product/data/models/product/product.dart';
+import 'package:wts_task/features/product/data/repositories/product_repositories.dart';
 
 class ProductListModel extends ListModel<Product> {
   ProductListModel({

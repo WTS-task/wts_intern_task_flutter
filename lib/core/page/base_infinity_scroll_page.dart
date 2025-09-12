@@ -72,14 +72,16 @@ abstract class BaseInfinityScrollPageState<
   @override
   void initState() {
     super.initState();
-    _prepareModel();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _prepareModel();
+    });
   }
 
   @protected
   void tryPreloadNextItems(int renderedItemIndex) {
     final isListEnd =
         renderedItemIndex >= (model.items.length - infinityScrollOffset);
-    if (isListEnd) {
+    if (isListEnd && !model.isAllLoaded) {
       log("Infinity scroll loading");
       model.loadData();
     }

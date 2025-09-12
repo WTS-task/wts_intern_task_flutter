@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Product {
 
- int? get productId; String? get name; String? get productDescription; double? get price; int? get userId; int? get categoryId; int? get rating; int? get popularity; String? get imageUrl; List<String>? get images; int? get createdAt; int? get updatedAt;@BoolJsonConverter() dynamic get isFavorite;
+ int get productId; String? get name; String? get productDescription; double? get price; int? get userId; int? get categoryId; int? get rating; int? get popularity; String? get imageUrl; List<String>? get images; int? get createdAt; int? get updatedAt;@BoolJsonConverter() dynamic get isFavorite;
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $ProductCopyWith<$Res>  {
   factory $ProductCopyWith(Product value, $Res Function(Product) _then) = _$ProductCopyWithImpl;
 @useResult
 $Res call({
- int? productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt,@BoolJsonConverter() dynamic isFavorite
+ int productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt,@BoolJsonConverter() dynamic isFavorite
 });
 
 
@@ -65,10 +65,10 @@ class _$ProductCopyWithImpl<$Res>
 
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? productId = freezed,Object? name = freezed,Object? productDescription = freezed,Object? price = freezed,Object? userId = freezed,Object? categoryId = freezed,Object? rating = freezed,Object? popularity = freezed,Object? imageUrl = freezed,Object? images = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? isFavorite = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? productId = null,Object? name = freezed,Object? productDescription = freezed,Object? price = freezed,Object? userId = freezed,Object? categoryId = freezed,Object? rating = freezed,Object? popularity = freezed,Object? imageUrl = freezed,Object? images = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? isFavorite = freezed,}) {
   return _then(_self.copyWith(
-productId: freezed == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
+as int,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,productDescription: freezed == productDescription ? _self.productDescription : productDescription // ignore: cast_nullable_to_non_nullable
 as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -165,7 +165,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Product() when $default != null:
 return $default(_that.productId,_that.name,_that.productDescription,_that.price,_that.userId,_that.categoryId,_that.rating,_that.popularity,_that.imageUrl,_that.images,_that.createdAt,_that.updatedAt,_that.isFavorite);case _:
@@ -186,7 +186,7 @@ return $default(_that.productId,_that.name,_that.productDescription,_that.price,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)  $default,) {final _that = this;
 switch (_that) {
 case _Product():
 return $default(_that.productId,_that.name,_that.productDescription,_that.price,_that.userId,_that.categoryId,_that.rating,_that.popularity,_that.imageUrl,_that.images,_that.createdAt,_that.updatedAt,_that.isFavorite);case _:
@@ -206,7 +206,7 @@ return $default(_that.productId,_that.name,_that.productDescription,_that.price,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int productId,  String? name,  String? productDescription,  double? price,  int? userId,  int? categoryId,  int? rating,  int? popularity,  String? imageUrl,  List<String>? images,  int? createdAt,  int? updatedAt, @BoolJsonConverter()  dynamic isFavorite)?  $default,) {final _that = this;
 switch (_that) {
 case _Product() when $default != null:
 return $default(_that.productId,_that.name,_that.productDescription,_that.price,_that.userId,_that.categoryId,_that.rating,_that.popularity,_that.imageUrl,_that.images,_that.createdAt,_that.updatedAt,_that.isFavorite);case _:
@@ -221,10 +221,10 @@ return $default(_that.productId,_that.name,_that.productDescription,_that.price,
 @JsonSerializable()
 
 class _Product implements Product {
-  const _Product({this.productId, this.name, this.productDescription, this.price, this.userId, this.categoryId, this.rating, this.popularity, this.imageUrl, final  List<String>? images, this.createdAt, this.updatedAt, @BoolJsonConverter() this.isFavorite = false}): _images = images;
+  const _Product({required this.productId, this.name, this.productDescription, this.price, this.userId, this.categoryId, this.rating, this.popularity, this.imageUrl, final  List<String>? images, this.createdAt, this.updatedAt, @BoolJsonConverter() this.isFavorite = false}): _images = images;
   factory _Product.fromJson(Map<String, dynamic> json) => _$ProductFromJson(json);
 
-@override final  int? productId;
+@override final  int productId;
 @override final  String? name;
 @override final  String? productDescription;
 @override final  double? price;
@@ -279,7 +279,7 @@ abstract mixin class _$ProductCopyWith<$Res> implements $ProductCopyWith<$Res> {
   factory _$ProductCopyWith(_Product value, $Res Function(_Product) _then) = __$ProductCopyWithImpl;
 @override @useResult
 $Res call({
- int? productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt,@BoolJsonConverter() dynamic isFavorite
+ int productId, String? name, String? productDescription, double? price, int? userId, int? categoryId, int? rating, int? popularity, String? imageUrl, List<String>? images, int? createdAt, int? updatedAt,@BoolJsonConverter() dynamic isFavorite
 });
 
 
@@ -296,10 +296,10 @@ class __$ProductCopyWithImpl<$Res>
 
 /// Create a copy of Product
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? productId = freezed,Object? name = freezed,Object? productDescription = freezed,Object? price = freezed,Object? userId = freezed,Object? categoryId = freezed,Object? rating = freezed,Object? popularity = freezed,Object? imageUrl = freezed,Object? images = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? isFavorite = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? productId = null,Object? name = freezed,Object? productDescription = freezed,Object? price = freezed,Object? userId = freezed,Object? categoryId = freezed,Object? rating = freezed,Object? popularity = freezed,Object? imageUrl = freezed,Object? images = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? isFavorite = freezed,}) {
   return _then(_Product(
-productId: freezed == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
-as int?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+productId: null == productId ? _self.productId : productId // ignore: cast_nullable_to_non_nullable
+as int,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,productDescription: freezed == productDescription ? _self.productDescription : productDescription // ignore: cast_nullable_to_non_nullable
 as String?,price: freezed == price ? _self.price : price // ignore: cast_nullable_to_non_nullable
 as double?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable

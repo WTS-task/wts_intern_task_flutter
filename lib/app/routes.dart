@@ -9,11 +9,11 @@ import 'package:wts_task/features/auth/presentation/view/otp_screen.dart';
 import 'package:wts_task/features/auth/presentation/view/phone_auth_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
 import 'package:wts_task/features/cart/presentation/view/screens/checkout_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/add_review_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/catalog_screen.dart';
 import 'package:wts_task/features/catalog/presentation/view/product_list_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/product_reviews_screen.dart';
 import 'package:wts_task/features/chat/presentation/view/support_chat_screen.dart';
+import 'package:wts_task/features/product/presentation/view/screens/product_detail_screen.dart';
+import 'package:wts_task/features/product/presentation/view/screens/product_reviews_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/edit_profile_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_detail_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_history_screen.dart';
@@ -100,14 +100,27 @@ class AppRouter {
                         },
                         routes: [
                           GoRoute(
-                            path: 'reviews',
-                            builder: (context, state) =>
-                                const ProductReviewsScreen(),
+                            path: ':productId',
+                            builder: (context, state) {
+                              final productId =
+                                  state.pathParameters['productId']!;
+                              final categoryId =
+                                  state.uri.queryParameters['categoryId'] ?? '';
+                              return ProductDetailScreen(
+                                productId: productId,
+                                categoryId: categoryId,
+                              );
+                            },
                             routes: [
                               GoRoute(
-                                path: 'add',
-                                builder: (context, state) =>
-                                    const AddReviewScreen(),
+                                path: 'reviews',
+                                builder: (context, state) {
+                                  final productId =
+                                      state.pathParameters['productId']!;
+                                  return ProductReviewsScreen(
+                                    productId: productId,
+                                  );
+                                },
                               ),
                             ],
                           ),

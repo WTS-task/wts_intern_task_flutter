@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
 import 'package:wts_task/core/constants/app_colors.dart';
-import 'package:wts_task/core/constants/constants.dart';
 import 'package:wts_task/core/widgets/custom_cached_image.dart';
-import 'package:wts_task/features/cart/presentation/view/screens/cart_screen.dart';
-import 'package:wts_task/features/catalog/presentation/view/product_detail_screen.dart';
-import 'package:wts_task/features/product/data/models/product.dart';
+import 'package:wts_task/features/cart/presentation/view_models/cart_view_model.dart';
+import 'package:wts_task/features/product/data/models/product/product.dart';
 
 class ProductItemCard extends StatelessWidget {
   const ProductItemCard({required this.item, super.key});
@@ -60,18 +59,10 @@ class ProductItemCard extends StatelessWidget {
   }
 
   void _openProductDetail(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => ProductDetailScreen(product: item, productId: ''),
-      ),
-    );
+    context.push('/catalog/category/products/${item.productId}');
   }
 
   void _openCartScreen(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => const CartScreen()),
-    );
+    context.read<CartViewModel>().addProduct(product: item, showMessage: true);
   }
 }

@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CartProductModel {
 
- int get count; bool get isSelected; Product? get product;
+ int get count; Product? get product; bool get isSelected;
 /// Create a copy of CartProductModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $CartProductModelCopyWith<CartProductModel> get copyWith => _$CartProductModelCo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CartProductModel&&(identical(other.count, count) || other.count == count)&&(identical(other.isSelected, isSelected) || other.isSelected == isSelected)&&(identical(other.product, product) || other.product == product));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CartProductModel&&(identical(other.count, count) || other.count == count)&&(identical(other.product, product) || other.product == product)&&(identical(other.isSelected, isSelected) || other.isSelected == isSelected));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,count,isSelected,product);
+int get hashCode => Object.hash(runtimeType,count,product,isSelected);
 
 @override
 String toString() {
-  return 'CartProductModel(count: $count, isSelected: $isSelected, product: $product)';
+  return 'CartProductModel(count: $count, product: $product, isSelected: $isSelected)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $CartProductModelCopyWith<$Res>  {
   factory $CartProductModelCopyWith(CartProductModel value, $Res Function(CartProductModel) _then) = _$CartProductModelCopyWithImpl;
 @useResult
 $Res call({
- int count, bool isSelected, Product? product
+ int count, Product? product, bool isSelected
 });
 
 
@@ -65,12 +65,12 @@ class _$CartProductModelCopyWithImpl<$Res>
 
 /// Create a copy of CartProductModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? count = null,Object? isSelected = null,Object? product = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? count = null,Object? product = freezed,Object? isSelected = null,}) {
   return _then(_self.copyWith(
 count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
-as int,isSelected: null == isSelected ? _self.isSelected : isSelected // ignore: cast_nullable_to_non_nullable
-as bool,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as Product?,
+as int,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as Product?,isSelected: null == isSelected ? _self.isSelected : isSelected // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 /// Create a copy of CartProductModel
@@ -167,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int count,  bool isSelected,  Product? product)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int count,  Product? product,  bool isSelected)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CartProductModel() when $default != null:
-return $default(_that.count,_that.isSelected,_that.product);case _:
+return $default(_that.count,_that.product,_that.isSelected);case _:
   return orElse();
 
 }
@@ -188,10 +188,10 @@ return $default(_that.count,_that.isSelected,_that.product);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int count,  bool isSelected,  Product? product)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int count,  Product? product,  bool isSelected)  $default,) {final _that = this;
 switch (_that) {
 case _CartProductModel():
-return $default(_that.count,_that.isSelected,_that.product);case _:
+return $default(_that.count,_that.product,_that.isSelected);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -208,10 +208,10 @@ return $default(_that.count,_that.isSelected,_that.product);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int count,  bool isSelected,  Product? product)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int count,  Product? product,  bool isSelected)?  $default,) {final _that = this;
 switch (_that) {
 case _CartProductModel() when $default != null:
-return $default(_that.count,_that.isSelected,_that.product);case _:
+return $default(_that.count,_that.product,_that.isSelected);case _:
   return null;
 
 }
@@ -223,12 +223,12 @@ return $default(_that.count,_that.isSelected,_that.product);case _:
 @JsonSerializable()
 
 class _CartProductModel extends CartProductModel {
-  const _CartProductModel({required this.count, required this.isSelected, required this.product}): super._();
+  const _CartProductModel({required this.count, required this.product, this.isSelected = false}): super._();
   factory _CartProductModel.fromJson(Map<String, dynamic> json) => _$CartProductModelFromJson(json);
 
 @override final  int count;
-@override final  bool isSelected;
 @override final  Product? product;
+@override@JsonKey() final  bool isSelected;
 
 /// Create a copy of CartProductModel
 /// with the given fields replaced by the non-null parameter values.
@@ -243,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CartProductModel&&(identical(other.count, count) || other.count == count)&&(identical(other.isSelected, isSelected) || other.isSelected == isSelected)&&(identical(other.product, product) || other.product == product));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CartProductModel&&(identical(other.count, count) || other.count == count)&&(identical(other.product, product) || other.product == product)&&(identical(other.isSelected, isSelected) || other.isSelected == isSelected));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,count,isSelected,product);
+int get hashCode => Object.hash(runtimeType,count,product,isSelected);
 
 @override
 String toString() {
-  return 'CartProductModel(count: $count, isSelected: $isSelected, product: $product)';
+  return 'CartProductModel(count: $count, product: $product, isSelected: $isSelected)';
 }
 
 
@@ -263,7 +263,7 @@ abstract mixin class _$CartProductModelCopyWith<$Res> implements $CartProductMod
   factory _$CartProductModelCopyWith(_CartProductModel value, $Res Function(_CartProductModel) _then) = __$CartProductModelCopyWithImpl;
 @override @useResult
 $Res call({
- int count, bool isSelected, Product? product
+ int count, Product? product, bool isSelected
 });
 
 
@@ -280,12 +280,12 @@ class __$CartProductModelCopyWithImpl<$Res>
 
 /// Create a copy of CartProductModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? count = null,Object? isSelected = null,Object? product = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? count = null,Object? product = freezed,Object? isSelected = null,}) {
   return _then(_CartProductModel(
 count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
-as int,isSelected: null == isSelected ? _self.isSelected : isSelected // ignore: cast_nullable_to_non_nullable
-as bool,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
-as Product?,
+as int,product: freezed == product ? _self.product : product // ignore: cast_nullable_to_non_nullable
+as Product?,isSelected: null == isSelected ? _self.isSelected : isSelected // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
