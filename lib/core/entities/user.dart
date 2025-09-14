@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:wts_task/core/formatters/custom_json_formatters.dart';
 
 part 'user.freezed.dart';
 
@@ -14,7 +15,7 @@ abstract class User with _$User {
     String? email,
     String? countryId,
     String? cityId,
-    // String? dateOfBirth,
+    @DateTimeJsonConverter() DateTime? dateOfBirth,
   }) = _User;
 
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);

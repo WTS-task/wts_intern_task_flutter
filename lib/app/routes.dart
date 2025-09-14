@@ -18,6 +18,8 @@ import 'package:wts_task/features/profile/presentation/view/screens/edit_profile
 import 'package:wts_task/features/profile/presentation/view/screens/order_detail_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/order_history_screen.dart';
 import 'package:wts_task/features/profile/presentation/view/screens/profile_screen.dart';
+import 'package:wts_task/core/entities/user.dart';
+import 'package:wts_task/features/profile/presentation/view_models/edit_profile_view_model.dart';
 
 extension GoRouterExtension on BuildContext {
   Future<void> clearStackAndNavigate(String location) async {
@@ -159,16 +161,23 @@ class AppRouter {
                 routes: [
                   GoRoute(
                     path: 'edit',
-                    builder: (context, state) => const EditProfileScreen(),
+                    builder: (context, state) {
+                      final user = state.extra as User;
+                      return ChangeNotifierProvider(
+                        create: (_) => EditProfileViewModel(
+                          context.read<AuthLocalDataSource>(),
+                          user,
+                        ),
+                        child: const EditProfileScreen(),
+                      );
+                    },
                   ),
                   GoRoute(
                     path: 'orders',
-                    name: 'orders',
                     builder: (context, state) => const OrderHistoryScreen(),
                     routes: [
                       GoRoute(
                         path: ':id',
-                        name: 'order_detail',
                         builder: (context, state) {
                           final id = state.pathParameters['id'] ?? '-1';
                           return OrderDetailScreen(orderId: id);
